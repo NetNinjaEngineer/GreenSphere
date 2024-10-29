@@ -49,6 +49,14 @@ builder.Services.AddApiVersioning(options =>
 
 builder.Services.AddScoped<MigrateDatabaseMiddleware>();
 
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("AllowAll", builder =>
+        builder.AllowAnyOrigin()
+               .AllowAnyMethod()
+               .AllowAnyHeader());
+});
+
 #endregion
 
 builder.Services.AddMemoryCache();
@@ -63,6 +71,8 @@ if (app.Environment.IsDevelopment())
 app.UseMiddleware<GlobalErrorHandingMiddleware>();
 
 app.UseHttpsRedirection();
+
+app.UseCors("AllowAll");
 
 app.UseAuthentication();
 

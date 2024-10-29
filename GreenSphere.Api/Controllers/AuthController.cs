@@ -56,7 +56,8 @@ public class AuthController(IMediator mediator, SignInManager<ApplicationUser> s
     public IActionResult LoginWithGoogle()
     {
         var properties = signInManager.ConfigureExternalAuthenticationProperties(
-            GoogleDefaults.AuthenticationScheme, Url.Action("loginWithGoogle"));
+          GoogleDefaults.AuthenticationScheme,
+          Url.Action("loginWithGoogle", "Auth", null, Request.Scheme));
 
         return Challenge(properties, GoogleDefaults.AuthenticationScheme);
     }
