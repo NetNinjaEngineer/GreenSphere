@@ -3,8 +3,12 @@ using GreenSphere.Api.Controllers.Base;
 using GreenSphere.Application.Abstractions;
 using GreenSphere.Application.Features.Auth.DTOs;
 using GreenSphere.Application.Features.Auth.Requests.Commands;
+using GreenSphere.Application.Features.Auth.Requests.Queries;
+using GreenSphere.Identity.Entities;
 using MediatR;
+using Microsoft.AspNetCore.Authentication.Google;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 
 namespace GreenSphere.Api.Controllers;
@@ -12,7 +16,7 @@ namespace GreenSphere.Api.Controllers;
 [ApiVersion(1.0)]
 [Route("api/v{ver:apiVersion}/auth")]
 [ApiController]
-public class AuthController(IMediator mediator) : BaseApiController(mediator)
+public class AuthController(IMediator mediator, SignInManager<ApplicationUser> signInManager) : BaseApiController(mediator)
 {
     [HttpPost("register")]
     [ProducesResponseType(StatusCodes.Status422UnprocessableEntity)]
@@ -43,4 +47,18 @@ public class AuthController(IMediator mediator) : BaseApiController(mediator)
         await _mediator.Send(new LogoutCommand());
         return Ok();
     }
+
+    [HttpGet("loginWithGoogle")]
+    public async Task<ActionResult<Result<string>>> LoginWithGoogleAsync()
+        => CustomResult(await _mediator.Send(new LoginWithGoogleQuery()));
+
+    [HttpGet("login-google")]
+    public IActionResult LoginWithGoogle()
+    {
+        var properties = signInManager.ConfigureExternalAuthenticationProperties(
+            GoogleDefaults.AuthenticationScheme, Url.Action("loginWithGoogle"));
+
+        return Challenge(properties, GoogleDefaults.AuthenticationScheme);
+    }
+
 }

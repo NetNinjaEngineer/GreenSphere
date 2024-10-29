@@ -51,6 +51,8 @@ builder.Services.AddScoped<MigrateDatabaseMiddleware>();
 
 #endregion
 
+builder.Services.AddMemoryCache();
+
 var app = builder.Build();
 
 app.UseMiddleware<MigrateDatabaseMiddleware>();

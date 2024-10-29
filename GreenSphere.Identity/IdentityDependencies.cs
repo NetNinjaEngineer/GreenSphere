@@ -38,6 +38,15 @@ public static class IdentityDependencies
         services.AddScoped<IRoleService, RoleService>();
         services.AddScoped<ICurrentUser, CurrentUser>();
 
+        services.AddAuthentication()
+            .AddGoogle(options =>
+            {
+                IConfigurationSection googleKeys = configuration.GetSection("Authentication:Google");
+                options.ClientId = googleKeys["ClientId"]!;
+                options.ClientSecret = googleKeys["ClientSecret"]!;
+                options.CallbackPath = "/signin-google";
+            });
+
         return services;
     }
 }
