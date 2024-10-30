@@ -5,4 +5,5 @@ namespace GreenSphere.Application.Interfaces.Services;
 public interface IMailService
 {
     Task<Result<string>> SendEmailAsync(EmailMessage emailMessage);
+    Task<Result<string>> SendEmailAsync(Email emailMessage);
 }

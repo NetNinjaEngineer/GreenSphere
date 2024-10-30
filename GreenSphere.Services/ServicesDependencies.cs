@@ -22,6 +22,8 @@ public static class ServicesDependencies
 
         services.AddTransient<IMailService, MailService>();
 
+        services.Configure<MailkitSettings>(configuration.GetSection(nameof(MailkitSettings)));
+
         return services;
     }
 }
