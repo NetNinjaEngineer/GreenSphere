@@ -1,14 +1,17 @@
 ﻿using AutoMapper;
+using Google.Apis.Auth;
 using GreenSphere.Application.Abstractions;
 using GreenSphere.Application.Features.Auth.DTOs;
 using GreenSphere.Application.Features.Auth.Requests.Commands;
 using GreenSphere.Application.Helpers;
 using GreenSphere.Application.Interfaces.Identity;
+using GreenSphere.Application.Interfaces.Identity.Models;
 using GreenSphere.Application.Interfaces.Services;
 using GreenSphere.Application.Interfaces.Services.Models;
 using GreenSphere.Identity.Entities;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Options;
 using System.Text;
 
 namespace GreenSphere.Identity.Services;
@@ -18,8 +21,10 @@ public sealed class AuthService(
     ApplicationIdentityDbContext identityDbContext,
     IConfiguration configuration,
     SignInManager<ApplicationUser> signInManager,
-    IMailService mailService) : BaseResponseHandler, IAuthService
+    IMailService mailService,
+    IOptions<JWT> jwtOptions) : BaseResponseHandler, IAuthService
 {
+    private readonly JWT _jwtSettings = jwtOptions.Value;
     public async Task<Result<string>> ConfirmEmailAsync(string email, string code)
     {
         var transaction = await identityDbContext.Database.BeginTransactionAsync();
@@ -79,6 +84,64 @@ public sealed class AuthService(
             return BadRequest<string>(ex.Message);
         }
     }
+
+    public async Task<Result<GoogleAuthResponseDto>> GoogleLoginAsync(GoogleLoginCommand command)
+    {
+        // Validate the ID token
+        var validationSettings = new GoogleJsonWebSignature.ValidationSettings
+        {
+            Audience = new[] { configuration["Authentication:Google:ClientId"]! }
+        };
+
+        var payload = await GoogleJsonWebSignature.ValidateAsync(command.IdToken, validationSettings);
+        if (payload == null)
+        {
+            return Unauthorized<GoogleAuthResponseDto>();
+        }
+
+        var user = await userManager.FindByEmailAsync(payload.Email);
+        if (user != null)
+        {
+            return await CreateAuthResponseAsync(user);
+        }
+
+        user = new ApplicationUser
+        {
+            FirstName = payload.GivenName,
+            LastName = payload.FamilyName,
+            Email = payload.Email,
+            NormalizedEmail = payload.Email.ToUpper(),
+            UserName = payload.GivenName,
+            EmailConfirmed = true
+        };
+
+        var createResult = await userManager.CreateAsync(user);
+        if (!createResult.Succeeded)
+        {
+            var errors = createResult.Errors.Select(e => e.Description).ToList();
+            return BadRequest<GoogleAuthResponseDto>(DomainErrors.User.UnableToCreateAccount, errors);
+        }
+
+        await signInManager.SignInAsync(user, true);
+        return await CreateAuthResponseAsync(user);
+    }
+
+    private async Task<Result<GoogleAuthResponseDto>> CreateAuthResponseAsync(ApplicationUser user)
+    {
+        var userRoles = await userManager.GetRolesAsync(user);
+
+        var googleAuthResponse = new GoogleAuthResponseDto
+        {
+            FirstName = user.FirstName,
+            LastName = user.LastName,
+            UserId = user.Id,
+            UserName = user.UserName!,
+            Roles = userRoles.ToList(),
+        };
+
+        return Success(googleAuthResponse);
+    }
+
 
     public async Task LogoutAsync() => await signInManager.SignOutAsync();
 

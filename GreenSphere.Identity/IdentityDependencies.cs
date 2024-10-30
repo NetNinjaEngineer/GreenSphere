@@ -1,5 +1,4 @@
 ﻿using GreenSphere.Application.Interfaces.Identity;
-using GreenSphere.Application.Interfaces.Identity.Models;
 using GreenSphere.Identity.Entities;
 using GreenSphere.Identity.Services;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
@@ -18,9 +17,6 @@ public static class IdentityDependencies
         this IServiceCollection services,
         IConfiguration configuration)
     {
-        var jwt = new JWT();
-        configuration.Bind(jwt);
-
         services.AddDbContext<ApplicationIdentityDbContext>(options =>
             options.UseSqlServer(configuration.GetConnectionString("IdentityConnection")));
 
@@ -59,9 +55,9 @@ public static class IdentityDependencies
                     ValidateAudience = true,
                     ValidateLifetime = true,
                     ValidateIssuerSigningKey = true,
-                    ValidIssuer = jwt.Issuer,
-                    ValidAudience = jwt.Audience,
-                    IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwt.Key))
+                    ValidIssuer = configuration["JWT:Issuer"],
+                    ValidAudience = configuration["JWT:Audience"],
+                    IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(configuration["JWT:Key"]!))
                 };
             })
             .AddGoogle(options =>
