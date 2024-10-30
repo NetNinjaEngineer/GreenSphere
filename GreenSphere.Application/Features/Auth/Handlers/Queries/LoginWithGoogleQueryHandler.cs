@@ -4,10 +4,10 @@ using GreenSphere.Application.Interfaces.Identity;
 using MediatR;
 
 namespace GreenSphere.Application.Features.Auth.Handlers.Queries;
-public class LoginWithGoogleQueryHandler(IAuthService authService) : BaseResponseHandler, IRequestHandler<LoginWithGoogleQuery, Result<string>>
+public class LoginWithGoogleQueryHandler(IAuthService authService) : IRequestHandler<LoginWithGoogleQuery, Result<string>>
 {
-    public async Task<Result<string>> Handle(LoginWithGoogleQuery request, CancellationToken cancellationToken)
+    public Task<Result<string>> Handle(LoginWithGoogleQuery request, CancellationToken cancellationToken)
     {
-        return await authService.LoginWithGoogleAsync();
+        throw new NotImplementedException();
     }
 }

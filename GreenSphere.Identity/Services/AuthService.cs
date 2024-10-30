@@ -7,12 +7,8 @@ using GreenSphere.Application.Interfaces.Identity;
 using GreenSphere.Application.Interfaces.Services;
 using GreenSphere.Application.Interfaces.Services.Models;
 using GreenSphere.Identity.Entities;
-using Microsoft.AspNetCore.Authentication;
-using Microsoft.AspNetCore.Authentication.Google;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Configuration;
-using System.Security.Claims;
 using System.Text;
 
 namespace GreenSphere.Identity.Services;
@@ -22,8 +18,7 @@ public sealed class AuthService(
     ApplicationIdentityDbContext identityDbContext,
     IConfiguration configuration,
     SignInManager<ApplicationUser> signInManager,
-    IMailService mailService,
-    IHttpContextAccessor contextAccessor) : BaseResponseHandler, IAuthService
+    IMailService mailService) : BaseResponseHandler, IAuthService
 {
     public async Task<Result<string>> ConfirmEmailAsync(string email, string code)
     {
@@ -83,35 +78,6 @@ public sealed class AuthService(
             transaction.Rollback();
             return BadRequest<string>(ex.Message);
         }
-    }
-
-    public async Task<Result<string>> LoginWithGoogleAsync()
-    {
-        var result = await contextAccessor.HttpContext!.AuthenticateAsync(GoogleDefaults.AuthenticationScheme);
-        if (!result.Succeeded)
-            return Unauthorized<string>();
-
-        var emailClaim = result.Principal.FindFirst(ClaimTypes.Email)?.Value;
-        if (emailClaim == null)
-            return BadRequest<string>("Google authentication didn't return an email");
-
-        var user = await userManager.FindByEmailAsync(emailClaim);
-        if (user == null)
-        {
-            user = new ApplicationUser
-            {
-                UserName = emailClaim,
-                Email = emailClaim,
-                EmailConfirmed = true
-            };
-            var createResult = await userManager.CreateAsync(user);
-            if (!createResult.Succeeded)
-                return BadRequest<string>("Failed to create user.");
-        }
-
-        await signInManager.SignInAsync(user, isPersistent: false);
-
-        return Success("Google login successful");
     }
 
     public async Task LogoutAsync() => await signInManager.SignOutAsync();

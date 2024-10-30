@@ -1,10 +1,12 @@
 ﻿using GreenSphere.Application.Abstractions;
+using GreenSphere.Application.Attributes;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using System.Net;
 
 namespace GreenSphere.Api.Controllers.Base;
 
+[ApiKey]
 [ApiController]
 public class BaseApiController(IMediator mediator) : ControllerBase
 {

@@ -9,5 +9,4 @@ public interface IAuthService
     Task<Result<SendCodeConfirmEmailResponseDto>> SendConfirmEmailCodeAsync(string email);
     Task<Result<string>> ConfirmEmailAsync(string email, string code);
     Task LogoutAsync();
-    Task<Result<string>> LoginWithGoogleAsync();
 }
