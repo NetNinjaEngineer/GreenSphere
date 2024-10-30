@@ -60,7 +60,7 @@ public class MailService : BaseResponseHandler, IMailService
     private static bool IsEmailSent(Response response)
         => response.StatusCode == HttpStatusCode.OK || response.StatusCode == HttpStatusCode.Accepted;
 
-    public async Task<Result<string>> SendEmailAsync(Email emailMessage)
+    public async Task<Result<string>> SendEmailAsync(MailkitEmail emailMessage)
     {
         if (!emailMessage.IsValid())
             return BadRequest<string>("Not Valid Email Message !");
