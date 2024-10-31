@@ -5,10 +5,10 @@ using GreenSphere.Application.Features.Auth.DTOs;
 using GreenSphere.Application.Features.Auth.Requests.Commands;
 using GreenSphere.Application.Helpers;
 using GreenSphere.Application.Interfaces.Identity;
+using GreenSphere.Application.Interfaces.Identity.Entities;
 using GreenSphere.Application.Interfaces.Identity.Models;
 using GreenSphere.Application.Interfaces.Services;
 using GreenSphere.Application.Interfaces.Services.Models;
-using GreenSphere.Identity.Entities;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Options;
@@ -87,10 +87,9 @@ public sealed class AuthService(
 
     public async Task<Result<GoogleAuthResponseDto>> GoogleLoginAsync(GoogleLoginCommand command)
     {
-        // Validate the ID token
         var validationSettings = new GoogleJsonWebSignature.ValidationSettings
         {
-            Audience = new[] { configuration["Authentication:Google:ClientId"]! }
+            Audience = [configuration["Authentication:Google:ClientId"]!]
         };
 
         var payload = await GoogleJsonWebSignature.ValidateAsync(command.IdToken, validationSettings);
@@ -122,7 +121,10 @@ public sealed class AuthService(
             return BadRequest<GoogleAuthResponseDto>(DomainErrors.User.UnableToCreateAccount, errors);
         }
 
-        await signInManager.SignInAsync(user, true);
+        var loginInfo = new UserLoginInfo("Google", user.Id, "Google");
+        await userManager.AddLoginAsync(user, loginInfo);
+
+        await signInManager.SignInAsync(user, false);
         return await CreateAuthResponseAsync(user);
     }
 

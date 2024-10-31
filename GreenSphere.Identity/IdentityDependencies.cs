@@ -1,5 +1,5 @@
 ﻿using GreenSphere.Application.Interfaces.Identity;
-using GreenSphere.Identity.Entities;
+using GreenSphere.Application.Interfaces.Identity.Entities;
 using GreenSphere.Identity.Services;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
@@ -65,6 +65,12 @@ public static class IdentityDependencies
                 IConfigurationSection googleKeys = configuration.GetSection("Authentication:Google");
                 options.ClientId = googleKeys["ClientId"]!;
                 options.ClientSecret = googleKeys["ClientSecret"]!;
+            })
+            .AddFacebook(options =>
+            {
+                IConfigurationSection facebookAuthKeys = configuration.GetSection("Authentication:Facebook");
+                options.AppId = facebookAuthKeys["AppId"]!;
+                options.AppSecret = facebookAuthKeys["AppSecret"]!;
             });
 
         return services;

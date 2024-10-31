@@ -47,4 +47,8 @@ public class AuthController(IMediator mediator) : BaseApiController(mediator)
     [HttpPost("login-google")]
     public async Task<ActionResult<Result<GoogleAuthResponseDto>>> GoogleLoginAsync(GoogleLoginCommand command)
         => CustomResult(await _mediator.Send(command));
+
+    [HttpPost("login-facebook")]
+    public async Task<ActionResult<Result<string>>> FacebookLoginAsync(FacebookLoginCommand command)
+        => CustomResult(await _mediator.Send(command));
 }

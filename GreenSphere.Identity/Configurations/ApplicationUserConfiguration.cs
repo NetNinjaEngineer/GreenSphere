@@ -1,4 +1,4 @@
-﻿using GreenSphere.Identity.Entities;
+﻿using GreenSphere.Application.Interfaces.Identity.Entities;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;

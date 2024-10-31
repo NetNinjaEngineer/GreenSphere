@@ -1,6 +1,6 @@
 ﻿using AutoMapper;
 using GreenSphere.Application.Features.Auth.Requests.Commands;
-using GreenSphere.Identity.Entities;
+using GreenSphere.Application.Interfaces.Identity.Entities;
 
 namespace GreenSphere.Identity.Profiles;
 public class UserProfile : Profile

@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Identity;
 
-namespace GreenSphere.Identity.Entities;
+namespace GreenSphere.Application.Interfaces.Identity.Entities;
 public class ApplicationUser : IdentityUser
 {
     public string FirstName { get; set; } = string.Empty;
