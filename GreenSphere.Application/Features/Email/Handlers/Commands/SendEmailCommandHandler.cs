@@ -15,5 +15,5 @@ public sealed class SendEmailCommandHandler : IRequestHandler<SendEmailCommand, 
     }
 
     public async Task<Result<string>> Handle(SendEmailCommand request, CancellationToken cancellationToken)
-        => await _mailService.SendEmailAsync(new MailkitEmail { Body = request.Message, Subject = request.Subject, RecipientEmails = [request.To] });
+        => await _mailService.SendEmailAsync(new MailkitEmail { Body = request.Message, Subject = request.Subject, RecipientEmails = [request.To], Attachments = request.Attachments });
 }

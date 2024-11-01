@@ -77,8 +77,42 @@ public class MailService : BaseResponseHandler, IMailService
 
         var builder = new BodyBuilder
         {
-            TextBody = emailMessage.Body
+            HtmlBody = $@"
+            <html>
+                <body style='font-family: Arial, sans-serif;'>
+                    <div style='max-width: 600px; margin: 0 auto; border: 1px solid #ddd; padding: 20px;'>
+              
+                        <div style='text-align: center;'>
+                            <img src='' alt='Green Sphere Logo' style='width: 150px; height: auto;' />
+                        </div>
+   
+                        <div style='margin-top: 20px;'>
+                            {emailMessage.Body}
+                        </div>
+       
+                        <div style='margin-top: 30px; padding-top: 15px; border-top: 1px solid #ddd; font-size: 12px; color: #555; text-align: center;'>
+                            <p>© {DateTime.Now.Year} Green Sphere. All rights reserved.</p>
+                        </div>
+                    </div>
+                </body>
+            </html>"
         };
+
+        
+        if (emailMessage.Attachments?.Count != 0)
+        {
+            byte[] fileBytes = [];
+            foreach (var file in emailMessage.Attachments!)
+            {
+                if (file.Length != 0)
+                {
+                    using var memoryStream = new MemoryStream();
+                    file.CopyTo(memoryStream);
+                    fileBytes = memoryStream.ToArray();
+                    builder.Attachments.Add(file.FileName, fileBytes, ContentType.Parse(file.ContentType));
+                }
+            }
+        }
 
         message.Body = builder.ToMessageBody();
 

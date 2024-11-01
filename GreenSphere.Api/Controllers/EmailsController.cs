@@ -13,6 +13,6 @@ public class EmailsController(IMediator mediator) : BaseApiController(mediator)
     [ProducesResponseType(StatusCodes.Status422UnprocessableEntity)]
     [ProducesResponseType(typeof(SuccessResult<string>), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(FailedResult<string>), StatusCodes.Status400BadRequest)]
-    public async Task<ActionResult<Result<string>>> SendEmailAsync(SendEmailCommand command)
+    public async Task<ActionResult<Result<string>>> SendEmailAsync([FromForm] SendEmailCommand command)
         => CustomResult(await _mediator.Send(command));
 }
