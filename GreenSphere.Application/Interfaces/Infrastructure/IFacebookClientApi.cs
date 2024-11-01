@@ -1,4 +1,4 @@
-﻿using GreenSphere.Application.Abstractions;
+﻿using GreenSphere.Application.Bases;
 
 namespace GreenSphere.Application.Interfaces.Infrastructure;
 public interface IFacebookClientApi
