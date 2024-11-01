@@ -59,8 +59,6 @@ builder.Services.AddCors(options =>
 
 #endregion
 
-builder.Services.AddMemoryCache();
-
 var app = builder.Build();
 
 app.UseMiddleware<MigrateDatabaseMiddleware>();

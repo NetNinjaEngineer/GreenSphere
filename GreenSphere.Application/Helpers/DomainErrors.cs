@@ -10,8 +10,8 @@ public static class DomainErrors
         public const string AuthCodeExpired = "Authentication code is expired.";
         public const string AlreadyEmailConfirmed = "Email is cofirmed yet.";
         public const string UserNotFound = "User '{0}' not found.";
-        public const string CannotCreateFBUser = "Can not create facebook user.";
-        public const string FBFailedAuthentication = "Facebook authentication failed!";
+        public const string CannotCreateFbUser = "Can not create facebook user.";
+        public const string FbFailedAuthentication = "Facebook authentication failed!";
     }
 
 

@@ -37,7 +37,7 @@ public sealed class FacebookClientApi(
         return !createResult.Succeeded ?
             Result<ApplicationUser>.Failure(
                 HttpStatusCode.BadRequest,
-                DomainErrors.User.CannotCreateFBUser,
+                DomainErrors.User.CannotCreateFbUser,
                 createResult.Errors.Select(e => e.Description).ToList()) :
             Result<ApplicationUser>.Success(facebookUser);
     }
@@ -66,7 +66,7 @@ public sealed class FacebookClientApi(
         if (!response.IsSuccessStatusCode)
             return Result<FacebookAuthenticationResponseDto>.Failure(
                 HttpStatusCode.BadRequest,
-                DomainErrors.User.FBFailedAuthentication);
+                DomainErrors.User.FbFailedAuthentication);
 
         var responseBody = await response.Content.ReadAsStreamAsync();
         return Result<FacebookAuthenticationResponseDto>.Success(JsonSerializer.Deserialize<FacebookAuthenticationResponseDto>(responseBody, _jsonSerializerOptions)!);

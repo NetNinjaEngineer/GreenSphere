@@ -5,15 +5,9 @@ using GreenSphere.Application.Interfaces.Services.Models;
 using MediatR;
 
 namespace GreenSphere.Application.Features.Email.Handlers.Commands;
-public sealed class SendEmailCommandHandler : IRequestHandler<SendEmailCommand, Result<string>>
+public sealed class SendEmailCommandHandler(IMailService mailService)
+    : IRequestHandler<SendEmailCommand, Result<string>>
 {
-    private readonly IMailService _mailService;
-
-    public SendEmailCommandHandler(IMailService mailService)
-    {
-        _mailService = mailService;
-    }
-
     public async Task<Result<string>> Handle(SendEmailCommand request, CancellationToken cancellationToken)
-        => await _mailService.SendEmailAsync(new MailkitEmail { Body = request.Message, Subject = request.Subject, RecipientEmails = [request.To], Attachments = request.Attachments });
+        => await mailService.SendEmailAsync(new MailkitEmail { Body = request.Message, Subject = request.Subject, To = request.To });
 }
