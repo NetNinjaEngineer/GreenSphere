@@ -13,7 +13,7 @@ public static class ApplicationDependencies
         services.AddAutoMapper(typeof(ApplicationDependencies).Assembly);
         services.AddSingleton<ApiKeyAuthorizationFilter>();
         services.AddValidatorsFromAssembly(Assembly.GetExecutingAssembly());
-
+        services.AddHttpContextAccessor();
         return services;
     }
 }

@@ -1,4 +1,5 @@
 ﻿using System.IdentityModel.Tokens.Jwt;
+using System.Net;
 using System.Security.Claims;
 using System.Security.Cryptography;
 using AutoMapper;
@@ -17,6 +18,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Options;
 using System.Text;
 using FluentValidation;
+using GreenSphere.Application.Features.Auth.Handlers.Commands;
 using GreenSphere.Application.Features.Auth.Validators.Commands;
 using Microsoft.IdentityModel.Tokens;
 using JwtRegisteredClaimNames = Microsoft.IdentityModel.JsonWebTokens.JwtRegisteredClaimNames;
@@ -189,7 +191,72 @@ public sealed class AuthService(
 
         return Success(response);
     }
+
+    public Application.Bases.Result<SignInResponseDto> RefreshToken(RefreshTokenCommand command)
+        => CheckIfUserHasAssignedToRefreshToken(command.Token)
+            .Bind(user => SelectRefreshTokenAssignedToUser(user, command.Token))
+            .Bind(CheckIfTokenIsActive)
+            .Bind(RevokeUserTokenAndReturnsAppUser)
+            .Bind(appUser => GenerateNewRefreshToken(appUser).Result)
+            .Bind(appUser => GenerateNewJwtToken(appUser).Result)
+            .Bind(appUserWithJwt => CreateSignInResponse(appUserWithJwt).Result)
+            .Map((authResponse) => authResponse);
     
+    private async Task<Application.Bases.Result<SignInResponseDto>> CreateSignInResponse((ApplicationUser appUser, JwtSecurityToken jwtToken) appUserWithJwt)
+    {
+        var userRoles = await userManager.GetRolesAsync(appUserWithJwt.appUser);
+        var newRefreshToken = appUserWithJwt.appUser.RefreshTokens?.FirstOrDefault(x => x.IsActive);
+
+        var response = new SignInResponseDto
+        {
+            IsAuthenticated = true,
+            UserName = appUserWithJwt.appUser.UserName!,
+            Email = appUserWithJwt.appUser.Email!,
+            Token = new JwtSecurityTokenHandler().WriteToken(appUserWithJwt.jwtToken),
+            Roles = userRoles.ToList(),
+            RefreshToken = newRefreshToken?.Token,
+            RefreshTokenExpiration = newRefreshToken!.ExpiresOn
+        };
+        
+        return Application.Bases.Result<SignInResponseDto>.Success(response);
+    }
+
+    private async Task<Application.Bases.Result<(ApplicationUser appUser, JwtSecurityToken jwtToken)>> GenerateNewJwtToken(ApplicationUser appUser)
+    {
+        var jwtToken = await GenerateJwtToken(appUser);
+        return Application.Bases.Result<(ApplicationUser appUser, JwtSecurityToken jwtToken)>.Success((appUser, jwtToken));
+    }
+
+    private async Task<Application.Bases.Result<ApplicationUser>> GenerateNewRefreshToken(ApplicationUser appUser)
+    {
+        var newRefreshToken = GenerateRefreshToken();
+        appUser.RefreshTokens?.Add(newRefreshToken);
+        await userManager.UpdateAsync(appUser);
+        return Application.Bases.Result<ApplicationUser>.Success(appUser);
+    }
+
+    private Application.Bases.Result<ApplicationUser> RevokeUserTokenAndReturnsAppUser(RefreshToken userRefreshToken)
+    {
+        userRefreshToken.RevokedOn = DateTimeOffset.Now;
+        var user = userManager.Users.SingleOrDefault(x => x.RefreshTokens != null && x.RefreshTokens.Any(x => x.Token == userRefreshToken.Token));
+        return Application.Bases.Result<ApplicationUser>.Success(user!);
+    }
+
+    private static Application.Bases.Result<RefreshToken> CheckIfTokenIsActive(RefreshToken userRefreshToken)
+    {
+        if (!userRefreshToken.IsActive)
+            return Application.Bases.Result<RefreshToken>.Failure(HttpStatusCode.BadRequest, "Inactive token");
+        return Application.Bases.Result<RefreshToken>.Success(userRefreshToken);
+    }
+
+    private static Application.Bases.Result<RefreshToken> SelectRefreshTokenAssignedToUser(ApplicationUser user, string token)
+    {
+        var refreshToken = user.RefreshTokens?.Single(x => x.Token == token);
+        if (refreshToken is not null)
+            return Application.Bases.Result<RefreshToken>.Success(refreshToken);
+        return Application.Bases.Result<RefreshToken>.Failure(HttpStatusCode.NotFound, "Token not found");
+    }
+
     private async Task<JwtSecurityToken> GenerateJwtToken(ApplicationUser user)
     {
         var userClaims = await userManager.GetClaimsAsync(user);
@@ -350,5 +417,12 @@ public sealed class AuthService(
             ExpiresOn = DateTimeOffset.Now.AddDays(10),
             CreatedOn = DateTimeOffset.Now
         };
+    }
+
+    private Application.Bases.Result<ApplicationUser> CheckIfUserHasAssignedToRefreshToken(string refreshToken)
+    {
+        var user = userManager.Users.SingleOrDefault(x => x.RefreshTokens != null && x.RefreshTokens.Any(x => x.Token == refreshToken));
+        return user is null ? Application.Bases.Result<ApplicationUser>.Failure(HttpStatusCode.NotFound, "Invalid Token") :
+            Application.Bases.Result<ApplicationUser>.Success(user);
     }
 }

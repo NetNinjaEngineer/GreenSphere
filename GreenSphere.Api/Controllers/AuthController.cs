@@ -59,4 +59,27 @@ public class AuthController(IMediator mediator) : BaseApiController(mediator)
     [ProducesResponseType(typeof(FailedResult<SignInResponseDto>), StatusCodes.Status404NotFound)]
     public async Task<ActionResult<Result<SignInResponseDto>>> LoginUserAsync(LoginCommand command)
         => CustomResult(await _mediator.Send(command));
+
+    [HttpGet("refresh-token")]
+    [ProducesResponseType(typeof(Application.Bases.Result<SignInResponseDto>), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(Application.Bases.Result<SignInResponseDto>), StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(typeof(Application.Bases.Result<SignInResponseDto>), StatusCodes.Status404NotFound)]
+    public async Task<ActionResult<Application.Bases.Result<SignInResponseDto>>> RefreshTokenAsync()
+    {
+        var refreshToken = Request.Cookies["refreshToken"];
+        var authResponseResult = await _mediator.Send(new RefreshTokenCommand { Token = refreshToken! });
+        SetRefreshTokenInCookie(authResponseResult.Value.RefreshToken!, authResponseResult.Value.RefreshTokenExpiration);
+        return CustomResult(authResponseResult);
+    }
+
+    private void SetRefreshTokenInCookie(string valueRefreshToken, DateTimeOffset valueRefreshTokenExpiration)
+    {
+        var cookieOptions = new CookieOptions()
+        {
+            HttpOnly = true,
+            Expires = valueRefreshTokenExpiration,
+        };
+        
+        Response.Cookies.Append("refreshToken", valueRefreshToken, cookieOptions);
+    }
 }

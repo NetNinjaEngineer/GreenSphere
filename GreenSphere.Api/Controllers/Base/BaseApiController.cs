@@ -27,7 +27,7 @@ public class BaseApiController(IMediator mediator) : ControllerBase
         HttpStatusCode.Created => new ObjectResult(result)
     };
     
-    public ActionResult CustomResult<T>(GreenSphere.Application.Bases.Result<T> result)
+    public static ActionResult CustomResult<T>(GreenSphere.Application.Bases.Result<T> result)
     {
         return GetObjectResult(result);
     }
