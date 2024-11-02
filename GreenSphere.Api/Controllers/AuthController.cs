@@ -68,7 +68,9 @@ public class AuthController(IMediator mediator) : BaseApiController(mediator)
     {
         var refreshToken = Request.Cookies["refreshToken"];
         var authResponseResult = await _mediator.Send(new RefreshTokenCommand { Token = refreshToken! });
-        SetRefreshTokenInCookie(authResponseResult.Value.RefreshToken!, authResponseResult.Value.RefreshTokenExpiration);
+        if (authResponseResult.Value is not null && authResponseResult.Value.IsAuthenticated)
+            SetRefreshTokenInCookie(authResponseResult.Value.RefreshToken!, authResponseResult.Value.RefreshTokenExpiration);
+
         return CustomResult(authResponseResult);
     }
 
@@ -79,7 +81,7 @@ public class AuthController(IMediator mediator) : BaseApiController(mediator)
             HttpOnly = true,
             Expires = valueRefreshTokenExpiration,
         };
-        
+
         Response.Cookies.Append("refreshToken", valueRefreshToken, cookieOptions);
     }
 }
