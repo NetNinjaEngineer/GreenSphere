@@ -6,8 +6,8 @@ namespace GreenSphere.Application.Interfaces.Identity;
 public interface IAuthService
 {
     Task<Result<SignUpResponseDto>> RegisterAsync(RegisterCommand command);
-    Task<Result<SendCodeConfirmEmailResponseDto>> SendConfirmEmailCodeAsync(string email);
-    Task<Result<string>> ConfirmEmailAsync(string email, string code);
+    Task<Result<SendCodeConfirmEmailResponseDto>> SendConfirmEmailCodeAsync(SendConfirmEmailCodeCommand command);
+    Task<Result<string>> ConfirmEmailAsync(ConfirmEmailCommand command);
     Task LogoutAsync();
     Task<Result<GoogleAuthResponseDto>> GoogleLoginAsync(GoogleLoginCommand command);
 }

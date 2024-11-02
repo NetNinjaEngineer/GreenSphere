@@ -10,5 +10,5 @@ public sealed class SendConfirmEmailCodeCommandHandler(IAuthService authService)
 {
     public async Task<Result<SendCodeConfirmEmailResponseDto>> Handle(SendConfirmEmailCodeCommand request,
                                                                       CancellationToken cancellationToken)
-        => await authService.SendConfirmEmailCodeAsync(request.Email);
+        => await authService.SendConfirmEmailCodeAsync(request);
 }

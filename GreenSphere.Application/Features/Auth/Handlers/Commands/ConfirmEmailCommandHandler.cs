@@ -8,5 +8,5 @@ public sealed class ConfirmEmailCommandHandler(IAuthService authService) : IRequ
 {
     public async Task<Result<string>> Handle(ConfirmEmailCommand request,
                                              CancellationToken cancellationToken)
-        => await authService.ConfirmEmailAsync(request.Email, request.Token);
+        => await authService.ConfirmEmailAsync(request);
 }

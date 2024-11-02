@@ -13,6 +13,8 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Options;
 using System.Text;
+using FluentValidation;
+using GreenSphere.Application.Features.Auth.Validators.Commands;
 
 namespace GreenSphere.Identity.Services;
 public sealed class AuthService(
@@ -25,19 +27,22 @@ public sealed class AuthService(
     IOptions<JWT> jwtOptions) : BaseResponseHandler, IAuthService
 {
     private readonly JWT _jwtSettings = jwtOptions.Value;
-    public async Task<Result<string>> ConfirmEmailAsync(string email, string code)
+    public async Task<Result<string>> ConfirmEmailAsync(ConfirmEmailCommand command)
     {
+        var validator = new ConfirmEmailCommandValidator();
+        await validator.ValidateAndThrowAsync(command);
+        
         var transaction = await identityDbContext.Database.BeginTransactionAsync();
         try
         {
-            var user = await userManager.FindByEmailAsync(email);
+            var user = await userManager.FindByEmailAsync(command.Email);
 
             if (user is null)
                 return NotFound<string>(DomainErrors.User.UnkownUser);
 
             var decodedAuthenticationCode = Encoding.UTF8.GetString(Convert.FromBase64String(user.Code!));
 
-            if (decodedAuthenticationCode == code)
+            if (decodedAuthenticationCode == command.Token)
             {
                 // check if the token is expired
                 if (DateTimeOffset.Now > user.CodeExpiration)
@@ -57,7 +62,7 @@ public sealed class AuthService(
                 }
 
                 var emailMessage = EmailMessage.Create(
-                   to: email,
+                   to: command.Email,
                    subject: "Email Confirmed",
                    message: @"
                     <div style='margin-top: 20px; font-size: 16px; color: #333;'>
@@ -149,6 +154,9 @@ public sealed class AuthService(
 
     public async Task<Result<SignUpResponseDto>> RegisterAsync(RegisterCommand command)
     {
+        var registerCommandValidator = new RegisterCommandValidator();
+        await registerCommandValidator.ValidateAndThrowAsync(command);
+        
         var user = mapper.Map<ApplicationUser>(command);
         var result = await userManager.CreateAsync(user, command.Password);
 
@@ -159,13 +167,16 @@ public sealed class AuthService(
             Success(SignUpResponseDto.ToResponse(Guid.Parse(user.Id)));
     }
 
-    public async Task<Result<SendCodeConfirmEmailResponseDto>> SendConfirmEmailCodeAsync(string email)
+    public async Task<Result<SendCodeConfirmEmailResponseDto>> SendConfirmEmailCodeAsync(SendConfirmEmailCodeCommand command)
     {
+        var confirmEmailValidator = new SendConfirmEmailCodeCommandValidator();
+        await confirmEmailValidator.ValidateAndThrowAsync(command);
+        
         var transaction = await identityDbContext.Database.BeginTransactionAsync();
 
         try
         {
-            var user = await userManager.FindByEmailAsync(email);
+            var user = await userManager.FindByEmailAsync(command.Email);
 
             if (user is null)
                 return NotFound<SendCodeConfirmEmailResponseDto>(DomainErrors.User.UnkownUser);
@@ -193,7 +204,7 @@ public sealed class AuthService(
             }
 
             var emailMessage = EmailMessage.Create(
-                to: email,
+                to: command.Email,
                 subject: "Activate Account",
                 message: @$" <div style='margin-top: 20px;'>
                       <p style='font-size: 16px;'>Hello,</p>

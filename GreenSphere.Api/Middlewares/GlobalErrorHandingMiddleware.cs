@@ -26,8 +26,7 @@ public class GlobalErrorHandingMiddleware(RequestDelegate next)
         switch (ex)
         {
             case ValidationException validationException:
-                var validationErrors =
-                    validationException.Errors
+                var validationErrors = validationException.Errors
                     .Select(x => x.ErrorMessage)
                     .ToList();
 
