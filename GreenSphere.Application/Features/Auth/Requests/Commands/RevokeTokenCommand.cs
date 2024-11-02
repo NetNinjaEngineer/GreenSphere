@@ -1,6 +1,9 @@
-﻿namespace GreenSphere.Application.Features.Auth.Requests.Commands;
+﻿using GreenSphere.Application.Bases;
+using MediatR;
 
-public class RevokeTokenCommand
+namespace GreenSphere.Application.Features.Auth.Requests.Commands;
+
+public sealed class RevokeTokenCommand : IRequest<Result<bool>>
 {
-    
+    public string? Token { get; set; }
 }

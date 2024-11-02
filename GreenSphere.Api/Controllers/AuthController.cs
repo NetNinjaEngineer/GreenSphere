@@ -6,6 +6,7 @@ using GreenSphere.Application.Features.Auth.Requests.Commands;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using System.Text;
 
 namespace GreenSphere.Api.Controllers;
 [AllowAnonymous]
@@ -66,12 +67,20 @@ public class AuthController(IMediator mediator) : BaseApiController(mediator)
     [ProducesResponseType(typeof(Application.Bases.Result<SignInResponseDto>), StatusCodes.Status404NotFound)]
     public async Task<ActionResult<Application.Bases.Result<SignInResponseDto>>> RefreshTokenAsync()
     {
-        var refreshToken = Request.Cookies["refreshToken"];
+        var refreshToken = Encoding.UTF8.GetString(Convert.FromBase64String(Request.Cookies["refreshToken"]!));
         var authResponseResult = await _mediator.Send(new RefreshTokenCommand { Token = refreshToken! });
         if (authResponseResult.Value is not null && authResponseResult.Value.IsAuthenticated)
-            SetRefreshTokenInCookie(authResponseResult.Value.RefreshToken!, authResponseResult.Value.RefreshTokenExpiration);
+            SetRefreshTokenInCookie(Convert.ToBase64String(Encoding.UTF8.GetBytes(authResponseResult.Value.RefreshToken!)), authResponseResult.Value.RefreshTokenExpiration);
 
         return CustomResult(authResponseResult);
+    }
+
+    [HttpPost("revoke-token")]
+    public async Task<IActionResult> RevokeTokenAsync(RevokeTokenCommand command)
+    {
+        if (command.Token is not null) return CustomResult(await _mediator.Send(command));
+        command = new RevokeTokenCommand { Token = Encoding.UTF8.GetString(Convert.FromBase64String(Request.Cookies["refreshToken"]!)) };
+        return CustomResult(await _mediator.Send(command));
     }
 
     private void SetRefreshTokenInCookie(string valueRefreshToken, DateTimeOffset valueRefreshTokenExpiration)

@@ -1,12 +1,10 @@
-﻿using System.IdentityModel.Tokens.Jwt;
-using System.Net;
-using System.Security.Claims;
-using System.Security.Cryptography;
-using AutoMapper;
+﻿using AutoMapper;
+using FluentValidation;
 using Google.Apis.Auth;
 using GreenSphere.Application.Abstractions;
 using GreenSphere.Application.Features.Auth.DTOs;
 using GreenSphere.Application.Features.Auth.Requests.Commands;
+using GreenSphere.Application.Features.Auth.Validators.Commands;
 using GreenSphere.Application.Helpers;
 using GreenSphere.Application.Interfaces.Identity;
 using GreenSphere.Application.Interfaces.Identity.Entities;
@@ -16,11 +14,12 @@ using GreenSphere.Application.Interfaces.Services.Models;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Options;
-using System.Text;
-using FluentValidation;
-using GreenSphere.Application.Features.Auth.Handlers.Commands;
-using GreenSphere.Application.Features.Auth.Validators.Commands;
 using Microsoft.IdentityModel.Tokens;
+using System.IdentityModel.Tokens.Jwt;
+using System.Net;
+using System.Security.Claims;
+using System.Security.Cryptography;
+using System.Text;
 using JwtRegisteredClaimNames = Microsoft.IdentityModel.JsonWebTokens.JwtRegisteredClaimNames;
 
 namespace GreenSphere.Identity.Services;
@@ -38,7 +37,7 @@ public sealed class AuthService(
     {
         var validator = new ConfirmEmailCommandValidator();
         await validator.ValidateAndThrowAsync(command);
-        
+
         var transaction = await identityDbContext.Database.BeginTransactionAsync();
         try
         {
@@ -166,7 +165,7 @@ public sealed class AuthService(
             Email = loggedInUser.Email,
             UserName = loggedInUser.UserName,
             IsAuthenticated = true,
-            Roles = userRoles.ToList(),
+            Roles = [.. userRoles],
             Token = new JwtSecurityTokenHandler().WriteToken(token),
         };
 
@@ -201,7 +200,22 @@ public sealed class AuthService(
             .Bind(appUser => GenerateNewJwtToken(appUser).Result)
             .Bind(appUserWithJwt => CreateSignInResponse(appUserWithJwt).Result)
             .Map((authResponse) => authResponse);
-    
+
+    public Application.Bases.Result<bool> RevokeTokenAsync(RevokeTokenCommand command)
+        => CheckIfUserHasAssignedToRefreshToken(command.Token)
+            .Bind(appUser => SelectRefreshTokenAssignedToUser(appUser, command.Token))
+            .Bind(CheckIfTokenIsActive)
+            .Bind(RevokeUserTokenAndReturnsAppUser)
+            .Bind(appUser => UpdateApplicationUser(appUser).Result)
+            .Map(userUpdated => userUpdated);
+
+    private async Task<Application.Bases.Result<bool>> UpdateApplicationUser(ApplicationUser appUser)
+    {
+        await userManager.UpdateAsync(appUser);
+        return Application.Bases.Result<bool>.Success(true);
+    }
+
+
     private async Task<Application.Bases.Result<SignInResponseDto>> CreateSignInResponse((ApplicationUser appUser, JwtSecurityToken jwtToken) appUserWithJwt)
     {
         var userRoles = await userManager.GetRolesAsync(appUserWithJwt.appUser);
@@ -213,11 +227,11 @@ public sealed class AuthService(
             UserName = appUserWithJwt.appUser.UserName!,
             Email = appUserWithJwt.appUser.Email!,
             Token = new JwtSecurityTokenHandler().WriteToken(appUserWithJwt.jwtToken),
-            Roles = userRoles.ToList(),
+            Roles = [.. userRoles],
             RefreshToken = newRefreshToken?.Token,
             RefreshTokenExpiration = newRefreshToken!.ExpiresOn
         };
-        
+
         return Application.Bases.Result<SignInResponseDto>.Success(response);
     }
 
@@ -314,7 +328,7 @@ public sealed class AuthService(
     {
         var registerCommandValidator = new RegisterCommandValidator();
         await registerCommandValidator.ValidateAndThrowAsync(command);
-        
+
         var user = mapper.Map<ApplicationUser>(command);
         var result = await userManager.CreateAsync(user, command.Password);
 
@@ -329,7 +343,7 @@ public sealed class AuthService(
     {
         var confirmEmailValidator = new SendConfirmEmailCodeCommandValidator();
         await confirmEmailValidator.ValidateAndThrowAsync(command);
-        
+
         var transaction = await identityDbContext.Database.BeginTransactionAsync();
 
         try
@@ -360,7 +374,7 @@ public sealed class AuthService(
 
                 return BadRequest<SendCodeConfirmEmailResponseDto>(DomainErrors.User.UnableToUpdateUser, errors);
             }
-            
+
             var emailMessage = new MailkitEmail()
             {
                 To = command.Email,

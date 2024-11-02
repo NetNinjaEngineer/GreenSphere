@@ -13,4 +13,5 @@ public interface IAuthService
     Task<Result<GoogleAuthResponseDto>> GoogleLoginAsync(GoogleLoginCommand command);
     Task<Result<SignInResponseDto>> LoginAsync(LoginCommand command);
     Application.Bases.Result<SignInResponseDto> RefreshToken(RefreshTokenCommand command);
+    Application.Bases.Result<bool> RevokeTokenAsync(RevokeTokenCommand command);
 }
