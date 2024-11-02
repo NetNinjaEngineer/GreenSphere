@@ -14,14 +14,14 @@ public class RegisterCommandValidator : AbstractValidator<RegisterCommand>
         RuleFor(x => x.FirstName)
             .NotNull().WithMessage("FirstName cannot be null.")
             .NotEmpty().WithMessage("FirstName is required")
-            .MinimumLength(5).WithMessage("FirstName must be at least 5 characters.")
-            .MaximumLength(50).WithMessage("FirstName must be between 5 and 50 characters.");
+            .MinimumLength(3).WithMessage("FirstName must be at least 3 characters.")
+            .MaximumLength(50).WithMessage("FirstName must be between 3 and 50 characters.");
         
         RuleFor(x => x.LastName)
             .NotNull().WithMessage("LastName cannot be null.")
             .NotEmpty().WithMessage("LastName is required")
-            .MinimumLength(5).WithMessage("LastName must be at least 5 characters.")
-            .MaximumLength(50).WithMessage("LastName must be between 5 and 50 characters.");
+            .MinimumLength(3).WithMessage("LastName must be at least 3 characters.")
+            .MaximumLength(50).WithMessage("LastName must be between 3 and 50 characters.");
 
         RuleFor(x => x.UserName)
             .NotNull().WithMessage("UserName cannot be null.")

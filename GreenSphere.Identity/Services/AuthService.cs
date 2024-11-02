@@ -202,37 +202,37 @@ public sealed class AuthService(
 
                 return BadRequest<SendCodeConfirmEmailResponseDto>(DomainErrors.User.UnableToUpdateUser, errors);
             }
+            
+            var emailMessage = new MailkitEmail()
+            {
+                To = command.Email,
+                Subject = "Activate Account",
+                Body = @$" <div style='margin-top: 20px;'>
+                       <p style='font-size: 16px;'>Hello,</p>
+                       <p style='font-size: 14px; line-height: 1.5;'>
+                           Thank you for registering. Please activate your account using the following code:
+                       </p>
+                       
+                       <div style='text-align: center; margin: 20px 0;'>
+                           <span style='font-size: 24px; font-weight: bold; color: #2c7dfa;'>{authenticationCode}</span>
+                       </div>
 
-            var emailMessage = EmailMessage.Create(
-                to: command.Email,
-                subject: "Activate Account",
-                message: @$" <div style='margin-top: 20px;'>
-                      <p style='font-size: 16px;'>Hello,</p>
-                      <p style='font-size: 14px; line-height: 1.5;'>
-                          Thank you for registering. Please activate your account using the following code:
-                      </p>
-                      
-                      <div style='text-align: center; margin: 20px 0;'>
-                          <span style='font-size: 24px; font-weight: bold; color: #2c7dfa;'>{authenticationCode}</span>
-                      </div>
-
-                      <p style='font-size: 14px; line-height: 1.5;'>
-                          This code will expire in <strong>{configuration[Constants.AuthCodeExpireKey]} minutes</strong>.
-                      </p>
-                      
-                      <p style='font-size: 14px; line-height: 1.5; color: #888;'>
-                          If you did not request this registration, please ignore this email.
-                      </p>
-                      
-                      <p style='font-size: 14px; line-height: 1.5; color: #333;'>
-                          Best regards,<br>
-                          <strong>Green Sphere</strong>
-                      </p>
-                  </div>"
-            );
+                       <p style='font-size: 14px; line-height: 1.5;'>
+                           This code will expire in <strong>{configuration[Constants.AuthCodeExpireKey]} minutes</strong>.
+                       </p>
+                       
+                       <p style='font-size: 14px; line-height: 1.5; color: #888;'>
+                           If you did not request this registration, please ignore this email.
+                       </p>
+                       
+                       <p style='font-size: 14px; line-height: 1.5; color: #333;'>
+                           Best regards,<br>
+                           <strong>Green Sphere</strong>
+                       </p>
+                   </div>"
+            };
 
             await mailService.SendEmailAsync(emailMessage);
-
 
             transaction.Commit();
             return Success(
