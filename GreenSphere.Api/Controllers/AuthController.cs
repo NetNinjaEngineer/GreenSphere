@@ -51,4 +51,12 @@ public class AuthController(IMediator mediator) : BaseApiController(mediator)
     [HttpPost("login-facebook")]
     public async Task<ActionResult<Result<string>>> FacebookLoginAsync(FacebookLoginCommand command)
         => CustomResult(await _mediator.Send(command));
+
+    [HttpPost("login-user")]
+    [ProducesResponseType(StatusCodes.Status422UnprocessableEntity)]
+    [ProducesResponseType(typeof(SuccessResult<SignInResponseDto>), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(FailedResult<SignInResponseDto>), StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(typeof(FailedResult<SignInResponseDto>), StatusCodes.Status404NotFound)]
+    public async Task<ActionResult<Result<SignInResponseDto>>> LoginUserAsync(LoginCommand command)
+        => CustomResult(await _mediator.Send(command));
 }

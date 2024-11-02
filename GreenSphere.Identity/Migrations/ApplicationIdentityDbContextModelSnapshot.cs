@@ -17,12 +17,12 @@ namespace GreenSphere.Identity.Migrations
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "8.0.8")
+                .HasAnnotation("ProductVersion", "8.0.10")
                 .HasAnnotation("Relational:MaxIdentifierLength", 128);
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
 
-            modelBuilder.Entity("GreenSphere.Identity.Entities.ApplicationUser", b =>
+            modelBuilder.Entity("GreenSphere.Application.Interfaces.Identity.Entities.ApplicationUser", b =>
                 {
                     b.Property<string>("Id")
                         .HasColumnType("nvarchar(450)");
@@ -107,7 +107,7 @@ namespace GreenSphere.Identity.Migrations
                         {
                             Id = "DB01BCAD-04F0-42E4-9CC1-52C03F3DC635",
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "8290e950-fb1c-4cb2-86a1-e980b0fb37a2",
+                            ConcurrencyStamp = "c0f9579d-fd50-4600-8ef8-df69b8585bab",
                             Email = "me5260287@gmail.com",
                             EmailConfirmed = true,
                             FirstName = "Mohamed",
@@ -115,9 +115,9 @@ namespace GreenSphere.Identity.Migrations
                             LockoutEnabled = false,
                             NormalizedEmail = "ME5260287@GMAIL.COM",
                             NormalizedUserName = "MOEHAB@2002",
-                            PasswordHash = "AQAAAAIAAYagAAAAEMDhAiHydVWBNeXxYpnZSXmWh6C99ucV9DXG8N0m7e6/AB8SnRY0mGq0Ca7JpLzjfA==",
+                            PasswordHash = "AQAAAAIAAYagAAAAEB+Ufa1PCv1/Lsi2B1LlKs0/yZDzMQtwDXjXGLE/BljDEJoqgu+YsLwrxXGVrQjYEw==",
                             PhoneNumberConfirmed = false,
-                            SecurityStamp = "88aa60b0-856f-46e7-8146-83ba7ab12d2e",
+                            SecurityStamp = "888a3956-d8d2-43fa-a4e2-23eb190672e0",
                             TwoFactorEnabled = false,
                             UserName = "Moehab@2002"
                         });
@@ -282,6 +282,43 @@ namespace GreenSphere.Identity.Migrations
                     b.ToTable("AspNetUserTokens", (string)null);
                 });
 
+            modelBuilder.Entity("GreenSphere.Application.Interfaces.Identity.Entities.ApplicationUser", b =>
+                {
+                    b.OwnsMany("GreenSphere.Application.Interfaces.Identity.Entities.RefreshToken", "RefreshTokens", b1 =>
+                        {
+                            b1.Property<string>("ApplicationUserId")
+                                .HasColumnType("nvarchar(450)");
+
+                            b1.Property<int>("Id")
+                                .ValueGeneratedOnAdd()
+                                .HasColumnType("int");
+
+                            SqlServerPropertyBuilderExtensions.UseIdentityColumn(b1.Property<int>("Id"));
+
+                            b1.Property<DateTimeOffset>("CreatedOn")
+                                .HasColumnType("datetimeoffset");
+
+                            b1.Property<DateTimeOffset>("ExpiresOn")
+                                .HasColumnType("datetimeoffset");
+
+                            b1.Property<DateTimeOffset?>("RevokedOn")
+                                .HasColumnType("datetimeoffset");
+
+                            b1.Property<string>("Token")
+                                .IsRequired()
+                                .HasColumnType("nvarchar(max)");
+
+                            b1.HasKey("ApplicationUserId", "Id");
+
+                            b1.ToTable("RefreshToken");
+
+                            b1.WithOwner()
+                                .HasForeignKey("ApplicationUserId");
+                        });
+
+                    b.Navigation("RefreshTokens");
+                });
+
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
                 {
                     b.HasOne("Microsoft.AspNetCore.Identity.IdentityRole", null)
@@ -293,7 +330,7 @@ namespace GreenSphere.Identity.Migrations
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserClaim<string>", b =>
                 {
-                    b.HasOne("GreenSphere.Identity.Entities.ApplicationUser", null)
+                    b.HasOne("GreenSphere.Application.Interfaces.Identity.Entities.ApplicationUser", null)
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -302,7 +339,7 @@ namespace GreenSphere.Identity.Migrations
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserLogin<string>", b =>
                 {
-                    b.HasOne("GreenSphere.Identity.Entities.ApplicationUser", null)
+                    b.HasOne("GreenSphere.Application.Interfaces.Identity.Entities.ApplicationUser", null)
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -317,7 +354,7 @@ namespace GreenSphere.Identity.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("GreenSphere.Identity.Entities.ApplicationUser", null)
+                    b.HasOne("GreenSphere.Application.Interfaces.Identity.Entities.ApplicationUser", null)
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -326,7 +363,7 @@ namespace GreenSphere.Identity.Migrations
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserToken<string>", b =>
                 {
-                    b.HasOne("GreenSphere.Identity.Entities.ApplicationUser", null)
+                    b.HasOne("GreenSphere.Application.Interfaces.Identity.Entities.ApplicationUser", null)
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)

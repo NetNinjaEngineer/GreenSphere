@@ -7,4 +7,6 @@ public class ApplicationUser : IdentityUser
     public string LastName { get; set; } = string.Empty;
     public string? Code { get; set; }
     public DateTimeOffset? CodeExpiration { get; set; }
+
+    public List<RefreshToken>? RefreshTokens { get; set; }
 }

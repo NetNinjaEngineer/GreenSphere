@@ -1,5 +1,6 @@
 ﻿using GreenSphere.Application.Interfaces.Identity;
 using GreenSphere.Application.Interfaces.Identity.Entities;
+using GreenSphere.Application.Interfaces.Identity.Models;
 using GreenSphere.Identity.Services;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
@@ -41,6 +42,8 @@ public static class IdentityDependencies
         services.AddScoped<IRoleService, RoleService>();
         services.AddScoped<ICurrentUser, CurrentUser>();
 
+        services.Configure<JWT>(configuration.GetSection(nameof(JWT)));
+
         services.AddAuthentication(Options =>
         {
             Options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
@@ -57,7 +60,8 @@ public static class IdentityDependencies
                     ValidateIssuerSigningKey = true,
                     ValidIssuer = configuration["JWT:Issuer"],
                     ValidAudience = configuration["JWT:Audience"],
-                    IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(configuration["JWT:Key"]!))
+                    IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(configuration["JWT:Key"]!)),
+                    ClockSkew = TimeSpan.Zero
                 };
             })
             .AddGoogle(options =>

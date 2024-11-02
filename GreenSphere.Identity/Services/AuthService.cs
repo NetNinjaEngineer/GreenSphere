@@ -1,4 +1,7 @@
-﻿using AutoMapper;
+﻿using System.IdentityModel.Tokens.Jwt;
+using System.Security.Claims;
+using System.Security.Cryptography;
+using AutoMapper;
 using Google.Apis.Auth;
 using GreenSphere.Application.Abstractions;
 using GreenSphere.Application.Features.Auth.DTOs;
@@ -15,6 +18,8 @@ using Microsoft.Extensions.Options;
 using System.Text;
 using FluentValidation;
 using GreenSphere.Application.Features.Auth.Validators.Commands;
+using Microsoft.IdentityModel.Tokens;
+using JwtRegisteredClaimNames = Microsoft.IdentityModel.JsonWebTokens.JwtRegisteredClaimNames;
 
 namespace GreenSphere.Identity.Services;
 public sealed class AuthService(
@@ -133,6 +138,92 @@ public sealed class AuthService(
         return await CreateAuthResponseAsync(user);
     }
 
+    public async Task<Result<SignInResponseDto>> LoginAsync(LoginCommand command)
+    {
+        var loggedInUser = await userManager.FindByEmailAsync(command.Email);
+
+        if (loggedInUser is null)
+            return NotFound<SignInResponseDto>(DomainErrors.User.UnkownUser);
+
+        if (!await userManager.IsEmailConfirmedAsync(loggedInUser))
+            return BadRequest<SignInResponseDto>(DomainErrors.User.EmailNotConfirmed);
+
+        if (!await userManager.CheckPasswordAsync(loggedInUser, command.Password))
+            return BadRequest<SignInResponseDto>(DomainErrors.User.InvalidCredientials);
+
+        await signInManager.PasswordSignInAsync(
+            user: loggedInUser,
+            password: command.Password,
+            isPersistent: true,
+            lockoutOnFailure: false);
+
+        var token = await GenerateJwtToken(loggedInUser);
+        var userRoles = await userManager.GetRolesAsync(loggedInUser);
+        var response = new SignInResponseDto()
+        {
+            Email = loggedInUser.Email,
+            UserName = loggedInUser.UserName,
+            IsAuthenticated = true,
+            Roles = userRoles.ToList(),
+            Token = new JwtSecurityTokenHandler().WriteToken(token),
+        };
+
+        if (loggedInUser.RefreshTokens != null && loggedInUser.RefreshTokens.Any(x => x.IsActive))
+        {
+            var activeRefreshToken = loggedInUser.RefreshTokens.FirstOrDefault(x => x.IsActive);
+            if (activeRefreshToken != null)
+            {
+                response.RefreshToken = activeRefreshToken.Token;
+                response.RefreshTokenExpiration = activeRefreshToken.ExpiresOn;
+            }
+        }
+        else
+        {
+            // user not have active refresh token
+            var refreshToken = GenerateRefreshToken();
+            response.RefreshToken = refreshToken.Token;
+            response.RefreshTokenExpiration = refreshToken.ExpiresOn;
+            loggedInUser.RefreshTokens.Add(refreshToken);
+            await userManager.UpdateAsync(loggedInUser);
+        }
+
+        return Success(response);
+    }
+    
+    private async Task<JwtSecurityToken> GenerateJwtToken(ApplicationUser user)
+    {
+        var userClaims = await userManager.GetClaimsAsync(user);
+        var roles = await userManager.GetRolesAsync(user);
+
+        var roleClaims = new List<Claim>();
+
+        for (int i = 0; i < roles.Count; i++)
+        {
+            roleClaims.Add(new Claim(ClaimTypes.Role, roles[i]));
+        }
+
+        var claims = new[]
+            {
+                new Claim(JwtRegisteredClaimNames.Sub, user.UserName),
+                new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
+                new Claim(JwtRegisteredClaimNames.Email, user.Email),
+                new Claim(CustomClaimTypes.Uid, user.Id)
+            }
+            .Union(userClaims)
+            .Union(roleClaims);
+
+        var symmetricSecurityKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_jwtSettings.Key));
+        var signingCredentials = new SigningCredentials(symmetricSecurityKey, SecurityAlgorithms.HmacSha256);
+
+        var jwtSecurityToken = new JwtSecurityToken(
+            issuer: _jwtSettings.Issuer,
+            audience: _jwtSettings.Audience,
+            claims: claims,
+            expires: DateTime.UtcNow.AddDays(_jwtSettings.ExpirationInDays),
+            signingCredentials: signingCredentials);
+        return jwtSecurityToken;
+    }
+
     private async Task<Result<GoogleAuthResponseDto>> CreateAuthResponseAsync(ApplicationUser user)
     {
         var userRoles = await userManager.GetRolesAsync(user);
@@ -246,5 +337,18 @@ public sealed class AuthService(
             return BadRequest<SendCodeConfirmEmailResponseDto>(ex.Message);
         }
 
+    }
+
+    private static RefreshToken GenerateRefreshToken()
+    {
+        var randomNumber = new byte[32];
+        using var rng = new RNGCryptoServiceProvider();
+        rng.GetBytes(randomNumber);
+        return new RefreshToken()
+        {
+            Token = Convert.ToBase64String(randomNumber),
+            ExpiresOn = DateTimeOffset.Now.AddDays(10),
+            CreatedOn = DateTimeOffset.Now
+        };
     }
 }

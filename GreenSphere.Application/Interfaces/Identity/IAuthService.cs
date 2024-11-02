@@ -10,4 +10,5 @@ public interface IAuthService
     Task<Result<string>> ConfirmEmailAsync(ConfirmEmailCommand command);
     Task LogoutAsync();
     Task<Result<GoogleAuthResponseDto>> GoogleLoginAsync(GoogleLoginCommand command);
+    Task<Result<SignInResponseDto>> LoginAsync(LoginCommand command);
 }
