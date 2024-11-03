@@ -440,4 +440,74 @@ public sealed class AuthService(
         return user is null ? Application.Bases.Result<ApplicationUser>.Failure(HttpStatusCode.NotFound, "Invalid Token") :
             Application.Bases.Result<ApplicationUser>.Success(user);
     }
+
+
+    public async Task<Result<string>> ForgotPasswordAsync(ForgotPasswordCommand command)
+    {
+        var user = await userManager.FindByEmailAsync(command.Email);
+        if (user == null)
+            return NotFound<string>("User not found");
+
+        //code and Expiration 
+        var Decoded = await userManager.GenerateUserTokenAsync(user, "Email", "Generate Code");
+        var authCode = Convert.ToBase64String(Encoding.UTF8.GetBytes(Decoded));
+        user.Code = authCode;
+        user.CodeExpiration = DateTimeOffset.Now.AddMinutes(Convert.ToDouble(configuration["AuthCodeExpirationInMinutes"]));
+
+        //Update user
+        var updateResult = await userManager.UpdateAsync(user);
+        if (!updateResult.Succeeded)
+            return BadRequest<string>(DomainErrors.User.UnableToUpdateUser);
+
+        //Send code to email
+        var emailMessage = new MailkitEmail
+        {
+            To = command.Email,
+            Subject = "Reset Password Code",
+            Body = $@"
+                   <div style='margin-top: 20px; font-size: 16px; color: #333;'>
+                       <p>Hello,</p>
+                       <p>Your password reset code is: <strong>{Decoded}</strong>. This code will expire in {configuration["AuthCodeExpirationInMinutes"]} minutes.</p>
+                       <p style='font-size: 14px; color: #555;'>If you did not request a password reset, please ignore this email.</p>
+                       <p>Best regards,<br>
+                          <strong>Green Sphere</strong>
+                       </p>
+                   </div>"
+        };
+        
+        await mailService.SendEmailAsync(emailMessage);
+
+        return Success("Password reset code has been sent to your email.");
+
+    }
+
+    public async Task<Result<string>> ConfirmForgotPasswordCodeAsync(ConfirmForgotPasswordCodeCommand command)
+    {
+        var user = await userManager.FindByEmailAsync(command.Email);
+        if (user == null)
+            return NotFound<string>(DomainErrors.User.UserNotFound);
+
+        var decodedAuthCode = Encoding.UTF8.GetString(Convert.FromBase64String(user.Code!));
+        if (decodedAuthCode != command.Code)
+            return BadRequest<string>(DomainErrors.User.InvalidAuthCode);
+
+        if (DateTimeOffset.Now > user.CodeExpiration)
+            return BadRequest<string>(DomainErrors.User.CodeExpired);
+
+        await userManager.RemovePasswordAsync(user);
+        var result = await userManager.AddPasswordAsync(user, command.NewPassword);
+
+        if (!result.Succeeded)
+        {
+            var errors = result.Errors.Select(x=>x.Description).FirstOrDefault();
+            return UnprocessableEntity<string>(errors);
+        }
+
+
+        return Success<string>("Reset Password Successfuly.");
+
+    }
+
+   
+
 }

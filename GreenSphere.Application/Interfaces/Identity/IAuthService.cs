@@ -14,4 +14,14 @@ public interface IAuthService
     Task<Result<SignInResponseDto>> LoginAsync(LoginCommand command);
     Application.Bases.Result<SignInResponseDto> RefreshToken(RefreshTokenCommand command);
     Application.Bases.Result<bool> RevokeTokenAsync(RevokeTokenCommand command);
+
+
+
+    Task<Result<string>> ForgotPasswordAsync(ForgotPasswordCommand command);
+
+    Task<Result<string>> ConfirmForgotPasswordCodeAsync(ConfirmForgotPasswordCodeCommand command);
+  
+
+
+
 }
