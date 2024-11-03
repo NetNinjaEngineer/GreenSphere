@@ -67,10 +67,11 @@ public sealed class AuthService(
                     return BadRequest<string>(DomainErrors.User.UnableToUpdateUser, errors);
                 }
 
-                var emailMessage = EmailMessage.Create(
-                   to: command.Email,
-                   subject: "Email Confirmed",
-                   message: @"
+                var emailMessage = new MailkitEmail()
+                {
+                    To = command.Email,
+                    Subject = "Email Confirmed",
+                    Body = @"
                     <div style='margin-top: 20px; font-size: 16px; color: #333;'>
                         <p>Hello,</p>
                         <p>Your email address has been successfully confirmed. You can now access all features of your account.</p>
@@ -79,7 +80,7 @@ public sealed class AuthService(
                            <strong>Green Sphere</strong>
                         </p>
                     </div>"
-                );
+                };
 
                 await mailService.SendEmailAsync(emailMessage);
 
@@ -162,8 +163,8 @@ public sealed class AuthService(
         var userRoles = await userManager.GetRolesAsync(loggedInUser);
         var response = new SignInResponseDto()
         {
-            Email = loggedInUser.Email,
-            UserName = loggedInUser.UserName,
+            Email = loggedInUser.Email!,
+            UserName = loggedInUser.UserName!,
             IsAuthenticated = true,
             Roles = [.. userRoles],
             Token = new JwtSecurityTokenHandler().WriteToken(token),
@@ -184,7 +185,7 @@ public sealed class AuthService(
             var refreshToken = GenerateRefreshToken();
             response.RefreshToken = refreshToken.Token;
             response.RefreshTokenExpiration = refreshToken.ExpiresOn;
-            loggedInUser.RefreshTokens.Add(refreshToken);
+            loggedInUser.RefreshTokens?.Add(refreshToken);
             await userManager.UpdateAsync(loggedInUser);
         }
 
@@ -202,8 +203,8 @@ public sealed class AuthService(
             .Map((authResponse) => authResponse);
 
     public Application.Bases.Result<bool> RevokeTokenAsync(RevokeTokenCommand command)
-        => CheckIfUserHasAssignedToRefreshToken(command.Token)
-            .Bind(appUser => SelectRefreshTokenAssignedToUser(appUser, command.Token))
+        => CheckIfUserHasAssignedToRefreshToken(command.Token!)
+            .Bind(appUser => SelectRefreshTokenAssignedToUser(appUser, command.Token!))
             .Bind(CheckIfTokenIsActive)
             .Bind(RevokeUserTokenAndReturnsAppUser)
             .Bind(appUser => UpdateApplicationUser(appUser).Result)
