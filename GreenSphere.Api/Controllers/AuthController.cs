@@ -93,4 +93,20 @@ public class AuthController(IMediator mediator) : BaseApiController(mediator)
 
         Response.Cookies.Append("refreshToken", valueRefreshToken, cookieOptions);
     }
+
+
+    [HttpPost("forgot-password")]
+    public async Task<ActionResult<Result<string>>> ForgotPasswordAsync(ForgotPasswordCommand command)
+    {
+        return CustomResult(await _mediator.Send(command));
+    }
+
+    [HttpPost("reset-password")]
+    public async Task<ActionResult<Result<string>>> ConfirmForgotPasswordCodeAsync(ConfirmForgotPasswordCodeCommand command)
+    {
+        return CustomResult(await _mediator.Send(command));
+    }
+
+
+    
 }
