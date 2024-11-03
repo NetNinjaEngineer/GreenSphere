@@ -474,7 +474,7 @@ public sealed class AuthService(
                        </p>
                    </div>"
         };
-        
+
         await mailService.SendEmailAsync(emailMessage);
 
         return Success("Password reset code has been sent to your email.");
@@ -499,7 +499,7 @@ public sealed class AuthService(
 
         if (!result.Succeeded)
         {
-            var errors = result.Errors.Select(x=>x.Description).FirstOrDefault();
+            var errors = result.Errors.Select(x => x.Description).FirstOrDefault();
             return UnprocessableEntity<string>(errors);
         }
 
@@ -508,6 +508,6 @@ public sealed class AuthService(
 
     }
 
-   
+
 
 }
