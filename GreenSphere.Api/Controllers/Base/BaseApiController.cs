@@ -1,5 +1,4 @@
-﻿using GreenSphere.Application.Attributes;
-using MediatR;
+﻿using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using System.Net;
 
@@ -24,9 +23,10 @@ public class BaseApiController(IMediator mediator) : ControllerBase
         HttpStatusCode.Unauthorized => new UnauthorizedObjectResult(result),
         HttpStatusCode.Conflict => new ConflictObjectResult(result),
         HttpStatusCode.NoContent => new NoContentResult(),
-        HttpStatusCode.Created => new ObjectResult(result)
+        HttpStatusCode.Created => new ObjectResult(result),
+        HttpStatusCode.UnprocessableEntity => new UnprocessableEntityObjectResult(result)
     };
-    
+
     public static ActionResult CustomResult<T>(GreenSphere.Application.Bases.Result<T> result)
     {
         return GetObjectResult(result);
@@ -40,6 +40,7 @@ public class BaseApiController(IMediator mediator) : ControllerBase
         HttpStatusCode.Unauthorized => new UnauthorizedObjectResult(result),
         HttpStatusCode.Conflict => new ConflictObjectResult(result),
         HttpStatusCode.NoContent => new NoContentResult(),
-        HttpStatusCode.Created => new ObjectResult(result)
+        HttpStatusCode.Created => new ObjectResult(result),
+        HttpStatusCode.UnprocessableEntity => new UnprocessableEntityObjectResult(result)
     };
 }
