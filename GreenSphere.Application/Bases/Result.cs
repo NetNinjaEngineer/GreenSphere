@@ -2,11 +2,13 @@
 
 using System.Collections.Generic;
 using System.Net;
+using System.Text.Json.Serialization;
 
 public class Result<TSuccess>
 {
     public TSuccess Value { get; set; }
     public bool IsSuccess { get; set; }
+    [JsonIgnore]
     public bool IsFailure => !IsSuccess;
     public string Message { get; set; }
     public List<string>? Errors { get; set; }

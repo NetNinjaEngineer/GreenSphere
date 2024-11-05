@@ -77,6 +77,8 @@ public static class IdentityDependencies
                 options.AppSecret = facebookAuthKeys["AppSecret"]!;
             });
 
+        services.AddScoped<IUserPrivacyService, UserPrivacyService>();
+
         return services;
     }
 }

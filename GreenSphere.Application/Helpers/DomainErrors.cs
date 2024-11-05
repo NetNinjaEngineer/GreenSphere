@@ -12,11 +12,11 @@ public static class DomainErrors
         public const string UserNotFound = "User '{0}' not found.";
         public const string CannotCreateFbUser = "Can not create facebook user.";
         public const string FbFailedAuthentication = "Facebook authentication failed!";
-        public const string EmailNotConfirmed = "Email is not confirmed."; 
+        public const string EmailNotConfirmed = "Email is not confirmed.";
         public const string InvalidCredientials = "Invalid email or password.";
         public const string CodeExpired = "Code has expired. Please request a new reset code.";
-
-
+        public const string UserHasPrivacy = "User has a privacy setting.";
+        public const string UserNotHasPrivacySetting = "User not have privacy settings";
     }
 
 
