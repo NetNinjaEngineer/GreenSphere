@@ -7,6 +7,6 @@ namespace GreenSphere.Application.Features.Auth.Handlers.Commands;
 
 public sealed class RevokeTokenCommandHandler(IAuthService authService) : IRequestHandler<RevokeTokenCommand, Result<bool>>
 {
-    public Task<Result<bool>> Handle(RevokeTokenCommand request, CancellationToken cancellationToken)
-        => Task.FromResult(authService.RevokeTokenAsync(request));
+    public async Task<Result<bool>> Handle(RevokeTokenCommand request, CancellationToken cancellationToken)
+        => await authService.RevokeTokenAsync(request);
 }

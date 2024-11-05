@@ -1,6 +1,5 @@
 ﻿using GreenSphere.Application.Abstractions;
 using GreenSphere.Application.Features.Auth.DTOs;
-using GreenSphere.Application.Features.Auth.Handlers.Commands;
 using GreenSphere.Application.Features.Auth.Requests.Commands;
 
 namespace GreenSphere.Application.Interfaces.Identity;
@@ -12,16 +11,8 @@ public interface IAuthService
     Task LogoutAsync();
     Task<Result<GoogleAuthResponseDto>> GoogleLoginAsync(GoogleLoginCommand command);
     Task<Result<SignInResponseDto>> LoginAsync(LoginCommand command);
-    Application.Bases.Result<SignInResponseDto> RefreshToken(RefreshTokenCommand command);
-    Application.Bases.Result<bool> RevokeTokenAsync(RevokeTokenCommand command);
-
-
-
+    Task<Bases.Result<SignInResponseDto>> RefreshTokenAsync(RefreshTokenCommand command);
+    Task<Bases.Result<bool>> RevokeTokenAsync(RevokeTokenCommand command);
     Task<Result<string>> ForgotPasswordAsync(ForgotPasswordCommand command);
-
     Task<Result<string>> ConfirmForgotPasswordCodeAsync(ConfirmForgotPasswordCodeCommand command);
-  
-
-
-
 }

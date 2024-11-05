@@ -8,6 +8,6 @@ namespace GreenSphere.Application.Features.Auth.Handlers.Commands;
 
 public sealed class RefreshTokenCommandHandler(IAuthService authService) : IRequestHandler<RefreshTokenCommand, Result<SignInResponseDto>>
 {
-    public Task<Result<SignInResponseDto>> Handle(RefreshTokenCommand request, CancellationToken cancellationToken)
-        => Task.FromResult(authService.RefreshToken(request));
+    public async Task<Result<SignInResponseDto>> Handle(RefreshTokenCommand request, CancellationToken cancellationToken)
+        => await authService.RefreshTokenAsync(request);
 }

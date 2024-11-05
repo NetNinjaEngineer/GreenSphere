@@ -12,6 +12,7 @@ using GreenSphere.Application.Interfaces.Identity.Models;
 using GreenSphere.Application.Interfaces.Services;
 using GreenSphere.Application.Interfaces.Services.Models;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
@@ -192,22 +193,22 @@ public sealed class AuthService(
         return Success(response);
     }
 
-    public Application.Bases.Result<SignInResponseDto> RefreshToken(RefreshTokenCommand command)
-        => CheckIfUserHasAssignedToRefreshToken(command.Token)
+    public async Task<Application.Bases.Result<SignInResponseDto>> RefreshTokenAsync(RefreshTokenCommand command)
+        => (await (await (await (await CheckIfUserHasAssignedToRefreshToken(command.Token))
             .Bind(user => SelectRefreshTokenAssignedToUser(user, command.Token))
             .Bind(CheckIfTokenIsActive)
             .Bind(RevokeUserTokenAndReturnsAppUser)
-            .Bind(appUser => GenerateNewRefreshToken(appUser).Result)
-            .Bind(appUser => GenerateNewJwtToken(appUser).Result)
-            .Bind(appUserWithJwt => CreateSignInResponse(appUserWithJwt).Result)
-            .Map((authResponse) => authResponse);
+            .BindAsync(GenerateNewRefreshToken))
+            .BindAsync(GenerateNewJwtToken))
+            .BindAsync(CreateSignInResponse))
+            .Map(authResponse => authResponse);
 
-    public Application.Bases.Result<bool> RevokeTokenAsync(RevokeTokenCommand command)
-        => CheckIfUserHasAssignedToRefreshToken(command.Token!)
+    public async Task<Application.Bases.Result<bool>> RevokeTokenAsync(RevokeTokenCommand command)
+        => (await (await CheckIfUserHasAssignedToRefreshToken(command.Token!))
             .Bind(appUser => SelectRefreshTokenAssignedToUser(appUser, command.Token!))
             .Bind(CheckIfTokenIsActive)
             .Bind(RevokeUserTokenAndReturnsAppUser)
-            .Bind(appUser => UpdateApplicationUser(appUser).Result)
+            .BindAsync(UpdateApplicationUser))
             .Map(userUpdated => userUpdated);
 
     private async Task<Application.Bases.Result<bool>> UpdateApplicationUser(ApplicationUser appUser)
@@ -434,9 +435,9 @@ public sealed class AuthService(
         };
     }
 
-    private Application.Bases.Result<ApplicationUser> CheckIfUserHasAssignedToRefreshToken(string refreshToken)
+    private async Task<Application.Bases.Result<ApplicationUser>> CheckIfUserHasAssignedToRefreshToken(string refreshToken)
     {
-        var user = userManager.Users.SingleOrDefault(x => x.RefreshTokens != null && x.RefreshTokens.Any(x => x.Token == refreshToken));
+        var user = await userManager.Users.SingleOrDefaultAsync(x => x.RefreshTokens != null && x.RefreshTokens.Any(x => x.Token == refreshToken));
         return user is null ? Application.Bases.Result<ApplicationUser>.Failure(HttpStatusCode.NotFound, "Invalid Token") :
             Application.Bases.Result<ApplicationUser>.Success(user);
     }

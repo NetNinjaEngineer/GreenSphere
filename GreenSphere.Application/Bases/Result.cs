@@ -40,6 +40,11 @@ public class Result<TSuccess>
         return IsSuccess ? next(Value) : Result<TNextSuccess>.Failure(StatusCode, Message, Errors);
     }
 
+    public async Task<Result<TNextSuccess>> BindAsync<TNextSuccess>(Func<TSuccess, Task<Result<TNextSuccess>>> next)
+    {
+        return IsSuccess ? await next(Value) : Result<TNextSuccess>.Failure(StatusCode, Message, Errors);
+    }
+
     public Result<TNext> Map<TNext>(Func<TSuccess, TNext> mapper)
     {
         return IsSuccess ? Result<TNext>.Success(mapper(Value)) : Result<TNext>.Failure(StatusCode, Message, Errors);
