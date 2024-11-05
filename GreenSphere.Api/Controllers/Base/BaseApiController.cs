@@ -10,12 +10,12 @@ public class BaseApiController(IMediator mediator) : ControllerBase
 {
     protected readonly IMediator _mediator = mediator;
 
-    public ActionResult CustomResult<T>(GreenSphere.Application.Abstractions.Result<T> result)
+    public ActionResult CustomResult<T>(Application.Abstractions.Result<T> result)
     {
         return GetObjectResult(result);
     }
 
-    private static ActionResult GetObjectResult<T>(GreenSphere.Application.Abstractions.Result<T> result) => result.StatusCode switch
+    private static ActionResult GetObjectResult<T>(Application.Abstractions.Result<T> result) => result.StatusCode switch
     {
         HttpStatusCode.OK => new OkObjectResult(result),
         HttpStatusCode.BadRequest => new BadRequestObjectResult(result),
@@ -27,12 +27,12 @@ public class BaseApiController(IMediator mediator) : ControllerBase
         HttpStatusCode.UnprocessableEntity => new UnprocessableEntityObjectResult(result)
     };
 
-    public static ActionResult CustomResult<T>(GreenSphere.Application.Bases.Result<T> result)
+    public static ActionResult CustomResult<T>(Application.Bases.Result<T> result)
     {
         return GetObjectResult(result);
     }
 
-    private static ActionResult GetObjectResult<T>(GreenSphere.Application.Bases.Result<T> result) => result.StatusCode switch
+    private static ActionResult GetObjectResult<T>(Application.Bases.Result<T> result) => result.StatusCode switch
     {
         HttpStatusCode.OK => new OkObjectResult(result),
         HttpStatusCode.BadRequest => new BadRequestObjectResult(result),
