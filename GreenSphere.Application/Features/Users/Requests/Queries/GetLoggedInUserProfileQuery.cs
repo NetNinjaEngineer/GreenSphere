@@ -1,6 +1,10 @@
-﻿namespace GreenSphere.Application.Features.Users.Requests.Queries;
+﻿using GreenSphere.Application.Bases;
+using GreenSphere.Application.Features.Users.DTOs;
+using MediatR;
 
-public class GetLoggedInUserProfileQuery
+namespace GreenSphere.Application.Features.Users.Requests.Queries;
+
+public class GetLoggedInUserProfileQuery : IRequest<Result<UserProfileDto>>
 {
-    
+
 }
