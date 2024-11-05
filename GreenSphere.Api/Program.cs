@@ -67,8 +67,7 @@ var app = builder.Build();
 
 app.UseMiddleware<MigrateDatabaseMiddleware>();
 
-if (app.Environment.IsDevelopment())
-    app.UseSwaggerDocumentation();
+app.UseSwaggerDocumentation();
 
 app.UseMiddleware<GlobalErrorHandingMiddleware>();
 
