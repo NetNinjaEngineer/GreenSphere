@@ -1,9 +1,8 @@
-﻿using System.Net;
-
-namespace GreenSphere.Application.Helpers;
+﻿namespace GreenSphere.Application.Helpers;
 
 public class UnAuthorizedApiKeyResponse
 {
+    public string Status { get; set; } = string.Empty;
     public string Message { get; set; } = string.Empty;
-    public HttpStatusCode StatusCode { get; set; }
+    public int StatusCode { get; set; }
 }

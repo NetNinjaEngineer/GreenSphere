@@ -20,6 +20,15 @@ public static class SwaggerExtensions
                 Description = "JWT Authorization header using the Bearer scheme"
             });
 
+            options.AddSecurityDefinition("ApiKey", new OpenApiSecurityScheme
+            {
+                Scheme = "ApiKeyScheme",
+                In = ParameterLocation.Header,
+                Type = SecuritySchemeType.ApiKey,
+                Name = "X-API-KEY",
+                Description = "API Key needed to access the endpoints. API Key is sent as a request header."
+            });
+
             options.AddSecurityRequirement(new OpenApiSecurityRequirement
             {
                 {
@@ -31,6 +40,17 @@ public static class SwaggerExtensions
                             Type = ReferenceType.SecurityScheme,
                         }
                     },[]
+                },
+                {
+                    new OpenApiSecurityScheme
+                    {
+                        Reference = new OpenApiReference
+                        {
+                            Type = ReferenceType.SecurityScheme,
+                            Id = "ApiKey"
+                        }
+                    },
+                    new string[] {}
                 }
             });
 

@@ -1,8 +1,8 @@
 ﻿using GreenSphere.Application.Helpers;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
 using Microsoft.Extensions.Configuration;
-using System.Net;
 
 namespace GreenSphere.Application.Filters;
 public class ApiKeyAuthorizationFilter : IAuthorizationFilter
@@ -17,7 +17,13 @@ public class ApiKeyAuthorizationFilter : IAuthorizationFilter
         var apiKey = context.HttpContext.Request.Headers[ApiKeyHeaderName];
         if (!CheckIsValidApiKey(apiKey!))
         {
-            context.Result = new UnauthorizedObjectResult(new UnAuthorizedApiKeyResponse { StatusCode = HttpStatusCode.Unauthorized, Message = "Api Key is required." });
+            context.Result = new UnauthorizedObjectResult(
+                new UnAuthorizedApiKeyResponse
+                {
+                    Status = "API Key required to access the endpoints. API Key is sent as a request header.",
+                    StatusCode = StatusCodes.Status401Unauthorized,
+                    Message = "Api Key is required."
+                });
             return;
         }
     }
