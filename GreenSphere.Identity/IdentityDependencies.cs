@@ -1,6 +1,6 @@
 ﻿using GreenSphere.Application.Interfaces.Identity;
-using GreenSphere.Application.Interfaces.Identity.Entities;
-using GreenSphere.Application.Interfaces.Identity.Models;
+using GreenSphere.Domain.Identity.Entities;
+using GreenSphere.Domain.Identity.Models;
 using GreenSphere.Identity.Services;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;

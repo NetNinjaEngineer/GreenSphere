@@ -2,7 +2,7 @@
 using GreenSphere.Application.Features.Roles.Requests.Commands;
 using GreenSphere.Application.Helpers;
 using GreenSphere.Application.Interfaces.Identity;
-using GreenSphere.Application.Interfaces.Identity.Entities;
+using GreenSphere.Domain.Identity.Entities;
 using Microsoft.AspNetCore.Identity;
 using System.Security.Claims;
 

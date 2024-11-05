@@ -2,10 +2,13 @@
 using GreenSphere.Application.Abstractions;
 using GreenSphere.Application.Features.Roles.Requests.Commands;
 using GreenSphere.Application.Features.Roles.Requests.Queries;
+using GreenSphere.Application.Helpers;
 using MediatR;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace GreenSphere.Api.Controllers;
+[Authorize(Roles = Constants.Roles.Admin)]
 [Route("api/v{ver:apiVersion}/roles")]
 [ApiController]
 public class RolesController(IMediator mediator) : BaseApiController(mediator)

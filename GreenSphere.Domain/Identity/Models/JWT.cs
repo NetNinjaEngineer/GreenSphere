@@ -1,4 +1,4 @@
-﻿namespace GreenSphere.Application.Interfaces.Identity.Models;
+﻿namespace GreenSphere.Domain.Identity.Models;
 public sealed class JWT
 {
     public string Key { get; set; } = string.Empty;

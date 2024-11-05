@@ -1,8 +1,8 @@
 ﻿using GreenSphere.Application.Bases;
 using GreenSphere.Application.Helpers;
-using GreenSphere.Application.Interfaces.Identity.Entities;
 using GreenSphere.Application.Interfaces.Infrastructure;
 using GreenSphere.Application.Interfaces.Infrastructure.Models;
+using GreenSphere.Domain.Identity.Entities;
 using Microsoft.AspNetCore.Identity;
 using System.Net;
 using System.Text.Json;

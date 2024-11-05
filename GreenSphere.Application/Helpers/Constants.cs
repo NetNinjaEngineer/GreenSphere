@@ -9,6 +9,7 @@ public static class Constants
     public static class Roles
     {
         public const string User = "User";
+        public const string Admin = "Admin";
         public const string RoleCreatedSuccessfully = "Role '{0}' created successfully.";
         public const string RoleUpdatedSuccessfully = "Role '{0}' updated successfully.";
         public const string RoleDeletedSuccessfully = "Role '{0}' deleted successfully.";
