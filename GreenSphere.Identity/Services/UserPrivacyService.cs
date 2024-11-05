@@ -1,4 +1,5 @@
-﻿using GreenSphere.Application.Bases;
+﻿using AutoMapper;
+using GreenSphere.Application.Bases;
 using GreenSphere.Application.Features.Users.DTOs;
 using GreenSphere.Application.Features.Users.Requests.Commands;
 using GreenSphere.Application.Helpers;
@@ -11,7 +12,8 @@ using System.Net;
 namespace GreenSphere.Identity.Services;
 public sealed class UserPrivacyService(
     UserManager<ApplicationUser> userManager,
-    ApplicationIdentityDbContext context) : IUserPrivacyService
+    ApplicationIdentityDbContext context,
+    IMapper mapper) : IUserPrivacyService
 {
     public async Task<Result<string>> AssignPrivacyToUserAsync(AssignUserPrivacyCommand command)
     {
@@ -62,5 +64,17 @@ public sealed class UserPrivacyService(
                 ViewPosts = setting.ViewPosts.ToString(),
                 ViewProfile = setting.ViewProfile.ToString()
             });
+    }
+
+    public async Task<Result<UserProfileDto>> GetUserProfileAsync(string userId)
+    {
+        var user = await userManager.FindByIdAsync(userId);
+
+        if (user is null)
+            return Result<UserProfileDto>.Failure(HttpStatusCode.NotFound, DomainErrors.User.UnkownUser);
+
+        var mappedUserProfile = mapper.Map<UserProfileDto>(user);
+
+        return Result<UserProfileDto>.Success(mappedUserProfile);
     }
 }

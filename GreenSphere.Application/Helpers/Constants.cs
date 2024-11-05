@@ -6,6 +6,12 @@ public static class Constants
     public const string AuthCodeExpireKey = "AuthCodeExpirationInMinutes";
     public const string EmailSent = "The email was sent successfully!";
     public const string EmailNotSent = "Unfortunately, the email could not be sent.";
+
+    public static class User
+    {
+        public const string CanViewProfilePolicy = "CanViewProfile";
+    }
+
     public static class Roles
     {
         public const string User = "User";

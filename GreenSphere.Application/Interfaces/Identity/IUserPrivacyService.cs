@@ -7,4 +7,5 @@ public interface IUserPrivacyService
 {
     Task<Result<string>> AssignPrivacyToUserAsync(AssignUserPrivacyCommand command);
     Task<Result<PrivacySettingListDto>> GetUserPrivacySettingsAsync(string userId);
+    Task<Result<UserProfileDto>> GetUserProfileAsync(string userId);
 }
