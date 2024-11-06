@@ -12,17 +12,18 @@ using System.Text.Json.Serialization;
 
 var builder = WebApplication.CreateBuilder(args);
 
-#region Configure Application Services
 builder.Services.AddControllers(options =>
 {
     options.Filters.Add(new ProducesResponseTypeAttribute(StatusCodes.Status406NotAcceptable));
     options.Filters.Add(new ProducesResponseTypeAttribute(StatusCodes.Status405MethodNotAllowed));
     options.Filters.Add(new ProducesResponseTypeAttribute(StatusCodes.Status500InternalServerError));
     options.OutputFormatters.RemoveType<StringOutputFormatter>();
-}).AddJsonOptions(options =>
-{
-    options.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter());
-});
+})
+    .AddJsonOptions(options =>
+    {
+        options.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter());
+    });
+
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerDocumentation();
 
@@ -61,24 +62,15 @@ builder.Services.AddCors(options =>
                .AllowAnyHeader());
 });
 
-#endregion
-
 var app = builder.Build();
 
 app.UseMiddleware<MigrateDatabaseMiddleware>();
-
-app.UseSwaggerDocumentation();
-
-app.UseMiddleware<GlobalErrorHandingMiddleware>();
-
 app.UseHttpsRedirection();
-
 app.UseCors("AllowAll");
-
 app.UseAuthentication();
-
 app.UseAuthorization();
-
+app.UseMiddleware<GlobalErrorHandingMiddleware>();
+app.UseSwaggerDocumentation();
 app.MapControllers();
 
 app.Run();
