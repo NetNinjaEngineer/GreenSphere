@@ -1,4 +1,10 @@
-﻿namespace GreenSphere.Application.Filters;
+﻿using GreenSphere.Application.Helpers;
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Filters;
+using Microsoft.Extensions.Configuration;
+
+namespace GreenSphere.Application.Filters;
 public class ApiKeyAuthorizationFilter : IAuthorizationFilter
 {
     private readonly string ApiKeyHeaderName = "X-API-Key";
