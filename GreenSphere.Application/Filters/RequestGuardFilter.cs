@@ -3,13 +3,12 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
 
 namespace GreenSphere.Application.Filters;
-
-[AttributeUsage(AttributeTargets.Class | AttributeTargets.Method)]
-public sealed class AccessDeniedResponseFilter : Attribute, IAsyncAuthorizationFilter
+public sealed class RequestGuardFilter(string role) : IAsyncAuthorizationFilter
 {
     public Task OnAuthorizationAsync(AuthorizationFilterContext context)
     {
-        var problemDetails = new ProblemDetails();
+        ProblemDetails problemDetails = new();
+
         if (!context.HttpContext.User.Identity!.IsAuthenticated)
         {
             problemDetails.Status = StatusCodes.Status401Unauthorized;
@@ -17,8 +16,10 @@ public sealed class AccessDeniedResponseFilter : Attribute, IAsyncAuthorizationF
             problemDetails.Detail = "Authentication is required to access this resource. Please ensure you are logged in with appropriate credentials.";
 
             context.Result = new UnauthorizedObjectResult(problemDetails);
+            return Task.CompletedTask;
         }
-        else if (context.HttpContext.Response.StatusCode == StatusCodes.Status403Forbidden)
+
+        if (!context.HttpContext.User.IsInRole(role))
         {
             problemDetails.Status = StatusCodes.Status403Forbidden;
             problemDetails.Title = "Forbidden";
@@ -26,6 +27,7 @@ public sealed class AccessDeniedResponseFilter : Attribute, IAsyncAuthorizationF
 
             context.Result = new ObjectResult(problemDetails);
         }
+
         return Task.CompletedTask;
     }
 }

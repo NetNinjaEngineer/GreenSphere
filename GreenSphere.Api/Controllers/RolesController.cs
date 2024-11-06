@@ -1,16 +1,15 @@
 ﻿using GreenSphere.Api.Controllers.Base;
 using GreenSphere.Application.Abstractions;
+using GreenSphere.Application.Attributes;
 using GreenSphere.Application.Features.Roles.Requests.Commands;
 using GreenSphere.Application.Features.Roles.Requests.Queries;
-using GreenSphere.Application.Filters;
 using GreenSphere.Application.Helpers;
 using MediatR;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace GreenSphere.Api.Controllers;
-[ServiceFilter(typeof(AccessDeniedResponseFilter))]
-[Authorize(Roles = Constants.Roles.Admin)]
+
+[RequestGuard(Constants.Roles.User)]
 [Route("api/v{ver:apiVersion}/roles")]
 [ApiController]
 public class RolesController(IMediator mediator) : BaseApiController(mediator)

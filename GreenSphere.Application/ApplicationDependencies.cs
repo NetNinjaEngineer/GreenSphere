@@ -30,6 +30,8 @@ public static class ApplicationDependencies
             return new PrivacyAuthorizationHandler(service);
         });
 
+        services.AddSingleton<AccessDeniedResponseFilter>();
+
         return services;
     }
 }
