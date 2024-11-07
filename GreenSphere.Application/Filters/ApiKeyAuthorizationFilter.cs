@@ -18,12 +18,12 @@ public class ApiKeyAuthorizationFilter : IAuthorizationFilter
         if (!CheckIsValidApiKey(apiKey!))
         {
             context.Result = new UnauthorizedObjectResult(
-                new UnAuthorizedApiKeyResponse
-                {
-                    Status = "Unauthorized",
-                    StatusCode = StatusCodes.Status401Unauthorized,
-                    Message = "API Key required to access the endpoints. API Key is sent as a request header."
-                });
+                Response.CreateProblemDetails(
+                    StatusCodes.Status401Unauthorized,
+                    "Unauthorized",
+                    "API Key required to access the endpoints. API Key is sent as a request header."
+                    ));
+
             return;
         }
     }
