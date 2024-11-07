@@ -1,5 +1,6 @@
 ﻿using Asp.Versioning;
 using GreenSphere.Api.Controllers.Base;
+using GreenSphere.Application.Attributes;
 using GreenSphere.Application.Bases;
 using GreenSphere.Application.Features.Users.DTOs;
 using GreenSphere.Application.Features.Users.Requests.Commands;
@@ -10,7 +11,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace GreenSphere.Api.Controllers;
-[Authorize]
+[AccessDeniedResponse]
 [ApiVersion(1.0)]
 [Route("api/v{ver:apiVersion}/users")]
 [ApiController]

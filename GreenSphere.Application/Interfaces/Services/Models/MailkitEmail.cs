@@ -1,8 +1,5 @@
-﻿using GreenSphere.Application.Abstractions;
-using MediatR;
-
-namespace GreenSphere.Application.Features.Email.Requests.Commands;
-public sealed class SendEmailCommand : IRequest<Result<string>>
+﻿namespace GreenSphere.Application.Interfaces.Services.Models;
+public sealed class MailkitEmail
 {
     public string Provider { get; set; } = string.Empty;
     public string Subject { get; set; } = string.Empty;

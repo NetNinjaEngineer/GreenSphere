@@ -9,6 +9,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace GreenSphere.Api.Controllers;
 
+[AccessDeniedResponse]
 [RequestGuard(Constants.Roles.User)]
 [Route("api/v{ver:apiVersion}/roles")]
 [ApiController]

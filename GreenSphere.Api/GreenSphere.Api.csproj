@@ -24,4 +24,6 @@
     <ProjectReference Include="..\GreenSphere.Services\GreenSphere.Services.csproj" />
   </ItemGroup>
 
+  <ProjectExtensions><VisualStudio><UserProperties appsettings_1json__JsonSchema="https://json.schemastore.org/architectfx.json" /></VisualStudio></ProjectExtensions>
+
 </Project>

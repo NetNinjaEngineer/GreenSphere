@@ -5,7 +5,6 @@ using System.Net;
 
 namespace GreenSphere.Api.Controllers.Base;
 
-[AccessDeniedResponse]
 [ApiKey]
 [ApiController]
 public class BaseApiController(IMediator mediator) : ControllerBase
