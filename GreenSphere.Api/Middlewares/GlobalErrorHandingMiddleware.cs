@@ -1,4 +1,6 @@
 ﻿using FluentValidation;
+using GreenSphere.Application.Helpers;
+using Microsoft.AspNetCore.Mvc;
 using System.Net;
 using System.Text.Json;
 
@@ -22,35 +24,30 @@ public class GlobalErrorHandingMiddleware(RequestDelegate next)
     {
         context.Response.ContentType = "application/json";
         context.Response.StatusCode = (int)HttpStatusCode.InternalServerError;
-        JsonErrorResponse? errorResponse = new();
+        ProblemDetails errorResponse;
         switch (ex)
         {
             case ValidationException validationException:
-                var validationErrors = validationException.Errors
+                var validationError = validationException.Errors
                     .Select(x => x.ErrorMessage)
                     .ToList();
 
-                errorResponse.Errors = validationErrors;
-                errorResponse.StatusCode = (int)HttpStatusCode.UnprocessableEntity;
-                errorResponse.Message = "Validation Errors";
+                errorResponse = Response.CreateProblemDetails(
+                    status: (int)HttpStatusCode.UnprocessableEntity,
+                    title: "validation errors",
+                    detail: string.Join(" || ", validationError));
+
                 break;
 
             default:
-                errorResponse.StatusCode = (int)HttpStatusCode.InternalServerError;
-                errorResponse.Message = "Server Error";
-                errorResponse.Errors = [ex.Message];
+                errorResponse = Response.CreateProblemDetails(
+                     status: (int)HttpStatusCode.InternalServerError,
+                     title: "server error",
+                     detail: ex.Message);
                 break;
         }
 
-        context.Response.StatusCode = errorResponse.StatusCode;
-        await context.Response.WriteAsync(errorResponse.ToString());
-    }
-
-    internal class JsonErrorResponse
-    {
-        public string? Message { get; set; }
-        public int StatusCode { get; set; }
-        public IEnumerable<string> Errors { get; set; } = [];
-        public override string ToString() => JsonSerializer.Serialize(this);
+        context.Response.StatusCode = errorResponse.Status ?? 500;
+        await context.Response.WriteAsync(JsonSerializer.Serialize(errorResponse));
     }
 }
