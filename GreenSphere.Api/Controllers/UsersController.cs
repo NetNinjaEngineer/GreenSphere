@@ -42,6 +42,7 @@ public class UsersController(IMediator mediator) : BaseApiController(mediator)
     public async Task<ActionResult<Result<PrivacySettingListDto>>> GetUserProfileAsync(string userId)
        => CustomResult(await _mediator.Send(new GetUserProfileQuery { UserId = userId }));
 
+    [Authorize(Roles = Constants.Roles.User)]
     [HttpGet("loggedInUser/profile")]
     [ProducesResponseType(typeof(Result<UserProfileDto>), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(Result<UserProfileDto>), StatusCodes.Status404NotFound)]
@@ -50,6 +51,7 @@ public class UsersController(IMediator mediator) : BaseApiController(mediator)
     public async Task<ActionResult<Result<UserProfileDto>>> GetUserProfileAsync()
     => CustomResult(await _mediator.Send(new GetLoggedInUserProfileQuery()));
 
+    [Authorize(Roles = Constants.Roles.User)]
     [HttpGet("loggedInUser/privacy-settings")]
     [ProducesResponseType(typeof(Result<PrivacySettingListDto>), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(Result<PrivacySettingListDto>), StatusCodes.Status404NotFound)]

@@ -8,5 +8,6 @@ public class AccessDeniedResponseAttribute : ServiceFilterAttribute
 {
     public AccessDeniedResponseAttribute() : base(typeof(AccessDeniedResponseFilter))
     {
+        Order = 2;
     }
 }

@@ -9,5 +9,6 @@ public sealed class RequestGuardAttribute : TypeFilterAttribute
     public RequestGuardAttribute(string role) : base(typeof(RequestGuardFilter))
     {
         Arguments = [role];
+        Order = 3;
     }
 }
