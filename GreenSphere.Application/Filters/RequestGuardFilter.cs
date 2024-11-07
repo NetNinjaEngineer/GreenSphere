@@ -1,15 +1,20 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
 
 namespace GreenSphere.Application.Filters;
-public sealed class RequestGuardFilter(string role) : IAsyncAuthorizationFilter
+public sealed class RequestGuardFilter(
+    IAuthorizationService authorizationService,
+    string[]? policies = null,
+    params string[] roles) : IAsyncAuthorizationFilter
 {
     public Task OnAuthorizationAsync(AuthorizationFilterContext context)
     {
+        var user = context.HttpContext.User;
         ProblemDetails problemDetails = new();
 
-        if (!context.HttpContext.User.Identity!.IsAuthenticated)
+        if (!user.Identity!.IsAuthenticated)
         {
             problemDetails.Status = StatusCodes.Status401Unauthorized;
             problemDetails.Title = "Unauthorized";
@@ -19,15 +24,38 @@ public sealed class RequestGuardFilter(string role) : IAsyncAuthorizationFilter
             return Task.CompletedTask;
         }
 
-        if (!context.HttpContext.User.IsInRole(role))
+        foreach (var role in roles)
         {
-            problemDetails.Status = StatusCodes.Status403Forbidden;
-            problemDetails.Title = "Forbidden";
-            problemDetails.Detail = "You do not have permission to access this resource.";
+            if (!user.IsInRole(role))
+            {
+                SetForbidenAuthResult(problemDetails);
 
-            context.Result = new ObjectResult(problemDetails);
+                context.Result = new ObjectResult(problemDetails);
+            }
+        }
+
+        if (policies?.Length > 0)
+        {
+            foreach (var userPolicy in policies)
+            {
+                var authResult = authorizationService.AuthorizeAsync(user, userPolicy).Result;
+                if (!authResult.Succeeded)
+                {
+                    SetForbidenAuthResult(problemDetails);
+                    context.Result = new ObjectResult(problemDetails);
+                    return Task.CompletedTask;
+                }
+
+            }
         }
 
         return Task.CompletedTask;
+    }
+
+    private static void SetForbidenAuthResult(ProblemDetails problemDetails)
+    {
+        problemDetails.Status = StatusCodes.Status403Forbidden;
+        problemDetails.Title = "Forbidden";
+        problemDetails.Detail = "You do not have permission to access this resource.";
     }
 }
