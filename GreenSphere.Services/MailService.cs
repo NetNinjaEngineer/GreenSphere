@@ -160,7 +160,7 @@ public class MailService(
         {
             "gmail" => _emailSetting.Gmail,
             "outlook" => _emailSetting.Outlook,
-            _ => throw new ArgumentException("Invalid provider", nameof(provider))
+            _ => throw new ArgumentException("Invalid provider")
         };
 
         return smtpSettings;

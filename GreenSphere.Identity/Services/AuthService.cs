@@ -70,6 +70,7 @@ public sealed class AuthService(
 
                 var emailMessage = new MailkitEmail()
                 {
+                    Provider = command.Provider,
                     To = command.Email,
                     Subject = "Email Confirmed",
                     Body = @"
@@ -379,6 +380,7 @@ public sealed class AuthService(
 
             var emailMessage = new MailkitEmail()
             {
+                Provider = command.Provider,
                 To = command.Email,
                 Subject = "Activate Account",
                 Body = @$" <div style='margin-top: 20px;'>
@@ -463,6 +465,7 @@ public sealed class AuthService(
         //Send code to email
         var emailMessage = new MailkitEmail
         {
+            Provider = command.Provider,
             To = command.Email,
             Subject = "Reset Password Code",
             Body = $@"
