@@ -168,7 +168,6 @@ public sealed class AuthService(
                 new CookieOptions
                 {
                     HttpOnly = true,
-                    Secure = true,
                     SameSite = SameSiteMode.Strict
                 });
 
