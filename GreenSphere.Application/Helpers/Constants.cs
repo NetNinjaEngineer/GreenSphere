@@ -6,6 +6,8 @@ public static class Constants
     public const string AuthCodeExpireKey = "AuthCodeExpirationInMinutes";
     public const string EmailSent = "The email was sent successfully!";
     public const string EmailNotSent = "Unfortunately, the email could not be sent.";
+    public const string TwoFactorCodeSent = "2FA code is sent, please validate 2FA code to complete the setup.";
+    public const string TwoFactorEnabled = "Your 2FA authentication is successfully enabled.";
 
     public static class User
     {

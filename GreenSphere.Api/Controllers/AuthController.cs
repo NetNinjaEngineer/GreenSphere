@@ -108,5 +108,12 @@ public class AuthController(IMediator mediator) : BaseApiController(mediator)
     }
 
 
-    
+    [HttpPost("enable-2fa")]
+    public async Task<ActionResult<Result<string>>> Enable2FAAsync(Enable2FACommand command)
+        => CustomResult(await _mediator.Send(command));
+
+    [HttpPost("confirm-enable-2fa")]
+    public async Task<ActionResult<Result<string>>> ConfirmEnable2FAAsync(ConfirmEnable2FACommand command)
+        => CustomResult(await _mediator.Send(command));
+
 }

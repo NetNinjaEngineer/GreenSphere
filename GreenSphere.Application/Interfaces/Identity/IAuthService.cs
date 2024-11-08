@@ -15,4 +15,6 @@ public interface IAuthService
     Task<Bases.Result<bool>> RevokeTokenAsync(RevokeTokenCommand command);
     Task<Result<string>> ForgotPasswordAsync(ForgotPasswordCommand command);
     Task<Result<string>> ConfirmForgotPasswordCodeAsync(ConfirmForgotPasswordCodeCommand command);
+    Task<Result<string>> Enable2FAAsync(Enable2FACommand command);
+    Task<Result<string>> ConfirmEnable2FAAsync(ConfirmEnable2FACommand command);
 }

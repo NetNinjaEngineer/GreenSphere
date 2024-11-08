@@ -10,7 +10,9 @@ using GreenSphere.Application.Interfaces.Identity;
 using GreenSphere.Application.Interfaces.Services;
 using GreenSphere.Application.Interfaces.Services.Models;
 using GreenSphere.Domain.Identity.Entities;
+using GreenSphere.Domain.Identity.Enumerations;
 using GreenSphere.Domain.Identity.Models;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
@@ -31,7 +33,8 @@ public sealed class AuthService(
     IConfiguration configuration,
     SignInManager<ApplicationUser> signInManager,
     IMailService mailService,
-    IOptions<JWT> jwtOptions) : BaseResponseHandler, IAuthService
+    IOptions<JWT> jwtOptions,
+    IHttpContextAccessor contextAccessor) : BaseResponseHandler, IAuthService
 {
     private readonly JWT _jwtSettings = jwtOptions.Value;
     public async Task<Result<string>> ConfirmEmailAsync(ConfirmEmailCommand command)
@@ -151,6 +154,23 @@ public sealed class AuthService(
 
         if (!await userManager.IsEmailConfirmedAsync(loggedInUser))
             return BadRequest<SignInResponseDto>(DomainErrors.User.EmailNotConfirmed);
+
+        if (await userManager.GetTwoFactorEnabledAsync(loggedInUser))
+        {
+            // if two factor is enabled send code to user
+            var twoFactorCode = await userManager.GenerateTwoFactorTokenAsync(loggedInUser, "Email");
+
+            await mailService.SendEmailAsync(new MailkitEmail
+            {
+                To = command.Email,
+                Provider = "gmail",
+                Subject = "2FA Code Required",
+                Body = $"2FA code is required to complete login process, Your 2FA code is {twoFactorCode}"
+            });
+
+            return BadRequest<SignInResponseDto>("Two Factor Authentication Required To Complete Login, check your inbox and verify your 2fa code.");
+        }
+
 
         if (!await userManager.CheckPasswordAsync(loggedInUser, command.Password))
             return BadRequest<SignInResponseDto>(DomainErrors.User.InvalidCredientials);
@@ -512,6 +532,66 @@ public sealed class AuthService(
 
     }
 
+    public async Task<Result<string>> Enable2FAAsync(Enable2FACommand command)
+    {
+        var user = await userManager.FindByEmailAsync(command.Email);
 
+        if (user == null)
+            return BadRequest<string>(string.Format(DomainErrors.User.UserNotFound, command.Email));
 
+        var code = await userManager.GenerateTwoFactorTokenAsync(user, command.TokenProvider.ToString());
+
+        await signInManager.TwoFactorSignInAsync(code, command.TokenProvider.ToString(), false, true);
+
+        if (command.TokenProvider == TokenProvider.Email)
+            // send code via user email
+            await mailService.SendEmailAsync(new MailkitEmail
+            {
+                Provider = "gmail",
+                To = command.Email,
+                Subject = "Enable 2FA Request",
+                Body = $"Your 2FA Authentication Code is {code}"
+            });
+
+        else if (command.TokenProvider == TokenProvider.Phone)
+        {
+            // handle send via phone
+        }
+
+        return Success(Constants.TwoFactorCodeSent);
+    }
+
+    public async Task<Result<string>> ConfirmEnable2FAAsync(ConfirmEnable2FACommand command)
+    {
+        var user = await userManager.FindByEmailAsync(command.Email);
+        if (user == null)
+            return NotFound<string>(DomainErrors.User.UnkownUser);
+
+        // verify 2fa code
+        var providers = await userManager.GetValidTwoFactorProvidersAsync(user);
+
+        if (providers.Contains(TokenProvider.Email.ToString()))
+        {
+            var verified = await userManager.VerifyTwoFactorTokenAsync(user, TokenProvider.Email.ToString(), command.Code);
+
+            if (!verified)
+                return BadRequest<string>(DomainErrors.User.Invalid2FACode);
+
+            // code is verified update status of 2FA
+
+            await userManager.SetTwoFactorEnabledAsync(user, true);
+
+            await mailService.SendEmailAsync(new MailkitEmail
+            {
+                Provider = "gmail",
+                Subject = "Setup 2FA complete",
+                To = user.Email!,
+                Body = "Your 2FA authentication is successfully enabled."
+            });
+
+            return Success(Constants.TwoFactorEnabled);
+        }
+
+        return BadRequest<string>(DomainErrors.User.InvalidTokenProvider);
+    }
 }

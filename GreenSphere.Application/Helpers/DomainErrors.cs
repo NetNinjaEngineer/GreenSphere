@@ -17,6 +17,8 @@ public static class DomainErrors
         public const string CodeExpired = "Code has expired. Please request a new reset code.";
         public const string UserHasPrivacy = "User has a privacy setting.";
         public const string UserNotHasPrivacySetting = "User not have privacy settings";
+        public const string Invalid2FACode = "Invalid 2FA Code.";
+        public const string InvalidTokenProvider = "Invalid 2FA Token Provider.";
     }
 
 
