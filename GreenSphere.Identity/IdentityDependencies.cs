@@ -23,6 +23,11 @@ public static class IdentityDependencies
 
         services.AddIdentity<ApplicationUser, IdentityRole>(options =>
         {
+            var duration = Convert.ToDouble(configuration["DefaultLockoutMinutes"]);
+            options.Lockout.DefaultLockoutTimeSpan = TimeSpan.FromMinutes(duration);
+            options.Lockout.MaxFailedAccessAttempts = 5;
+            options.Lockout.AllowedForNewUsers = true;
+
             options.Password.RequiredLength = 8;
             options.Password.RequireNonAlphanumeric = true;
             options.Password.RequireDigit = true;

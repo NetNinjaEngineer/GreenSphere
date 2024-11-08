@@ -182,19 +182,30 @@ public sealed class AuthService(
             return BadRequest<SignInResponseDto>(DomainErrors.User.TwoFactorRequired);
         }
 
+        // check account is locked
+        if (await userManager.IsLockedOutAsync(loggedInUser))
+        {
+            return Unauthorized<SignInResponseDto>(
+                $"Your account is locked until {loggedInUser.LockoutEnd!.Value.ToLocalTime()}");
+        }
 
-        if (!await userManager.CheckPasswordAsync(loggedInUser, command.Password))
-            return BadRequest<SignInResponseDto>(DomainErrors.User.InvalidCredientials);
-
-        await signInManager.PasswordSignInAsync(
+        var result = await signInManager.PasswordSignInAsync(
             user: loggedInUser,
             password: command.Password,
             isPersistent: true,
-            lockoutOnFailure: false);
+            lockoutOnFailure: true);
 
-        SignInResponseDto response = await CreateLoginResponseAsync(userManager, loggedInUser);
+        if (result.IsLockedOut)
+            return Unauthorized<SignInResponseDto>(
+              $"Your account is locked until {loggedInUser.LockoutEnd!.Value.ToLocalTime()}");
 
-        return Success(response);
+        if (result.Succeeded)
+        {
+            SignInResponseDto response = await CreateLoginResponseAsync(userManager, loggedInUser);
+            return Success(response);
+        }
+
+        return Unauthorized<SignInResponseDto>(DomainErrors.User.InvalidCredientials);
     }
 
     private async Task<SignInResponseDto> CreateLoginResponseAsync(UserManager<ApplicationUser> userManager, ApplicationUser loggedInUser)

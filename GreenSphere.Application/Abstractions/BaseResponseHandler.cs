@@ -47,6 +47,17 @@ public class BaseResponseHandler
         };
     }
 
+    public static Result<T> Unauthorized<T>(string message)
+    {
+        return new FailedResult<T>()
+        {
+            StatusCode = HttpStatusCode.Unauthorized,
+            Succeeded = false,
+            Message = string.IsNullOrEmpty(message) ? "Unauthorized" : message
+        };
+    }
+
+
     public static Result<T> BadRequest<T>(string message, List<string> errors = null)
     {
         return new FailedResult<T>()
