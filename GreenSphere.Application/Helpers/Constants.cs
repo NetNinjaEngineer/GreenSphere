@@ -8,7 +8,7 @@ public static class Constants
     public const string EmailNotSent = "Unfortunately, the email could not be sent.";
     public const string TwoFactorCodeSent = "2FA code is sent, please validate 2FA code to complete the setup.";
     public const string TwoFactorEnabled = "Your 2FA authentication is successfully enabled.";
-
+    public const string Disable2FASuccess = "Two-factor authentication has been disabled successfully.";
     public static class User
     {
         public const string CanViewProfilePolicy = "CanViewProfile";

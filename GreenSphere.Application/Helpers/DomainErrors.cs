@@ -19,6 +19,10 @@ public static class DomainErrors
         public const string UserNotHasPrivacySetting = "User not have privacy settings";
         public const string Invalid2FACode = "Invalid 2FA Code.";
         public const string InvalidTokenProvider = "Invalid 2FA Token Provider.";
+        public const string TwoFactorRequired = "Two Factor Authentication Required To Complete Login, check your inbox and verify your 2fa code.";
+        public const string TwoFactorAlreadyDisabled = "Two-factor authentication is already disabled for this user.";
+        public const string Disable2FAFailed = "Failed to disable two-factor authentication.";
+
     }
 
 

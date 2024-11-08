@@ -17,4 +17,6 @@ public interface IAuthService
     Task<Result<string>> ConfirmForgotPasswordCodeAsync(ConfirmForgotPasswordCodeCommand command);
     Task<Result<string>> Enable2FAAsync(Enable2FACommand command);
     Task<Result<string>> ConfirmEnable2FAAsync(ConfirmEnable2FACommand command);
+    Task<Result<SignInResponseDto>> Verify2FACodeAsync(Verify2FACodeCommand command);
+    Task<Result<string>> Disable2FAAsync(Disable2FACommand command);
 }

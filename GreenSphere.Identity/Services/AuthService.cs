@@ -160,6 +160,18 @@ public sealed class AuthService(
             // if two factor is enabled send code to user
             var twoFactorCode = await userManager.GenerateTwoFactorTokenAsync(loggedInUser, "Email");
 
+            await signInManager.TwoFactorSignInAsync("Email", twoFactorCode, false, true);
+
+            contextAccessor.HttpContext!.Response.Cookies.Append(
+                "userEmail",
+                Convert.ToBase64String(Encoding.UTF8.GetBytes(loggedInUser.Email!)),
+                new CookieOptions
+                {
+                    HttpOnly = true,
+                    Secure = true,
+                    SameSite = SameSiteMode.Strict
+                });
+
             await mailService.SendEmailAsync(new MailkitEmail
             {
                 To = command.Email,
@@ -168,7 +180,7 @@ public sealed class AuthService(
                 Body = $"2FA code is required to complete login process, Your 2FA code is {twoFactorCode}"
             });
 
-            return BadRequest<SignInResponseDto>("Two Factor Authentication Required To Complete Login, check your inbox and verify your 2fa code.");
+            return BadRequest<SignInResponseDto>(DomainErrors.User.TwoFactorRequired);
         }
 
 
@@ -181,6 +193,13 @@ public sealed class AuthService(
             isPersistent: true,
             lockoutOnFailure: false);
 
+        SignInResponseDto response = await CreateLoginResponseAsync(userManager, loggedInUser);
+
+        return Success(response);
+    }
+
+    private async Task<SignInResponseDto> CreateLoginResponseAsync(UserManager<ApplicationUser> userManager, ApplicationUser loggedInUser)
+    {
         var token = await GenerateJwtToken(loggedInUser);
         var userRoles = await userManager.GetRolesAsync(loggedInUser);
         var response = new SignInResponseDto()
@@ -211,7 +230,7 @@ public sealed class AuthService(
             await userManager.UpdateAsync(loggedInUser);
         }
 
-        return Success(response);
+        return response;
     }
 
     public async Task<Application.Bases.Result<SignInResponseDto>> RefreshTokenAsync(RefreshTokenCommand command)
@@ -593,5 +612,50 @@ public sealed class AuthService(
         }
 
         return BadRequest<string>(DomainErrors.User.InvalidTokenProvider);
+    }
+
+    public async Task<Result<SignInResponseDto>> Verify2FACodeAsync(Verify2FACodeCommand command)
+    {
+        var userEmail = Encoding.UTF8.GetString(Convert.FromBase64String(contextAccessor.HttpContext!.Request.Cookies["userEmail"]!));
+        var appUser = await userManager.FindByEmailAsync(userEmail);
+
+        if (appUser == null) return Unauthorized<SignInResponseDto>();
+
+        var verified = await userManager.VerifyTwoFactorTokenAsync(appUser, "Email", command.Code);
+
+        if (!verified)
+            return BadRequest<SignInResponseDto>(DomainErrors.User.Invalid2FACode);
+
+        await signInManager.SignInAsync(appUser, isPersistent: true);
+
+        SignInResponseDto response = await CreateLoginResponseAsync(userManager, appUser);
+
+        return Success(response);
+    }
+
+    public async Task<Result<string>> Disable2FAAsync(Disable2FACommand command)
+    {
+        var user = await userManager.FindByEmailAsync(command.Email);
+
+        if (user == null)
+            return NotFound<string>(string.Format(DomainErrors.User.UserNotFound, command.Email));
+
+        if (!await userManager.GetTwoFactorEnabledAsync(user))
+            return BadRequest<string>(DomainErrors.User.TwoFactorAlreadyDisabled);
+
+        var result = await userManager.SetTwoFactorEnabledAsync(user, false);
+
+        if (!result.Succeeded)
+            return BadRequest<string>(DomainErrors.User.Disable2FAFailed);
+
+        await mailService.SendEmailAsync(new MailkitEmail
+        {
+            Provider = "gmail",
+            To = user.Email!,
+            Subject = "2FA Disabled",
+            Body = "Your two-factor authentication has been successfully disabled."
+        });
+
+        return Success(Constants.Disable2FASuccess);
     }
 }
