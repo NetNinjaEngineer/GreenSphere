@@ -196,8 +196,14 @@ public sealed class AuthService(
             lockoutOnFailure: true);
 
         if (result.IsLockedOut)
+        {
+            TimeZoneInfo timeZone = TimeZoneInfo.FindSystemTimeZoneById("Egypt Standard Time");
+
+            var lockoutEndTime = TimeZoneInfo.ConvertTimeFromUtc(loggedInUser.LockoutEnd!.Value.UtcDateTime, timeZone);
+
             return Unauthorized<SignInResponseDto>(
-              $"Your account is locked until {loggedInUser.LockoutEnd!.Value.ToLocalTime()}");
+              $"Your account is locked until {lockoutEndTime}");
+        }
 
         if (result.Succeeded)
         {
