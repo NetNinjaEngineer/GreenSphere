@@ -4,8 +4,10 @@ using GreenSphere.Application.Interfaces.Identity;
 using MediatR;
 
 namespace GreenSphere.Application.Features.Auth.Handlers.Commands;
-public sealed class Disable2FACommandHandler(IAuthService authService) : IRequestHandler<Disable2FACommand, Result<string>>
+
+public sealed class Disable2FaCommandHandler(IAuthService authService)
+    : IRequestHandler<Disable2FaCommand, Result<string>>
 {
-    public async Task<Result<string>> Handle(Disable2FACommand request, CancellationToken cancellationToken)
-        => await authService.Disable2FAAsync(request);
+    public async Task<Result<string>> Handle(Disable2FaCommand request, CancellationToken cancellationToken)
+        => await authService.Disable2FaAsync(request);
 }

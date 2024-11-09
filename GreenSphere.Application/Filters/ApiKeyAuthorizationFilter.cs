@@ -5,12 +5,9 @@ using Microsoft.AspNetCore.Mvc.Filters;
 using Microsoft.Extensions.Configuration;
 
 namespace GreenSphere.Application.Filters;
-public class ApiKeyAuthorizationFilter : IAuthorizationFilter
+public class ApiKeyAuthorizationFilter(IConfiguration configuration) : IAuthorizationFilter
 {
-    private readonly string ApiKeyHeaderName = "X-API-Key";
-    private readonly IConfiguration _configuration;
-
-    public ApiKeyAuthorizationFilter(IConfiguration configuration) => _configuration = configuration;
+    private const string ApiKeyHeaderName = "X-API-Key";
 
     public void OnAuthorization(AuthorizationFilterContext context)
     {
@@ -23,8 +20,6 @@ public class ApiKeyAuthorizationFilter : IAuthorizationFilter
                     "Unauthorized",
                     "API Key required to access the endpoints. API Key is sent as a request header."
                     ));
-
-            return;
         }
     }
 
@@ -33,6 +28,6 @@ public class ApiKeyAuthorizationFilter : IAuthorizationFilter
         if (string.IsNullOrEmpty(apiKey))
             return false;
 
-        return apiKey == _configuration["ApiKey"];
+        return apiKey == configuration["ApiKey"];
     }
 }

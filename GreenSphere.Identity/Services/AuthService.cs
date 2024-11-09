@@ -26,6 +26,7 @@ using System.Text;
 using JwtRegisteredClaimNames = Microsoft.IdentityModel.JsonWebTokens.JwtRegisteredClaimNames;
 
 namespace GreenSphere.Identity.Services;
+
 public sealed class AuthService(
     IMapper mapper,
     UserManager<ApplicationUser> userManager,
@@ -33,10 +34,11 @@ public sealed class AuthService(
     IConfiguration configuration,
     SignInManager<ApplicationUser> signInManager,
     IMailService mailService,
-    IOptions<JWT> jwtOptions,
+    IOptions<Jwt> jwtOptions,
     IHttpContextAccessor contextAccessor) : BaseResponseHandler, IAuthService
 {
-    private readonly JWT _jwtSettings = jwtOptions.Value;
+    private readonly Jwt _jwtSettings = jwtOptions.Value;
+
     public async Task<Result<string>> ConfirmEmailAsync(ConfirmEmailCommand command)
     {
         var validator = new ConfirmEmailCommandValidator();
@@ -65,8 +67,8 @@ public sealed class AuthService(
                 if (!identityResult.Succeeded)
                 {
                     var errors = identityResult.Errors
-                   .Select(e => e.Description)
-                   .ToList();
+                        .Select(e => e.Description)
+                        .ToList();
 
                     return BadRequest<string>(DomainErrors.User.UnableToUpdateUser, errors);
                 }
@@ -202,7 +204,7 @@ public sealed class AuthService(
             var lockoutEndTime = TimeZoneInfo.ConvertTimeFromUtc(loggedInUser.LockoutEnd!.Value.UtcDateTime, timeZone);
 
             return Unauthorized<SignInResponseDto>(
-              $"Your account is locked until {lockoutEndTime}");
+                $"Your account is locked until {lockoutEndTime}");
         }
 
         if (result.Succeeded)
@@ -214,7 +216,8 @@ public sealed class AuthService(
         return Unauthorized<SignInResponseDto>(DomainErrors.User.InvalidCredientials);
     }
 
-    private async Task<SignInResponseDto> CreateLoginResponseAsync(UserManager<ApplicationUser> userManager, ApplicationUser loggedInUser)
+    private async Task<SignInResponseDto> CreateLoginResponseAsync(UserManager<ApplicationUser> userManager,
+        ApplicationUser loggedInUser)
     {
         var token = await GenerateJwtToken(loggedInUser);
         var userRoles = await userManager.GetRolesAsync(loggedInUser);
@@ -251,20 +254,20 @@ public sealed class AuthService(
 
     public async Task<Application.Bases.Result<SignInResponseDto>> RefreshTokenAsync(RefreshTokenCommand command)
         => (await (await (await (await CheckIfUserHasAssignedToRefreshToken(command.Token))
-            .Bind(user => SelectRefreshTokenAssignedToUser(user, command.Token))
-            .Bind(CheckIfTokenIsActive)
-            .Bind(RevokeUserTokenAndReturnsAppUser)
-            .BindAsync(GenerateNewRefreshToken))
-            .BindAsync(GenerateNewJwtToken))
-            .BindAsync(CreateSignInResponse))
+                        .Bind(user => SelectRefreshTokenAssignedToUser(user, command.Token))
+                        .Bind(CheckIfTokenIsActive)
+                        .Bind(RevokeUserTokenAndReturnsAppUser)
+                        .BindAsync(GenerateNewRefreshToken))
+                    .BindAsync(GenerateNewJwtToken))
+                .BindAsync(CreateSignInResponse))
             .Map(authResponse => authResponse);
 
     public async Task<Application.Bases.Result<bool>> RevokeTokenAsync(RevokeTokenCommand command)
         => (await (await CheckIfUserHasAssignedToRefreshToken(command.Token!))
-            .Bind(appUser => SelectRefreshTokenAssignedToUser(appUser, command.Token!))
-            .Bind(CheckIfTokenIsActive)
-            .Bind(RevokeUserTokenAndReturnsAppUser)
-            .BindAsync(UpdateApplicationUser))
+                .Bind(appUser => SelectRefreshTokenAssignedToUser(appUser, command.Token!))
+                .Bind(CheckIfTokenIsActive)
+                .Bind(RevokeUserTokenAndReturnsAppUser)
+                .BindAsync(UpdateApplicationUser))
             .Map(userUpdated => userUpdated);
 
     private async Task<Application.Bases.Result<bool>> UpdateApplicationUser(ApplicationUser appUser)
@@ -274,7 +277,8 @@ public sealed class AuthService(
     }
 
 
-    private async Task<Application.Bases.Result<SignInResponseDto>> CreateSignInResponse((ApplicationUser appUser, JwtSecurityToken jwtToken) appUserWithJwt)
+    private async Task<Application.Bases.Result<SignInResponseDto>> CreateSignInResponse(
+        (ApplicationUser appUser, JwtSecurityToken jwtToken) appUserWithJwt)
     {
         var userRoles = await userManager.GetRolesAsync(appUserWithJwt.appUser);
         var newRefreshToken = appUserWithJwt.appUser.RefreshTokens?.FirstOrDefault(x => x.IsActive);
@@ -293,10 +297,12 @@ public sealed class AuthService(
         return Application.Bases.Result<SignInResponseDto>.Success(response);
     }
 
-    private async Task<Application.Bases.Result<(ApplicationUser appUser, JwtSecurityToken jwtToken)>> GenerateNewJwtToken(ApplicationUser appUser)
+    private async Task<Application.Bases.Result<(ApplicationUser appUser, JwtSecurityToken jwtToken)>>
+        GenerateNewJwtToken(ApplicationUser appUser)
     {
         var jwtToken = await GenerateJwtToken(appUser);
-        return Application.Bases.Result<(ApplicationUser appUser, JwtSecurityToken jwtToken)>.Success((appUser, jwtToken));
+        return Application.Bases.Result<(ApplicationUser appUser, JwtSecurityToken jwtToken)>.Success((appUser,
+            jwtToken));
     }
 
     private async Task<Application.Bases.Result<ApplicationUser>> GenerateNewRefreshToken(ApplicationUser appUser)
@@ -310,7 +316,8 @@ public sealed class AuthService(
     private Application.Bases.Result<ApplicationUser> RevokeUserTokenAndReturnsAppUser(RefreshToken userRefreshToken)
     {
         userRefreshToken.RevokedOn = DateTimeOffset.Now;
-        var user = userManager.Users.SingleOrDefault(x => x.RefreshTokens != null && x.RefreshTokens.Any(x => x.Token == userRefreshToken.Token));
+        var user = userManager.Users.SingleOrDefault(x =>
+            x.RefreshTokens != null && x.RefreshTokens.Any(x => x.Token == userRefreshToken.Token));
         return Application.Bases.Result<ApplicationUser>.Success(user!);
     }
 
@@ -321,7 +328,8 @@ public sealed class AuthService(
         return Application.Bases.Result<RefreshToken>.Success(userRefreshToken);
     }
 
-    private static Application.Bases.Result<RefreshToken> SelectRefreshTokenAssignedToUser(ApplicationUser user, string token)
+    private static Application.Bases.Result<RefreshToken> SelectRefreshTokenAssignedToUser(ApplicationUser user,
+        string token)
     {
         var refreshToken = user.RefreshTokens?.Single(x => x.Token == token);
         if (refreshToken is not null)
@@ -392,12 +400,14 @@ public sealed class AuthService(
 
         await userManager.AddToRoleAsync(user, Constants.Roles.User);
 
-        return !result.Succeeded ?
-            BadRequest<SignUpResponseDto>(DomainErrors.User.UnableToCreateAccount, [result.Errors.Select(e => e.Description).FirstOrDefault()]) :
-            Success(SignUpResponseDto.ToResponse(Guid.Parse(user.Id)));
+        return !result.Succeeded
+            ? BadRequest<SignUpResponseDto>(DomainErrors.User.UnableToCreateAccount,
+                [result.Errors.Select(e => e.Description).FirstOrDefault()])
+            : Success(SignUpResponseDto.ToResponse(Guid.Parse(user.Id)));
     }
 
-    public async Task<Result<SendCodeConfirmEmailResponseDto>> SendConfirmEmailCodeAsync(SendConfirmEmailCodeCommand command)
+    public async Task<Result<SendCodeConfirmEmailResponseDto>> SendConfirmEmailCodeAsync(
+        SendConfirmEmailCodeCommand command)
     {
         var confirmEmailValidator = new SendConfirmEmailCodeCommandValidator();
         await confirmEmailValidator.ValidateAndThrowAsync(command);
@@ -419,8 +429,8 @@ public sealed class AuthService(
 
             user.Code = encodedAuthenticationCode;
             user.CodeExpiration = DateTimeOffset.Now.AddMinutes(
-                    minutes: Convert.ToDouble(configuration[Constants.AuthCodeExpireKey]!)
-                );
+                minutes: Convert.ToDouble(configuration[Constants.AuthCodeExpireKey]!)
+            );
 
             var identityResult = await userManager.UpdateAsync(user);
 
@@ -469,14 +479,13 @@ public sealed class AuthService(
             return Success(
                 entity: SendCodeConfirmEmailResponseDto.ToResponse(user.CodeExpiration.Value),
                 message: Constants.ConfirmEmailCodeSentSuccessfully
-                );
+            );
         }
         catch (Exception ex)
         {
             transaction.Rollback();
             return BadRequest<SendCodeConfirmEmailResponseDto>(ex.Message);
         }
-
     }
 
     private static RefreshToken GenerateRefreshToken()
@@ -492,11 +501,14 @@ public sealed class AuthService(
         };
     }
 
-    private async Task<Application.Bases.Result<ApplicationUser>> CheckIfUserHasAssignedToRefreshToken(string refreshToken)
+    private async Task<Application.Bases.Result<ApplicationUser>> CheckIfUserHasAssignedToRefreshToken(
+        string refreshToken)
     {
-        var user = await userManager.Users.SingleOrDefaultAsync(x => x.RefreshTokens != null && x.RefreshTokens.Any(x => x.Token == refreshToken));
-        return user is null ? Application.Bases.Result<ApplicationUser>.Failure(HttpStatusCode.NotFound, "Invalid Token") :
-            Application.Bases.Result<ApplicationUser>.Success(user);
+        var user = await userManager.Users.SingleOrDefaultAsync(x =>
+            x.RefreshTokens != null && x.RefreshTokens.Any(x => x.Token == refreshToken));
+        return user is null
+            ? Application.Bases.Result<ApplicationUser>.Failure(HttpStatusCode.NotFound, "Invalid Token")
+            : Application.Bases.Result<ApplicationUser>.Success(user);
     }
 
 
@@ -507,10 +519,11 @@ public sealed class AuthService(
             return NotFound<string>("User not found");
 
         //code and Expiration 
-        var Decoded = await userManager.GenerateUserTokenAsync(user, "Email", "Generate Code");
-        var authCode = Convert.ToBase64String(Encoding.UTF8.GetBytes(Decoded));
+        var decoded = await userManager.GenerateUserTokenAsync(user, "Email", "Generate Code");
+        var authCode = Convert.ToBase64String(Encoding.UTF8.GetBytes(decoded));
         user.Code = authCode;
-        user.CodeExpiration = DateTimeOffset.Now.AddMinutes(Convert.ToDouble(configuration["AuthCodeExpirationInMinutes"]));
+        user.CodeExpiration =
+            DateTimeOffset.Now.AddMinutes(Convert.ToDouble(configuration["AuthCodeExpirationInMinutes"]));
 
         //Update user
         var updateResult = await userManager.UpdateAsync(user);
@@ -526,7 +539,7 @@ public sealed class AuthService(
             Body = $@"
                    <div style='margin-top: 20px; font-size: 16px; color: #333;'>
                        <p>Hello,</p>
-                       <p>Your password reset code is: <strong>{Decoded}</strong>. This code will expire in {configuration["AuthCodeExpirationInMinutes"]} minutes.</p>
+                       <p>Your password reset code is: <strong>{decoded}</strong>. This code will expire in {configuration["AuthCodeExpirationInMinutes"]} minutes.</p>
                        <p style='font-size: 14px; color: #555;'>If you did not request a password reset, please ignore this email.</p>
                        <p>Best regards,<br>
                           <strong>Green Sphere</strong>
@@ -537,7 +550,6 @@ public sealed class AuthService(
         await mailService.SendEmailAsync(emailMessage);
 
         return Success("Password reset code has been sent to your email.");
-
     }
 
     public async Task<Result<string>> ConfirmForgotPasswordCodeAsync(ConfirmForgotPasswordCodeCommand command)
@@ -564,10 +576,9 @@ public sealed class AuthService(
 
 
         return Success<string>("Reset Password Successfuly.");
-
     }
 
-    public async Task<Result<string>> Enable2FAAsync(Enable2FACommand command)
+    public async Task<Result<string>> Enable2FaAsync(Enable2FaCommand command)
     {
         var user = await userManager.FindByEmailAsync(command.Email);
 
@@ -596,7 +607,7 @@ public sealed class AuthService(
         return Success(Constants.TwoFactorCodeSent);
     }
 
-    public async Task<Result<string>> ConfirmEnable2FAAsync(ConfirmEnable2FACommand command)
+    public async Task<Result<string>> ConfirmEnable2FaAsync(ConfirmEnable2FaCommand command)
     {
         var user = await userManager.FindByEmailAsync(command.Email);
         if (user == null)
@@ -607,10 +618,11 @@ public sealed class AuthService(
 
         if (providers.Contains(TokenProvider.Email.ToString()))
         {
-            var verified = await userManager.VerifyTwoFactorTokenAsync(user, TokenProvider.Email.ToString(), command.Code);
+            var verified =
+                await userManager.VerifyTwoFactorTokenAsync(user, TokenProvider.Email.ToString(), command.Code);
 
             if (!verified)
-                return BadRequest<string>(DomainErrors.User.Invalid2FACode);
+                return BadRequest<string>(DomainErrors.User.Invalid2FaCode);
 
             // code is verified update status of 2FA
 
@@ -630,9 +642,11 @@ public sealed class AuthService(
         return BadRequest<string>(DomainErrors.User.InvalidTokenProvider);
     }
 
-    public async Task<Result<SignInResponseDto>> Verify2FACodeAsync(Verify2FACodeCommand command)
+    public async Task<Result<SignInResponseDto>> Verify2FaCodeAsync(Verify2FaCodeCommand command)
     {
-        var userEmail = Encoding.UTF8.GetString(Convert.FromBase64String(contextAccessor.HttpContext!.Request.Cookies["userEmail"]!));
+        var userEmail =
+            Encoding.UTF8.GetString(
+                Convert.FromBase64String(contextAccessor.HttpContext!.Request.Cookies["userEmail"]!));
         var appUser = await userManager.FindByEmailAsync(userEmail);
 
         if (appUser == null) return Unauthorized<SignInResponseDto>();
@@ -640,7 +654,7 @@ public sealed class AuthService(
         var verified = await userManager.VerifyTwoFactorTokenAsync(appUser, "Email", command.Code);
 
         if (!verified)
-            return BadRequest<SignInResponseDto>(DomainErrors.User.Invalid2FACode);
+            return BadRequest<SignInResponseDto>(DomainErrors.User.Invalid2FaCode);
 
         await signInManager.SignInAsync(appUser, isPersistent: true);
 
@@ -649,7 +663,7 @@ public sealed class AuthService(
         return Success(response);
     }
 
-    public async Task<Result<string>> Disable2FAAsync(Disable2FACommand command)
+    public async Task<Result<string>> Disable2FaAsync(Disable2FaCommand command)
     {
         var user = await userManager.FindByEmailAsync(command.Email);
 
@@ -662,7 +676,7 @@ public sealed class AuthService(
         var result = await userManager.SetTwoFactorEnabledAsync(user, false);
 
         if (!result.Succeeded)
-            return BadRequest<string>(DomainErrors.User.Disable2FAFailed);
+            return BadRequest<string>(DomainErrors.User.Disable2FaFailed);
 
         await mailService.SendEmailAsync(new MailkitEmail
         {
@@ -672,6 +686,6 @@ public sealed class AuthService(
             Body = "Your two-factor authentication has been successfully disabled."
         });
 
-        return Success(Constants.Disable2FASuccess);
+        return Success(Constants.Disable2FaSuccess);
     }
 }

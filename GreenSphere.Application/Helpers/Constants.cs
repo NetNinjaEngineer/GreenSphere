@@ -1,14 +1,18 @@
 ﻿namespace GreenSphere.Application.Helpers;
+
 public static class Constants
 {
-    public const string ConfirmEmailCodeSentSuccessfully = "The Confirm email code sent to your email successfully, check your inbox.";
+    public const string ConfirmEmailCodeSentSuccessfully =
+        "The Confirm email code sent to your email successfully, check your inbox.";
+
     public const string EmailConfirmed = "User email is confirmed.";
     public const string AuthCodeExpireKey = "AuthCodeExpirationInMinutes";
     public const string EmailSent = "The email was sent successfully!";
     public const string EmailNotSent = "Unfortunately, the email could not be sent.";
     public const string TwoFactorCodeSent = "2FA code is sent, please validate 2FA code to complete the setup.";
     public const string TwoFactorEnabled = "Your 2FA authentication is successfully enabled.";
-    public const string Disable2FASuccess = "Two-factor authentication has been disabled successfully.";
+    public const string Disable2FaSuccess = "Two-factor authentication has been disabled successfully.";
+
     public static class User
     {
         public const string CanViewProfilePolicy = "CanViewProfile";

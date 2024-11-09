@@ -1,9 +1,12 @@
 ﻿namespace GreenSphere.Application.Helpers;
+
 public static class DomainErrors
 {
     public static class User
     {
-        public const string UnableToCreateAccount = "Some errors happened when creating your account, please try again !!";
+        public const string UnableToCreateAccount =
+            "Some errors happened when creating your account, please try again !!";
+
         public const string UnkownUser = "Unknown User.";
         public const string UnableToUpdateUser = "Unable to Update The User.";
         public const string InvalidAuthCode = "Invalid authentication code.";
@@ -17,12 +20,14 @@ public static class DomainErrors
         public const string CodeExpired = "Code has expired. Please request a new reset code.";
         public const string UserHasPrivacy = "User has a privacy setting.";
         public const string UserNotHasPrivacySetting = "User not have privacy settings";
-        public const string Invalid2FACode = "Invalid 2FA Code.";
+        public const string Invalid2FaCode = "Invalid 2FA Code.";
         public const string InvalidTokenProvider = "Invalid 2FA Token Provider.";
-        public const string TwoFactorRequired = "Two Factor Authentication Required To Complete Login, check your inbox and verify your 2fa code.";
-        public const string TwoFactorAlreadyDisabled = "Two-factor authentication is already disabled for this user.";
-        public const string Disable2FAFailed = "Failed to disable two-factor authentication.";
 
+        public const string TwoFactorRequired =
+            "Two Factor Authentication Required To Complete Login, check your inbox and verify your 2fa code.";
+
+        public const string TwoFactorAlreadyDisabled = "Two-factor authentication is already disabled for this user.";
+        public const string Disable2FaFailed = "Failed to disable two-factor authentication.";
     }
 
 

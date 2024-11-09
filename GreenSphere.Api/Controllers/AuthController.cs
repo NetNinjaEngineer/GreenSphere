@@ -21,7 +21,7 @@ public class AuthController(IMediator mediator) : BaseApiController(mediator)
     [ProducesResponseType(typeof(SuccessResult<SignUpResponseDto>), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(FailedResult<SignUpResponseDto>), StatusCodes.Status400BadRequest)]
     public async Task<ActionResult<Result<SignUpResponseDto>>> RegisterUserAsync(RegisterCommand command)
-        => CustomResult(await _mediator.Send(command));
+        => CustomResult(await Mediator.Send(command));
 
     [HttpPost("sendConfirmEmailCode")]
     [ProducesResponseType(StatusCodes.Status422UnprocessableEntity)]
@@ -29,30 +29,30 @@ public class AuthController(IMediator mediator) : BaseApiController(mediator)
     [ProducesResponseType(typeof(FailedResult<SendCodeConfirmEmailResponseDto>), StatusCodes.Status400BadRequest)]
     [ProducesResponseType(typeof(FailedResult<SendCodeConfirmEmailResponseDto>), StatusCodes.Status409Conflict)]
     public async Task<ActionResult<Result<string>>> SendConfirmEmailCodeAsync(SendConfirmEmailCodeCommand command)
-        => CustomResult(await _mediator.Send(command));
+        => CustomResult(await Mediator.Send(command));
 
     [HttpPost("confirm-email")]
     [ProducesResponseType(StatusCodes.Status422UnprocessableEntity)]
     [ProducesResponseType(typeof(SuccessResult<string>), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(FailedResult<string>), StatusCodes.Status400BadRequest)]
     public async Task<ActionResult<Result<string>>> ConfirmEmailAsync(ConfirmEmailCommand command)
-        => CustomResult(await _mediator.Send(command));
+        => CustomResult(await Mediator.Send(command));
 
     [HttpPost("signOut")]
     [ProducesResponseType(StatusCodes.Status200OK)]
     public async Task<ActionResult> SignOutAsync()
     {
-        await _mediator.Send(new LogoutCommand());
+        await Mediator.Send(new LogoutCommand());
         return Ok();
     }
 
     [HttpPost("login-google")]
     public async Task<ActionResult<Result<GoogleAuthResponseDto>>> GoogleLoginAsync(GoogleLoginCommand command)
-        => CustomResult(await _mediator.Send(command));
+        => CustomResult(await Mediator.Send(command));
 
     [HttpPost("login-facebook")]
     public async Task<ActionResult<Result<string>>> FacebookLoginAsync(FacebookLoginCommand command)
-        => CustomResult(await _mediator.Send(command));
+        => CustomResult(await Mediator.Send(command));
 
     [HttpPost("login-user")]
     [ProducesResponseType(StatusCodes.Status422UnprocessableEntity)]
@@ -60,7 +60,7 @@ public class AuthController(IMediator mediator) : BaseApiController(mediator)
     [ProducesResponseType(typeof(FailedResult<SignInResponseDto>), StatusCodes.Status400BadRequest)]
     [ProducesResponseType(typeof(FailedResult<SignInResponseDto>), StatusCodes.Status404NotFound)]
     public async Task<ActionResult<Result<SignInResponseDto>>> LoginUserAsync(LoginCommand command)
-        => CustomResult(await _mediator.Send(command));
+        => CustomResult(await Mediator.Send(command));
 
     [HttpGet("refresh-token")]
     [ProducesResponseType(typeof(Application.Bases.Result<SignInResponseDto>), StatusCodes.Status200OK)]
@@ -69,7 +69,7 @@ public class AuthController(IMediator mediator) : BaseApiController(mediator)
     public async Task<ActionResult<Application.Bases.Result<SignInResponseDto>>> RefreshTokenAsync()
     {
         var refreshToken = Encoding.UTF8.GetString(Convert.FromBase64String(Request.Cookies["refreshToken"]!));
-        var authResponseResult = await _mediator.Send(new RefreshTokenCommand { Token = refreshToken! });
+        var authResponseResult = await Mediator.Send(new RefreshTokenCommand { Token = refreshToken! });
         if (authResponseResult.Value is not null && authResponseResult.Value.IsAuthenticated)
             SetRefreshTokenInCookie(
                 Convert.ToBase64String(Encoding.UTF8.GetBytes(authResponseResult.Value.RefreshToken!)),
@@ -81,10 +81,10 @@ public class AuthController(IMediator mediator) : BaseApiController(mediator)
     [HttpPost("revoke-token")]
     public async Task<IActionResult> RevokeTokenAsync(RevokeTokenCommand command)
     {
-        if (command.Token is not null) return CustomResult(await _mediator.Send(command));
+        if (command.Token is not null) return CustomResult(await Mediator.Send(command));
         command = new RevokeTokenCommand
-        { Token = Encoding.UTF8.GetString(Convert.FromBase64String(Request.Cookies["refreshToken"]!)) };
-        return CustomResult(await _mediator.Send(command));
+            { Token = Encoding.UTF8.GetString(Convert.FromBase64String(Request.Cookies["refreshToken"]!)) };
+        return CustomResult(await Mediator.Send(command));
     }
 
     private void SetRefreshTokenInCookie(string valueRefreshToken, DateTimeOffset valueRefreshTokenExpiration)
@@ -102,30 +102,30 @@ public class AuthController(IMediator mediator) : BaseApiController(mediator)
     [HttpPost("forgot-password")]
     public async Task<ActionResult<Result<string>>> ForgotPasswordAsync(ForgotPasswordCommand command)
     {
-        return CustomResult(await _mediator.Send(command));
+        return CustomResult(await Mediator.Send(command));
     }
 
     [HttpPost("reset-password")]
     public async Task<ActionResult<Result<string>>> ConfirmForgotPasswordCodeAsync(
         ConfirmForgotPasswordCodeCommand command)
     {
-        return CustomResult(await _mediator.Send(command));
+        return CustomResult(await Mediator.Send(command));
     }
 
 
     [HttpPost("enable-2fa")]
-    public async Task<ActionResult<Result<string>>> Enable2FAAsync(Enable2FACommand command)
-        => CustomResult(await _mediator.Send(command));
+    public async Task<ActionResult<Result<string>>> Enable2FaAsync(Enable2FaCommand command)
+        => CustomResult(await Mediator.Send(command));
 
     [HttpPost("confirm-enable-2fa")]
-    public async Task<ActionResult<Result<string>>> ConfirmEnable2FAAsync(ConfirmEnable2FACommand command)
-        => CustomResult(await _mediator.Send(command));
+    public async Task<ActionResult<Result<string>>> ConfirmEnable2FaAsync(ConfirmEnable2FaCommand command)
+        => CustomResult(await Mediator.Send(command));
 
     [HttpPost("verify-2fa")]
-    public async Task<ActionResult<Result<string>>> Verify2FAAsync(Verify2FACodeCommand command)
-        => CustomResult(await _mediator.Send(command));
+    public async Task<ActionResult<Result<string>>> Verify2FaAsync(Verify2FaCodeCommand command)
+        => CustomResult(await Mediator.Send(command));
 
     [HttpPost("disable-2fa")]
-    public async Task<ActionResult<Result<string>>> Disable2FAAsync(Disable2FACommand command)
-        => CustomResult(await _mediator.Send(command));
+    public async Task<ActionResult<Result<string>>> Disable2FaAsync(Disable2FaCommand command)
+        => CustomResult(await Mediator.Send(command));
 }

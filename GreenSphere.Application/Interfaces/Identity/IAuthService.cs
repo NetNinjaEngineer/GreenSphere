@@ -3,6 +3,7 @@ using GreenSphere.Application.Features.Auth.DTOs;
 using GreenSphere.Application.Features.Auth.Requests.Commands;
 
 namespace GreenSphere.Application.Interfaces.Identity;
+
 public interface IAuthService
 {
     Task<Result<SignUpResponseDto>> RegisterAsync(RegisterCommand command);
@@ -15,8 +16,8 @@ public interface IAuthService
     Task<Bases.Result<bool>> RevokeTokenAsync(RevokeTokenCommand command);
     Task<Result<string>> ForgotPasswordAsync(ForgotPasswordCommand command);
     Task<Result<string>> ConfirmForgotPasswordCodeAsync(ConfirmForgotPasswordCodeCommand command);
-    Task<Result<string>> Enable2FAAsync(Enable2FACommand command);
-    Task<Result<string>> ConfirmEnable2FAAsync(ConfirmEnable2FACommand command);
-    Task<Result<SignInResponseDto>> Verify2FACodeAsync(Verify2FACodeCommand command);
-    Task<Result<string>> Disable2FAAsync(Disable2FACommand command);
+    Task<Result<string>> Enable2FaAsync(Enable2FaCommand command);
+    Task<Result<string>> ConfirmEnable2FaAsync(ConfirmEnable2FaCommand command);
+    Task<Result<SignInResponseDto>> Verify2FaCodeAsync(Verify2FaCodeCommand command);
+    Task<Result<string>> Disable2FaAsync(Disable2FaCommand command);
 }

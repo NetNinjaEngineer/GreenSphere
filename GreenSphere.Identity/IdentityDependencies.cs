@@ -22,20 +22,20 @@ public static class IdentityDependencies
             options.UseSqlServer(configuration.GetConnectionString("IdentityConnection")));
 
         services.AddIdentity<ApplicationUser, IdentityRole>(options =>
-        {
-            var duration = Convert.ToDouble(configuration["DefaultLockoutMinutes"]);
-            options.Lockout.DefaultLockoutTimeSpan = TimeSpan.FromMinutes(duration);
-            options.Lockout.MaxFailedAccessAttempts = 5;
-            options.Lockout.AllowedForNewUsers = true;
+            {
+                var duration = Convert.ToDouble(configuration["DefaultLockoutMinutes"]);
+                options.Lockout.DefaultLockoutTimeSpan = TimeSpan.FromMinutes(duration);
+                options.Lockout.MaxFailedAccessAttempts = 5;
+                options.Lockout.AllowedForNewUsers = true;
 
-            options.Password.RequiredLength = 8;
-            options.Password.RequireNonAlphanumeric = true;
-            options.Password.RequireDigit = true;
-            options.Password.RequireLowercase = true;
-            options.Password.RequireUppercase = true;
-            options.SignIn.RequireConfirmedEmail = true;
-            options.User.RequireUniqueEmail = true;
-        })
+                options.Password.RequiredLength = 8;
+                options.Password.RequireNonAlphanumeric = true;
+                options.Password.RequireDigit = true;
+                options.Password.RequireLowercase = true;
+                options.Password.RequireUppercase = true;
+                options.SignIn.RequireConfirmedEmail = true;
+                options.User.RequireUniqueEmail = true;
+            })
             .AddEntityFrameworkStores<ApplicationIdentityDbContext>()
             .AddDefaultTokenProviders();
 
@@ -47,17 +47,17 @@ public static class IdentityDependencies
         services.AddScoped<IRoleService, RoleService>();
         services.AddScoped<ICurrentUser, CurrentUser>();
 
-        services.Configure<JWT>(configuration.GetSection(nameof(JWT)));
+        services.Configure<Jwt>(configuration.GetSection(nameof(Jwt)));
 
-        services.AddAuthentication(Options =>
-        {
-            Options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
-            Options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
-        })
-            .AddJwtBearer(Options =>
+        services.AddAuthentication(options =>
             {
-                Options.SaveToken = true;
-                Options.TokenValidationParameters = new TokenValidationParameters
+                options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+                options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+            })
+            .AddJwtBearer(options =>
+            {
+                options.SaveToken = true;
+                options.TokenValidationParameters = new TokenValidationParameters
                 {
                     ValidateIssuer = true,
                     ValidateAudience = true,
