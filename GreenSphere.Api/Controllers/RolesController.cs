@@ -9,8 +9,8 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace GreenSphere.Api.Controllers;
 
-[AccessDeniedResponse]
-[RequestGuard(roles: Constants.Roles.User)]
+[AccessDenied]
+[Guard(roles: Constants.Roles.User)]
 [Route("api/v{ver:apiVersion}/roles")]
 [ApiController]
 public class RolesController(IMediator mediator) : BaseApiController(mediator)

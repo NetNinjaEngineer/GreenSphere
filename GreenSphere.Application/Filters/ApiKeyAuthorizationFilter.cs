@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Mvc.Filters;
 using Microsoft.Extensions.Configuration;
 
 namespace GreenSphere.Application.Filters;
+
 public class ApiKeyAuthorizationFilter(IConfiguration configuration) : IAuthorizationFilter
 {
     private const string ApiKeyHeaderName = "X-API-Key";
@@ -19,7 +20,7 @@ public class ApiKeyAuthorizationFilter(IConfiguration configuration) : IAuthoriz
                     StatusCodes.Status401Unauthorized,
                     "Unauthorized",
                     "API Key required to access the endpoints. API Key is sent as a request header."
-                    ));
+                ));
         }
     }
 

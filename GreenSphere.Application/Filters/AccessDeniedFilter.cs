@@ -6,7 +6,7 @@ using Microsoft.AspNetCore.Mvc.Filters;
 namespace GreenSphere.Application.Filters;
 
 [AttributeUsage(AttributeTargets.Class | AttributeTargets.Method)]
-public sealed class AccessDeniedResponseFilter : Attribute, IAsyncAuthorizationFilter
+public sealed class AccessDeniedFilter : Attribute, IAsyncAuthorizationFilter
 {
     public Task OnAuthorizationAsync(AuthorizationFilterContext context)
     {

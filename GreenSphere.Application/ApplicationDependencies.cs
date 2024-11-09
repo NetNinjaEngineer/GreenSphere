@@ -9,6 +9,7 @@ using Microsoft.Extensions.DependencyInjection;
 using System.Reflection;
 
 namespace GreenSphere.Application;
+
 public static class ApplicationDependencies
 {
     public static IServiceCollection AddApplicationDependencies(this IServiceCollection services)
@@ -30,7 +31,7 @@ public static class ApplicationDependencies
             return new PrivacyAuthorizationHandler(service);
         });
 
-        services.AddSingleton<AccessDeniedResponseFilter>();
+        services.AddSingleton<AccessDeniedFilter>();
 
         return services;
     }

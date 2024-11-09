@@ -4,7 +4,8 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
 
 namespace GreenSphere.Application.Filters;
-public sealed class RequestGuardFilter(
+
+public sealed class GuardFilter(
     IAuthorizationService authorizationService,
     string[] policies,
     params string[] roles) : IAsyncAuthorizationFilter
@@ -29,16 +30,16 @@ public sealed class RequestGuardFilter(
 
 
         var policyAuthorizationTasks = policies.Select(
-                policy => authorizationService.AuthorizeAsync(user, policy)
-            ).ToArray();
+            policy => authorizationService.AuthorizeAsync(user, policy)
+        ).ToArray();
 
         return Task.WhenAll(policyAuthorizationTasks)
-           .ContinueWith(tasks =>
-           {
-               if (tasks.Result.Any(x => !x.Succeeded))
-               {
-                   context.Result = new ObjectResult(Response.Forbiden());
-               }
-           });
+            .ContinueWith(tasks =>
+            {
+                if (tasks.Result.Any(x => !x.Succeeded))
+                {
+                    context.Result = new ObjectResult(Response.Forbiden());
+                }
+            });
     }
 }

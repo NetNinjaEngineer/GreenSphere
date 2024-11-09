@@ -4,9 +4,9 @@ using Microsoft.AspNetCore.Mvc;
 namespace GreenSphere.Application.Attributes;
 
 [AttributeUsage(AttributeTargets.Class | AttributeTargets.Method)]
-public class AccessDeniedResponseAttribute : ServiceFilterAttribute
+public class AccessDeniedAttribute : ServiceFilterAttribute
 {
-    public AccessDeniedResponseAttribute() : base(typeof(AccessDeniedResponseFilter))
+    public AccessDeniedAttribute() : base(typeof(AccessDeniedFilter))
     {
         Order = 2;
     }
