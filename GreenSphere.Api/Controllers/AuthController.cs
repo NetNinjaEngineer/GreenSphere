@@ -9,6 +9,7 @@ using Microsoft.AspNetCore.Mvc;
 using System.Text;
 
 namespace GreenSphere.Api.Controllers;
+
 [AllowAnonymous]
 [ApiVersion(1.0)]
 [Route("api/v{ver:apiVersion}/auth")]
@@ -35,7 +36,7 @@ public class AuthController(IMediator mediator) : BaseApiController(mediator)
     [ProducesResponseType(typeof(SuccessResult<string>), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(FailedResult<string>), StatusCodes.Status400BadRequest)]
     public async Task<ActionResult<Result<string>>> ConfirmEmailAsync(ConfirmEmailCommand command)
-       => CustomResult(await _mediator.Send(command));
+        => CustomResult(await _mediator.Send(command));
 
     [HttpPost("signOut")]
     [ProducesResponseType(StatusCodes.Status200OK)]
@@ -70,7 +71,9 @@ public class AuthController(IMediator mediator) : BaseApiController(mediator)
         var refreshToken = Encoding.UTF8.GetString(Convert.FromBase64String(Request.Cookies["refreshToken"]!));
         var authResponseResult = await _mediator.Send(new RefreshTokenCommand { Token = refreshToken! });
         if (authResponseResult.Value is not null && authResponseResult.Value.IsAuthenticated)
-            SetRefreshTokenInCookie(Convert.ToBase64String(Encoding.UTF8.GetBytes(authResponseResult.Value.RefreshToken!)), authResponseResult.Value.RefreshTokenExpiration);
+            SetRefreshTokenInCookie(
+                Convert.ToBase64String(Encoding.UTF8.GetBytes(authResponseResult.Value.RefreshToken!)),
+                authResponseResult.Value.RefreshTokenExpiration);
 
         return CustomResult(authResponseResult);
     }
@@ -79,7 +82,8 @@ public class AuthController(IMediator mediator) : BaseApiController(mediator)
     public async Task<IActionResult> RevokeTokenAsync(RevokeTokenCommand command)
     {
         if (command.Token is not null) return CustomResult(await _mediator.Send(command));
-        command = new RevokeTokenCommand { Token = Encoding.UTF8.GetString(Convert.FromBase64String(Request.Cookies["refreshToken"]!)) };
+        command = new RevokeTokenCommand
+        { Token = Encoding.UTF8.GetString(Convert.FromBase64String(Request.Cookies["refreshToken"]!)) };
         return CustomResult(await _mediator.Send(command));
     }
 
@@ -102,7 +106,8 @@ public class AuthController(IMediator mediator) : BaseApiController(mediator)
     }
 
     [HttpPost("reset-password")]
-    public async Task<ActionResult<Result<string>>> ConfirmForgotPasswordCodeAsync(ConfirmForgotPasswordCodeCommand command)
+    public async Task<ActionResult<Result<string>>> ConfirmForgotPasswordCodeAsync(
+        ConfirmForgotPasswordCodeCommand command)
     {
         return CustomResult(await _mediator.Send(command));
     }
@@ -118,10 +123,9 @@ public class AuthController(IMediator mediator) : BaseApiController(mediator)
 
     [HttpPost("verify-2fa")]
     public async Task<ActionResult<Result<string>>> Verify2FAAsync(Verify2FACodeCommand command)
-     => CustomResult(await _mediator.Send(command));
+        => CustomResult(await _mediator.Send(command));
 
     [HttpPost("disable-2fa")]
     public async Task<ActionResult<Result<string>>> Disable2FAAsync(Disable2FACommand command)
         => CustomResult(await _mediator.Send(command));
-
 }
