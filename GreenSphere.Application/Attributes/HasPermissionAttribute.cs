@@ -10,8 +10,6 @@ namespace GreenSphere.Application.Attributes;
 [AttributeUsage(AttributeTargets.Class | AttributeTargets.Method)]
 public class HasPermissionAttribute(Permission permission) : Attribute, IAsyncAuthorizationFilter
 {
-    private readonly Permission _permission = permission;
-
     public async Task OnAuthorizationAsync(AuthorizationFilterContext context)
     {
         // get current user id to get his privacy settings
@@ -20,7 +18,7 @@ public class HasPermissionAttribute(Permission permission) : Attribute, IAsyncAu
         var privacyService = context.HttpContext.RequestServices.GetRequiredService<IUserPrivacyService>();
         var settings = await privacyService.GetUserPrivacySettingsAsync(currentUserId!);
         // check permissions
-        if (!(settings.Value.ViewProfile.Equals("public", StringComparison.CurrentCultureIgnoreCase) && _permission == Permission.CanViewProfile))
+        if (!(settings.Value.ViewProfile.Equals("public", StringComparison.CurrentCultureIgnoreCase) && permission == Permission.CanViewProfile))
         {
             context.Result = new ForbidResult();
         }

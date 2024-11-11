@@ -9,7 +9,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace GreenSphere.Api.Controllers;
 
-[AccessDenied]
+[IsAuthenticated]
 [Guard(roles: Constants.Roles.User)]
 [Route("api/v{ver:apiVersion}/roles")]
 [ApiController]

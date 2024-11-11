@@ -4,9 +4,9 @@ using Microsoft.AspNetCore.Mvc;
 namespace GreenSphere.Application.Attributes;
 
 [AttributeUsage(AttributeTargets.Class | AttributeTargets.Method)]
-public class AccessDeniedAttribute : ServiceFilterAttribute
+public class IsAuthenticatedAttribute : ServiceFilterAttribute
 {
-    public AccessDeniedAttribute() : base(typeof(AccessDeniedFilter))
+    public IsAuthenticatedAttribute() : base(typeof(IsAuthenticatedFilter))
     {
         Order = 2;
     }

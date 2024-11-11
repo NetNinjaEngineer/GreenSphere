@@ -83,7 +83,7 @@ public class AuthController(IMediator mediator) : BaseApiController(mediator)
     {
         if (command.Token is not null) return CustomResult(await Mediator.Send(command));
         command = new RevokeTokenCommand
-            { Token = Encoding.UTF8.GetString(Convert.FromBase64String(Request.Cookies["refreshToken"]!)) };
+        { Token = Encoding.UTF8.GetString(Convert.FromBase64String(Request.Cookies["refreshToken"]!)) };
         return CustomResult(await Mediator.Send(command));
     }
 
