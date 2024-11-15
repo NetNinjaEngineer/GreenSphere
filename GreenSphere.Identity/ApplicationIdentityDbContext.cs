@@ -6,7 +6,7 @@ namespace GreenSphere.Identity;
 public class ApplicationIdentityDbContext(
     DbContextOptions<ApplicationIdentityDbContext> options) : IdentityDbContext<ApplicationUser>(options)
 {
-    public DbSet<PrivacySetting> PrivacySettings { get; set; }
+    public DbSet<PrivacySetting> PrivacySettings { get; set; } = null!;
 
     protected override void OnModelCreating(ModelBuilder builder)
     {

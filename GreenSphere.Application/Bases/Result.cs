@@ -2,19 +2,16 @@
 
 using System.Collections.Generic;
 using System.Net;
-using System.Text.Json.Serialization;
 
 public class Result<TSuccess>
 {
-    public TSuccess Value { get; set; }
-    public bool IsSuccess { get; set; }
-    [JsonIgnore]
+    public TSuccess Value { get; }
+    public bool IsSuccess { get; }
     public bool IsFailure => !IsSuccess;
-    public string Message { get; set; }
-    public List<string>? Errors { get; set; }
-    public HttpStatusCode StatusCode { get; set; }
+    public string Message { get; }
+    public List<string>? Errors { get; }
+    public HttpStatusCode StatusCode { get; }
 
-    // success result
     private Result(TSuccess value, string? message = null)
     {
         Value = value;
@@ -23,7 +20,6 @@ public class Result<TSuccess>
         StatusCode = HttpStatusCode.OK;
     }
 
-    // failure result
     private Result(HttpStatusCode statusCode, string? failureMessage = null, List<string>? errors = null)
     {
         Value = default!;
@@ -38,17 +34,11 @@ public class Result<TSuccess>
     public static Result<TSuccess> Failure(HttpStatusCode statusCode, string? message = null, List<string>? errors = null) => new(statusCode, message, errors);
 
     public Result<TNextSuccess> Bind<TNextSuccess>(Func<TSuccess, Result<TNextSuccess>> next)
-    {
-        return IsSuccess ? next(Value) : Result<TNextSuccess>.Failure(StatusCode, Message, Errors);
-    }
+        => IsSuccess ? next(Value) : Result<TNextSuccess>.Failure(StatusCode, Message, Errors);
 
     public async Task<Result<TNextSuccess>> BindAsync<TNextSuccess>(Func<TSuccess, Task<Result<TNextSuccess>>> next)
-    {
-        return IsSuccess ? await next(Value) : Result<TNextSuccess>.Failure(StatusCode, Message, Errors);
-    }
+        => IsSuccess ? await next(Value) : Result<TNextSuccess>.Failure(StatusCode, Message, Errors);
 
     public Result<TNext> Map<TNext>(Func<TSuccess, TNext> mapper)
-    {
-        return IsSuccess ? Result<TNext>.Success(mapper(Value)) : Result<TNext>.Failure(StatusCode, Message, Errors);
-    }
+        => IsSuccess ? Result<TNext>.Success(mapper(Value)) : Result<TNext>.Failure(StatusCode, Message, Errors);
 }

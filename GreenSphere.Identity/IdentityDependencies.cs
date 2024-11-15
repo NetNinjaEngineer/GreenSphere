@@ -50,37 +50,37 @@ public static class IdentityDependencies
         services.Configure<Jwt>(configuration.GetSection(nameof(Jwt)));
 
         services.AddAuthentication(options =>
+        {
+            options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+            options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+        })
+        .AddJwtBearer(options =>
+        {
+            options.SaveToken = true;
+            options.TokenValidationParameters = new TokenValidationParameters
             {
-                options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
-                options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
-            })
-            .AddJwtBearer(options =>
-            {
-                options.SaveToken = true;
-                options.TokenValidationParameters = new TokenValidationParameters
-                {
-                    ValidateIssuer = true,
-                    ValidateAudience = true,
-                    ValidateLifetime = true,
-                    ValidateIssuerSigningKey = true,
-                    ValidIssuer = configuration["JWT:Issuer"],
-                    ValidAudience = configuration["JWT:Audience"],
-                    IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(configuration["JWT:Key"]!)),
-                    ClockSkew = TimeSpan.Zero
-                };
-            })
-            .AddGoogle(options =>
-            {
-                IConfigurationSection googleKeys = configuration.GetSection("Authentication:Google");
-                options.ClientId = googleKeys["ClientId"]!;
-                options.ClientSecret = googleKeys["ClientSecret"]!;
-            })
-            .AddFacebook(options =>
-            {
-                IConfigurationSection facebookAuthKeys = configuration.GetSection("Authentication:Facebook");
-                options.AppId = facebookAuthKeys["AppId"]!;
-                options.AppSecret = facebookAuthKeys["AppSecret"]!;
-            });
+                ValidateIssuer = true,
+                ValidateAudience = true,
+                ValidateLifetime = true,
+                ValidateIssuerSigningKey = true,
+                ValidIssuer = configuration["JWT:Issuer"],
+                ValidAudience = configuration["JWT:Audience"],
+                IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(configuration["JWT:Key"]!)),
+                ClockSkew = TimeSpan.Zero
+            };
+        })
+        .AddGoogle(options =>
+        {
+            IConfigurationSection googleKeys = configuration.GetSection("Authentication:Google");
+            options.ClientId = googleKeys["ClientId"]!;
+            options.ClientSecret = googleKeys["ClientSecret"]!;
+        })
+        .AddFacebook(options =>
+        {
+            IConfigurationSection facebookAuthKeys = configuration.GetSection("Authentication:Facebook");
+            options.AppId = facebookAuthKeys["AppId"]!;
+            options.AppSecret = facebookAuthKeys["AppSecret"]!;
+        });
 
         services.AddScoped<IUserPrivacyService, UserPrivacyService>();
 
