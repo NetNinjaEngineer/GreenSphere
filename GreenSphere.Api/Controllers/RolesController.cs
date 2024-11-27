@@ -1,4 +1,5 @@
-﻿using GreenSphere.Api.Controllers.Base;
+﻿using Asp.Versioning;
+using GreenSphere.Api.Controllers.Base;
 using GreenSphere.Application.Abstractions;
 using GreenSphere.Application.Attributes;
 using GreenSphere.Application.Features.Roles.Requests.Commands;
@@ -8,9 +9,8 @@ using MediatR;
 using Microsoft.AspNetCore.Mvc;
 
 namespace GreenSphere.Api.Controllers;
-
-[IsAuthenticated]
-[Guard(roles: Constants.Roles.User)]
+[ApiVersion(1.0)]
+[Guard(roles: [Constants.Roles.User])]
 [Route("api/v{ver:apiVersion}/roles")]
 [ApiController]
 public class RolesController(IMediator mediator) : BaseApiController(mediator)

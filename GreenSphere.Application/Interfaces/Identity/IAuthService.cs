@@ -9,8 +9,7 @@ public interface IAuthService
     Task<Result<SignUpResponseDto>> RegisterAsync(RegisterCommand command);
     Task<Result<SendCodeConfirmEmailResponseDto>> SendConfirmEmailCodeAsync(SendConfirmEmailCodeCommand command);
     Task<Result<string>> ConfirmEmailAsync(ConfirmEmailCommand command);
-    Task LogoutAsync();
-    Task<Result<GoogleAuthResponseDto>> GoogleLoginAsync(GoogleLoginCommand command);
+    Task<Bases.Result<GoogleUserProfile?>> GoogleLoginAsync(GoogleLoginCommand command);
     Task<Result<SignInResponseDto>> LoginAsync(LoginCommand command);
     Task<Bases.Result<SignInResponseDto>> RefreshTokenAsync(RefreshTokenCommand command);
     Task<Bases.Result<bool>> RevokeTokenAsync(RevokeTokenCommand command);
@@ -20,4 +19,5 @@ public interface IAuthService
     Task<Result<string>> ConfirmEnable2FaAsync(ConfirmEnable2FaCommand command);
     Task<Result<SignInResponseDto>> Verify2FaCodeAsync(Verify2FaCodeCommand command);
     Task<Result<string>> Disable2FaAsync(Disable2FaCommand command);
+    Task LogoutAsync();
 }

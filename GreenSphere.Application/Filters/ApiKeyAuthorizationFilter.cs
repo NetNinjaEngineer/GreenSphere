@@ -16,11 +16,13 @@ public class ApiKeyAuthorizationFilter(IConfiguration configuration) : IAuthoriz
         if (!CheckIsValidApiKey(apiKey!))
         {
             context.Result = new UnauthorizedObjectResult(
-                Response.CreateProblemDetails(
-                    StatusCodes.Status401Unauthorized,
-                    "Unauthorized",
-                    "API Key required to access the endpoints. API Key is sent as a request header."
-                ));
+                new GlobalErrorResponse
+                {
+                    Status = StatusCodes.Status401Unauthorized,
+                    Message = "Missing Api Key",
+                    Detail = "API Key required to access the endpoints, API Key is sent as a request header 'X-API-Key' .",
+                    Type = "Unauthorized_Error"
+                });
         }
     }
 

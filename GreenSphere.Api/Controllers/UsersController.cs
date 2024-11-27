@@ -11,13 +11,13 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace GreenSphere.Api.Controllers;
 
-[IsAuthenticated]
+[Guard]
 [ApiVersion(1.0)]
 [Route("api/v{ver:apiVersion}/users")]
 [ApiController]
 public class UsersController(IMediator mediator) : BaseApiController(mediator)
 {
-    [Guard(roles: Constants.Roles.User)]
+    [Guard(roles: [Constants.Roles.User])]
     [HttpPost("{userId}/privacy-settings/assign")]
     [ProducesResponseType(typeof(Result<string>), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(Result<string>), StatusCodes.Status404NotFound)]
@@ -43,7 +43,7 @@ public class UsersController(IMediator mediator) : BaseApiController(mediator)
     public async Task<ActionResult<Result<PrivacySettingListDto>>> GetUserProfileAsync(string userId)
         => CustomResult(await Mediator.Send(new GetUserProfileQuery { UserId = userId }));
 
-    [Guard(roles: Constants.Roles.User)]
+    [Guard(roles: [Constants.Roles.User])]
     [HttpGet("loggedInUser/profile")]
     [ProducesResponseType(typeof(Result<UserProfileDto>), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(Result<UserProfileDto>), StatusCodes.Status404NotFound)]
@@ -52,7 +52,7 @@ public class UsersController(IMediator mediator) : BaseApiController(mediator)
     public async Task<ActionResult<Result<UserProfileDto>>> GetUserProfileAsync()
         => CustomResult(await Mediator.Send(new GetLoggedInUserProfileQuery()));
 
-    [Guard(roles: Constants.Roles.User)]
+    [Guard(roles: [Constants.Roles.User])]
     [HttpGet("loggedInUser/privacy-settings")]
     [ProducesResponseType(typeof(Result<PrivacySettingListDto>), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(Result<PrivacySettingListDto>), StatusCodes.Status404NotFound)]

@@ -1,5 +1,6 @@
 ﻿using GreenSphere.Application.Helpers;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
 
@@ -7,39 +8,66 @@ namespace GreenSphere.Application.Filters;
 
 public sealed class GuardFilter(
     IAuthorizationService authorizationService,
-    string[] policies,
-    params string[] roles) : IAsyncAuthorizationFilter
+    string[]? policies = null,
+    string[]? roles = null) : IAsyncAuthorizationFilter
 {
     public Task OnAuthorizationAsync(AuthorizationFilterContext context)
     {
+        if (!context.HttpContext.User.Identity!.IsAuthenticated)
+        {
+            context.Result = new UnauthorizedObjectResult(GetUnauthorizedResponse());
+
+            return Task.CompletedTask;
+        }
+
+        if (context.HttpContext.Response.StatusCode == StatusCodes.Status403Forbidden)
+        {
+            context.Result = new ObjectResult(GetForbidenResponse());
+
+            return Task.CompletedTask;
+        }
+
         var user = context.HttpContext.User;
 
-        if (!user.Identity?.IsAuthenticated ?? true)
+        if (roles?.Length > 0 && !roles.Any(user.IsInRole))
         {
-            context.Result = new UnauthorizedObjectResult(Response.Unauthorized());
-            return Task.CompletedTask;
-        }
-
-
-        if (roles.Length > 0 && !roles.Any(user.IsInRole))
-        {
-            context.Result = new ObjectResult(Response.Forbiden());
+            context.Result = new ObjectResult(GetForbidenResponse());
 
             return Task.CompletedTask;
         }
 
+        if (policies is null) return Task.CompletedTask;
 
-        var policyAuthorizationTasks = policies.Select(
-            policy => authorizationService.AuthorizeAsync(user, policy)
-        ).ToArray();
+        var authTasks = policies.Select(
+            policy => authorizationService.AuthorizeAsync(user, policy));
 
-        return Task.WhenAll(policyAuthorizationTasks)
-            .ContinueWith(tasks =>
+        return Task.WhenAll(authTasks)
+            .ContinueWith(authorizationTasks =>
             {
-                if (tasks.Result.Any(x => !x.Succeeded))
-                {
-                    context.Result = new ObjectResult(Response.Forbiden());
-                }
+                if (authorizationTasks.Result.Any(authResult => !authResult.Succeeded))
+                    context.Result = new ObjectResult(GetForbidenResponse());
             });
+
+    }
+
+    private static GlobalErrorResponse GetUnauthorizedResponse()
+    {
+        return new GlobalErrorResponse()
+        {
+            Status = StatusCodes.Status401Unauthorized,
+            Title = "Unauthorized",
+            Detail =
+                "Authentication is required to access this resource. Please ensure you are logged in with appropriate credentials."
+        };
+    }
+
+    private static GlobalErrorResponse GetForbidenResponse()
+    {
+        return new GlobalErrorResponse()
+        {
+            Status = StatusCodes.Status403Forbidden,
+            Title = "Forbidden",
+            Detail = "You do not have permission to access this resource."
+        };
     }
 }

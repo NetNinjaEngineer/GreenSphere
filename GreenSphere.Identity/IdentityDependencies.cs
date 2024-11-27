@@ -84,6 +84,8 @@ public static class IdentityDependencies
 
         services.AddScoped<IUserPrivacyService, UserPrivacyService>();
 
+        services.AddMemoryCache();
+
         return services;
     }
 }
