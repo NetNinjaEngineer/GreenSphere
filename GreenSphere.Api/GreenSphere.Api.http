@@ -4,33 +4,3 @@ GET {{GreenSphere.Api_HostAddress}}/weatherforecast/
 Accept: application/json
 
 ###
-
-POST {{GreenSphere.Api_HostAddress}}/api/v1/auth/register
-Content-Type: application/json
-Accept: application/json
-{
-  "firstName": "Ali",
-  "lastName": "Ehab",
-  "userName": "ali@ehab111",
-  "email": "aliehab@gmail.com",
-  "password": "P@ss1234"
-}
-
-###
-
-POST {{GreenSphere.Api_HostAddress}}/api/v1/auth/sendConfirmEmailCode
-Content-Type: application/json
-Accept: application/json
-{
-  "email": "aliehab@gmail.com"
-}
-
-###
-
-POST {{GreenSphere.Api_HostAddress}}/api/v1/auth/confirm-email
-Content-Type: application/json
-Accept: application/json
-{
-  "email": "aliehab@gmail.com",
-  "token": "667441"
-}

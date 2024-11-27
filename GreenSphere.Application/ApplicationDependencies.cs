@@ -31,8 +31,6 @@ public static class ApplicationDependencies
             return new PrivacyAuthorizationHandler(service);
         });
 
-        services.AddSingleton<IsAuthenticatedFilter>();
-
         return services;
     }
 }

@@ -50,7 +50,7 @@ public static class SwaggerExtensions
                             Id = "ApiKey"
                         }
                     },
-                    new string[] {}
+                    []
                 }
             });
 
