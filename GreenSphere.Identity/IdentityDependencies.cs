@@ -1,4 +1,5 @@
-﻿using GreenSphere.Application.Interfaces.Identity;
+﻿using GreenSphere.Application.Helpers;
+using GreenSphere.Application.Interfaces.Identity;
 using GreenSphere.Domain.Identity.Entities;
 using GreenSphere.Domain.Identity.Models;
 using GreenSphere.Identity.Services;
@@ -18,26 +19,30 @@ public static class IdentityDependencies
         this IServiceCollection services,
         IConfiguration configuration)
     {
+        var jwtSettings = new JWT();
+
+        configuration.GetSection(nameof(JWT)).Bind(jwtSettings);
+
         services.AddDbContext<ApplicationIdentityDbContext>(options =>
             options.UseSqlServer(configuration.GetConnectionString("IdentityConnection")));
 
         services.AddIdentity<ApplicationUser, IdentityRole>(options =>
-            {
-                var duration = Convert.ToDouble(configuration["DefaultLockoutMinutes"]);
-                options.Lockout.DefaultLockoutTimeSpan = TimeSpan.FromMinutes(duration);
-                options.Lockout.MaxFailedAccessAttempts = 5;
-                options.Lockout.AllowedForNewUsers = true;
+        {
+            var duration = Convert.ToDouble(configuration["DefaultLockoutMinutes"]);
+            options.Lockout.DefaultLockoutTimeSpan = TimeSpan.FromMinutes(duration);
+            options.Lockout.MaxFailedAccessAttempts = 5;
+            options.Lockout.AllowedForNewUsers = true;
 
-                options.Password.RequiredLength = 8;
-                options.Password.RequireNonAlphanumeric = true;
-                options.Password.RequireDigit = true;
-                options.Password.RequireLowercase = true;
-                options.Password.RequireUppercase = true;
-                options.SignIn.RequireConfirmedEmail = true;
-                options.User.RequireUniqueEmail = true;
-            })
-            .AddEntityFrameworkStores<ApplicationIdentityDbContext>()
-            .AddDefaultTokenProviders();
+            options.Password.RequiredLength = 8;
+            options.Password.RequireNonAlphanumeric = true;
+            options.Password.RequireDigit = true;
+            options.Password.RequireLowercase = true;
+            options.Password.RequireUppercase = true;
+            options.SignIn.RequireConfirmedEmail = true;
+            options.User.RequireUniqueEmail = true;
+        })
+        .AddEntityFrameworkStores<ApplicationIdentityDbContext>()
+        .AddDefaultTokenProviders();
 
         services.AddAutoMapper(typeof(IdentityDependencies).Assembly);
 
@@ -63,28 +68,20 @@ public static class IdentityDependencies
                 ValidateAudience = true,
                 ValidateLifetime = true,
                 ValidateIssuerSigningKey = true,
-                ValidIssuer = configuration["JWT:Issuer"],
-                ValidAudience = configuration["JWT:Audience"],
-                IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(configuration["JWT:Key"]!)),
+                ValidIssuer = jwtSettings.Issuer,
+                ValidAudience = jwtSettings.Audience,
+                IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtSettings.Key)),
                 ClockSkew = TimeSpan.Zero
             };
-        })
-        .AddGoogle(options =>
-        {
-            IConfigurationSection googleKeys = configuration.GetSection("Authentication:Google");
-            options.ClientId = googleKeys["ClientId"]!;
-            options.ClientSecret = googleKeys["ClientSecret"]!;
-        })
-        .AddFacebook(options =>
-        {
-            IConfigurationSection facebookAuthKeys = configuration.GetSection("Authentication:Facebook");
-            options.AppId = facebookAuthKeys["AppId"]!;
-            options.AppSecret = facebookAuthKeys["AppSecret"]!;
         });
 
         services.AddScoped<IUserPrivacyService, UserPrivacyService>();
 
         services.AddMemoryCache();
+
+        services.AddScoped<ITokenService, TokenService>();
+
+        services.Configure<JWT>(configuration.GetSection(nameof(JWT)));
 
         return services;
     }

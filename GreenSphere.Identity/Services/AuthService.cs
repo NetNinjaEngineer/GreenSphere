@@ -11,18 +11,13 @@ using GreenSphere.Application.Interfaces.Services;
 using GreenSphere.Application.Interfaces.Services.Models;
 using GreenSphere.Domain.Identity.Entities;
 using GreenSphere.Domain.Identity.Enumerations;
-using GreenSphere.Domain.Identity.Models;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Caching.Memory;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
-using Microsoft.Extensions.Options;
-using Microsoft.IdentityModel.Tokens;
-using System.IdentityModel.Tokens.Jwt;
 using System.Net;
-using System.Security.Claims;
 using System.Security.Cryptography;
 using System.Text;
 using System.Text.Json;
@@ -35,13 +30,12 @@ public sealed class AuthService(
     IConfiguration configuration,
     SignInManager<ApplicationUser> signInManager,
     IMailService mailService,
-    IOptions<Jwt> jwtOptions,
     IHttpContextAccessor contextAccessor,
     IMemoryCache memoryCache,
-    ILogger<AuthService> logger) : BaseResponseHandler, IAuthService
+    ILogger<AuthService> logger,
+    ITokenService tokenService) : BaseResponseHandler, IAuthService
 {
     private const string CacheKeyPrefix = "GoogleToken_";
-    private readonly Jwt _jwtSettings = jwtOptions.Value;
 
     public async Task<Result<string>> ConfirmEmailAsync(ConfirmEmailCommand command)
     {
@@ -256,7 +250,7 @@ public sealed class AuthService(
         UserManager<ApplicationUser> userManager,
         ApplicationUser loggedInUser)
     {
-        var token = await GenerateJwtToken(loggedInUser);
+        var token = await tokenService.GenerateJwtTokenAsync(loggedInUser);
         var userRoles = await userManager.GetRolesAsync(loggedInUser);
         var response = new SignInResponseDto()
         {
@@ -264,7 +258,7 @@ public sealed class AuthService(
             UserName = loggedInUser.UserName!,
             IsAuthenticated = true,
             Roles = [.. userRoles],
-            Token = new JwtSecurityTokenHandler().WriteToken(token),
+            Token = token,
         };
 
         if (loggedInUser.RefreshTokens != null && loggedInUser.RefreshTokens.Any(x => x.IsActive))
@@ -315,7 +309,7 @@ public sealed class AuthService(
 
 
     private async Task<Application.Bases.Result<SignInResponseDto>> CreateSignInResponse(
-        (ApplicationUser appUser, JwtSecurityToken jwtToken) appUserWithJwt)
+        (ApplicationUser appUser, string jwtToken) appUserWithJwt)
     {
         var userRoles = await userManager.GetRolesAsync(appUserWithJwt.appUser);
         var newRefreshToken = appUserWithJwt.appUser.RefreshTokens?.FirstOrDefault(x => x.IsActive);
@@ -325,7 +319,7 @@ public sealed class AuthService(
             IsAuthenticated = true,
             UserName = appUserWithJwt.appUser.UserName!,
             Email = appUserWithJwt.appUser.Email!,
-            Token = new JwtSecurityTokenHandler().WriteToken(appUserWithJwt.jwtToken),
+            Token = appUserWithJwt.jwtToken,
             Roles = [.. userRoles],
             RefreshToken = newRefreshToken?.Token,
             RefreshTokenExpiration = newRefreshToken!.ExpiresOn
@@ -334,12 +328,12 @@ public sealed class AuthService(
         return Application.Bases.Result<SignInResponseDto>.Success(response);
     }
 
-    private async Task<Application.Bases.Result<(ApplicationUser appUser, JwtSecurityToken jwtToken)>>
+    private async Task<Application.Bases.Result<(ApplicationUser appUser, string jwtToken)>>
         GenerateNewJwtToken(ApplicationUser appUser)
     {
-        var jwtToken = await GenerateJwtToken(appUser);
-        return Application.Bases.Result<(ApplicationUser appUser, JwtSecurityToken jwtToken)>.Success((appUser,
-            jwtToken));
+        var jwtToken = await tokenService.GenerateJwtTokenAsync(appUser);
+        return Application.Bases.Result<(ApplicationUser appUser, string jwtToken)>
+            .Success((appUser, jwtToken));
     }
 
     private async Task<Application.Bases.Result<ApplicationUser>> GenerateNewRefreshToken(ApplicationUser appUser)
@@ -372,40 +366,6 @@ public sealed class AuthService(
         if (refreshToken is not null)
             return Application.Bases.Result<RefreshToken>.Success(refreshToken);
         return Application.Bases.Result<RefreshToken>.Failure(HttpStatusCode.NotFound, "Token not found");
-    }
-
-    private async Task<JwtSecurityToken> GenerateJwtToken(ApplicationUser user)
-    {
-        var userClaims = await userManager.GetClaimsAsync(user);
-        var roles = await userManager.GetRolesAsync(user);
-
-        var roleClaims = new List<Claim>();
-
-        for (int i = 0; i < roles.Count; i++)
-        {
-            roleClaims.Add(new Claim(ClaimTypes.Role, roles[i]));
-        }
-
-        var claims = new[]
-            {
-                new Claim(JwtRegisteredClaimNames.Sub, user.UserName),
-                new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
-                new Claim(JwtRegisteredClaimNames.Email, user.Email),
-                new Claim(CustomClaimTypes.Uid, user.Id)
-            }
-            .Union(userClaims)
-            .Union(roleClaims);
-
-        var symmetricSecurityKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_jwtSettings.Key));
-        var signingCredentials = new SigningCredentials(symmetricSecurityKey, SecurityAlgorithms.HmacSha256);
-
-        var jwtSecurityToken = new JwtSecurityToken(
-            issuer: _jwtSettings.Issuer,
-            audience: _jwtSettings.Audience,
-            claims: claims,
-            expires: DateTime.UtcNow.AddDays(_jwtSettings.ExpirationInDays),
-            signingCredentials: signingCredentials);
-        return jwtSecurityToken;
     }
 
     public async Task LogoutAsync() => await signInManager.SignOutAsync();
@@ -707,5 +667,19 @@ public sealed class AuthService(
         });
 
         return Success(Constants.Disable2FaSuccess);
+    }
+
+    public async Task<Application.Bases.Result<ValidateTokenResponseDto>> ValidateTokenAsync(ValidateTokenCommand command)
+    {
+        if (string.IsNullOrWhiteSpace(command.JwtToken))
+            return Application.Bases.Result<ValidateTokenResponseDto>.Failure(HttpStatusCode.BadRequest, "Token cannot be null or empty.");
+
+        var claimsPrincipal = await tokenService.ValidateToken(command.JwtToken);
+
+        var response = new ValidateTokenResponseDto();
+        foreach (var claim in claimsPrincipal.Claims)
+            response.Claims.Add(new ClaimsResponse() { ClaimType = claim.Type, ClaimValue = claim.Value });
+
+        return Application.Bases.Result<ValidateTokenResponseDto>.Success(response, "token is valid.");
     }
 }

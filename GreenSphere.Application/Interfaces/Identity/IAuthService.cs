@@ -19,5 +19,6 @@ public interface IAuthService
     Task<Result<string>> ConfirmEnable2FaAsync(ConfirmEnable2FaCommand command);
     Task<Result<SignInResponseDto>> Verify2FaCodeAsync(Verify2FaCodeCommand command);
     Task<Result<string>> Disable2FaAsync(Disable2FaCommand command);
+    Task<Bases.Result<ValidateTokenResponseDto>> ValidateTokenAsync(ValidateTokenCommand command);
     Task LogoutAsync();
 }

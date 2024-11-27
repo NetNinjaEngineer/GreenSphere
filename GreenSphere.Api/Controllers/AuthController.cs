@@ -128,4 +128,8 @@ public class AuthController(IMediator mediator) : BaseApiController(mediator)
     [HttpPost("disable-2fa")]
     public async Task<ActionResult<Result<string>>> Disable2FaAsync(Disable2FaCommand command)
         => CustomResult(await Mediator.Send(command));
+
+    [HttpPost("validate-token")]
+    public async Task<ActionResult<Application.Bases.Result<ValidateTokenResponseDto>>> ValidateTokenAsync([FromQuery] ValidateTokenCommand command)
+        => CustomResult(await Mediator.Send(command));
 }
