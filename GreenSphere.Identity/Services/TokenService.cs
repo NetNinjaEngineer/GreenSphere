@@ -28,8 +28,8 @@ public sealed class TokenService(
             new Claim(JwtRegisteredClaimNames.Sub, user.UserName ?? string.Empty),
             new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
             new Claim(JwtRegisteredClaimNames.Email, user.Email ?? string.Empty),
-            new Claim(ClaimTypes.NameIdentifier, user.Id),
-            new Claim("FullName", $"{user.FirstName} {user.LastName}".Trim())
+            new Claim("FullName", $"{user.FirstName} {user.LastName}".Trim()),
+            new Claim("uid", user.Id)
         }
             .Union(userClaims)
             .Union(roleClaims);

@@ -10,7 +10,6 @@ using MediatR;
 using Microsoft.AspNetCore.Mvc;
 
 namespace GreenSphere.Api.Controllers;
-
 [Guard]
 [ApiVersion(1.0)]
 [Route("api/v{ver:apiVersion}/users")]

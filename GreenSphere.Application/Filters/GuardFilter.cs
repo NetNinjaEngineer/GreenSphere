@@ -36,7 +36,7 @@ public sealed class GuardFilter(
             return Task.CompletedTask;
         }
 
-        if (policies is null) return Task.CompletedTask;
+        if (policies?.Length == 0) return Task.CompletedTask;
 
         var authTasks = policies.Select(
             policy => authorizationService.AuthorizeAsync(user, policy));
