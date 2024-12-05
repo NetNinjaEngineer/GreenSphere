@@ -554,7 +554,6 @@ public sealed class AuthService(
             return UnprocessableEntity<string>(errors);
         }
 
-
         return Success<string>("Reset Password Successfuly.");
     }
 
