@@ -1,4 +1,7 @@
-﻿using GreenSphere.Application.Bases;
+﻿using FluentValidation;
+using GreenSphere.Application.Bases;
+using GreenSphere.Application.Features.Auth.Requests.Commands;
+using GreenSphere.Application.Features.Auth.Validators.Commands;
 using GreenSphere.Application.Helpers;
 using GreenSphere.Application.Interfaces.Infrastructure;
 using GreenSphere.Application.Interfaces.Infrastructure.Models;
@@ -61,6 +64,9 @@ public sealed class FacebookClientApi(
 
     private async Task<Result<FacebookAuthenticationResponseDto>> GetFacebookUserAsync(string accessToken)
     {
+        var validator = new FacebookLoginCommandValidator();
+        await validator.ValidateAndThrowAsync(new FacebookLoginCommand { AccessToken = accessToken });
+
         var requestMessage = new HttpRequestMessage(HttpMethod.Get, $"me?access_token={accessToken}&fields=id,name,picture");
         var response = await client.SendAsync(requestMessage, HttpCompletionOption.ResponseHeadersRead);
         if (!response.IsSuccessStatusCode)

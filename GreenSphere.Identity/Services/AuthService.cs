@@ -296,7 +296,7 @@ public sealed class AuthService(
                 .BindAsync(CreateSignInResponse))
             .Map(authResponse => authResponse);
 
-    // revoke validator
+
     public async Task<Application.Bases.Result<bool>> RevokeTokenAsync(RevokeTokenCommand command)
         => (await (await CheckIfUserHasAssignedToRefreshToken(command.Token!))
                 .Bind(appUser => SelectRefreshTokenAssignedToUser(appUser, command.Token!))
@@ -488,9 +488,6 @@ public sealed class AuthService(
     private async Task<Application.Bases.Result<ApplicationUser>> CheckIfUserHasAssignedToRefreshToken(
         string refreshToken)
     {
-        //var validator = new RefreshTokenCommandValidator();
-        //await validator.ValidateAsync();
-
         var user = await userManager.Users.SingleOrDefaultAsync(x =>
             x.RefreshTokens != null && x.RefreshTokens.Any(x => x.Token == refreshToken));
         return user is null

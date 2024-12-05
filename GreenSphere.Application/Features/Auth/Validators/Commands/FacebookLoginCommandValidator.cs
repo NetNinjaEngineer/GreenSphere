@@ -7,12 +7,9 @@ namespace GreenSphere.Application.Features.Auth.Validators.Commands
     {
         public FacebookLoginCommandValidator()
         {
-            //RuleFor(x => x.AccessToken)
-            //    .NotEmpty().WithMessage("{PropertyName} can not be empty.")
-            //    .Must(BeValidJwtFormat).WithMessage("Token must be in valid JWT format");
+            RuleFor(x => x.AccessToken)
+                .NotEmpty().WithMessage("{PropertyName} can not be empty.");
 
         }
-        // private static bool BeValidJwtFormat(string token) => token.Split(".").Length == 3;
-
     }
 }
