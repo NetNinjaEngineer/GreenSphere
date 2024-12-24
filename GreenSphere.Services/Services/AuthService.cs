@@ -393,14 +393,18 @@ public sealed class AuthService(
         await registerCommandValidator.ValidateAndThrowAsync(command);
 
         var user = mapper.Map<ApplicationUser>(command);
-        var result = await userManager.CreateAsync(user, command.Password);
+
+        var createResult = await userManager.CreateAsync(user, command.Password);
+
+        if (!createResult.Succeeded)
+        {
+            var creationErrors = createResult.Errors.Select(e => e.Description).ToList();
+            return BadRequest<SignUpResponseDto>(DomainErrors.User.UnableToCreateAccount, creationErrors);
+        }
 
         await userManager.AddToRoleAsync(user, Constants.Roles.User);
 
-        return !result.Succeeded
-            ? BadRequest<SignUpResponseDto>(DomainErrors.User.UnableToCreateAccount,
-                [result.Errors.Select(e => e.Description).FirstOrDefault()])
-            : Success(SignUpResponseDto.ToResponse(Guid.Parse(user.Id)));
+        return Success(SignUpResponseDto.ToResponse(Guid.Parse(user.Id)));
     }
 
     public async Task<Result<SendCodeConfirmEmailResponseDto>> SendConfirmEmailCodeAsync(
