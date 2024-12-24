@@ -1,5 +1,7 @@
 ﻿using GreenSphere.Application.Abstractions;
-using GreenSphere.Application.Features.Email.Requests.Commands;
+using GreenSphere.Application.Features.Email.Commands.SendEmailBulk;
+using GreenSphere.Application.Features.Email.Commands.SendEmailBulkWithAttachments;
+using GreenSphere.Application.Features.Email.Commands.SendEmailWithAttachments;
 using GreenSphere.Application.Interfaces.Services.Models;
 
 namespace GreenSphere.Application.Interfaces.Services;

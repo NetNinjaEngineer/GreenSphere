@@ -1,8 +1,9 @@
 ﻿namespace GreenSphere.Application.Helpers;
+
 public sealed class JWT
 {
-    public string Key { get; set; } = null!;
-    public string Issuer { get; set; } = null!;
-    public string Audience { get; set; } = null!;
+    public string Key { get; set; } = string.Empty;
+    public string Audience { get; set; } = string.Empty;
+    public string Issuer { get; set; } = string.Empty;
     public int ExpirationInDays { get; set; }
 }

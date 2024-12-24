@@ -2,9 +2,12 @@
 using GreenSphere.Api.Controllers.Base;
 using GreenSphere.Application.Attributes;
 using GreenSphere.Application.Bases;
-using GreenSphere.Application.Features.Users.DTOs;
-using GreenSphere.Application.Features.Users.Requests.Commands;
-using GreenSphere.Application.Features.Users.Requests.Queries;
+using GreenSphere.Application.DTOs.Users;
+using GreenSphere.Application.Features.Users.Commands.AssignUserPrivacy;
+using GreenSphere.Application.Features.Users.Queries.GetLoggedInUserPrivacySettings;
+using GreenSphere.Application.Features.Users.Queries.GetLoggedInUserProfile;
+using GreenSphere.Application.Features.Users.Queries.GetUserPrivacySetting;
+using GreenSphere.Application.Features.Users.Queries.GetUserProfile;
 using GreenSphere.Application.Helpers;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;

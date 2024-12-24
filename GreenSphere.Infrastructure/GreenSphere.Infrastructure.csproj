@@ -7,10 +7,6 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Asp.Versioning.Http" Version="8.1.0" />
-  </ItemGroup>
-
-  <ItemGroup>
     <ProjectReference Include="..\GreenSphere.Application\GreenSphere.Application.csproj" />
   </ItemGroup>
 

@@ -1,7 +1,10 @@
 ﻿using Asp.Versioning;
 using GreenSphere.Api.Controllers.Base;
 using GreenSphere.Application.Abstractions;
-using GreenSphere.Application.Features.Email.Requests.Commands;
+using GreenSphere.Application.Features.Email.Commands.SendEmail;
+using GreenSphere.Application.Features.Email.Commands.SendEmailBulk;
+using GreenSphere.Application.Features.Email.Commands.SendEmailBulkWithAttachments;
+using GreenSphere.Application.Features.Email.Commands.SendEmailWithAttachments;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 

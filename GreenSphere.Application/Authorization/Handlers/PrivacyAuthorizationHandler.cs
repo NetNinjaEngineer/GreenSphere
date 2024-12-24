@@ -1,7 +1,7 @@
 ﻿using GreenSphere.Application.Authorization.Requirements;
 using GreenSphere.Application.Authorization.Requirements.Models;
+using GreenSphere.Application.Helpers;
 using GreenSphere.Application.Interfaces.Identity;
-using GreenSphere.Domain.Identity.Models;
 using Microsoft.AspNetCore.Authorization;
 using System.Security.Claims;
 

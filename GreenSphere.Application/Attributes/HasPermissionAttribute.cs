@@ -1,6 +1,6 @@
 ﻿using GreenSphere.Application.Authorization.Requirements.Models;
+using GreenSphere.Application.Helpers;
 using GreenSphere.Application.Interfaces.Identity;
-using GreenSphere.Domain.Identity.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
 using Microsoft.Extensions.DependencyInjection;

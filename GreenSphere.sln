@@ -11,8 +11,6 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "GreenSphere.Application", "
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "GreenSphere.Infrastructure", "GreenSphere.Infrastructure\GreenSphere.Infrastructure.csproj", "{A7A2A698-2967-4853-9D31-744482DCCF3D}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "GreenSphere.Identity", "GreenSphere.Identity\GreenSphere.Identity.csproj", "{AB8307AB-8F9E-4A79-B2E2-390C6FBC598F}"
-EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "GreenSphere.Services", "GreenSphere.Services\GreenSphere.Services.csproj", "{19E24910-2D85-4BEC-A64B-094AF265EC62}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "GreenSphere.Persistence", "GreenSphere.Persistence\GreenSphere.Persistence.csproj", "{FB324A6C-576F-4255-87C9-BDD3D6956CE2}"
@@ -39,10 +37,6 @@ Global
 		{A7A2A698-2967-4853-9D31-744482DCCF3D}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{A7A2A698-2967-4853-9D31-744482DCCF3D}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{A7A2A698-2967-4853-9D31-744482DCCF3D}.Release|Any CPU.Build.0 = Release|Any CPU
-		{AB8307AB-8F9E-4A79-B2E2-390C6FBC598F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{AB8307AB-8F9E-4A79-B2E2-390C6FBC598F}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{AB8307AB-8F9E-4A79-B2E2-390C6FBC598F}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{AB8307AB-8F9E-4A79-B2E2-390C6FBC598F}.Release|Any CPU.Build.0 = Release|Any CPU
 		{19E24910-2D85-4BEC-A64B-094AF265EC62}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{19E24910-2D85-4BEC-A64B-094AF265EC62}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{19E24910-2D85-4BEC-A64B-094AF265EC62}.Release|Any CPU.ActiveCfg = Release|Any CPU

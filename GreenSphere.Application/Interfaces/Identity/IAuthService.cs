@@ -1,6 +1,19 @@
 ﻿using GreenSphere.Application.Abstractions;
-using GreenSphere.Application.Features.Auth.DTOs;
-using GreenSphere.Application.Features.Auth.Requests.Commands;
+using GreenSphere.Application.DTOs.Auth;
+using GreenSphere.Application.Features.Auth.Commands.ConfirmEmail;
+using GreenSphere.Application.Features.Auth.Commands.ConfirmEnable2FA;
+using GreenSphere.Application.Features.Auth.Commands.ConfirmForgotPasswordCode;
+using GreenSphere.Application.Features.Auth.Commands.Disable2Fa;
+using GreenSphere.Application.Features.Auth.Commands.Enable2Fa;
+using GreenSphere.Application.Features.Auth.Commands.ForgotPassword;
+using GreenSphere.Application.Features.Auth.Commands.GoogleLogin;
+using GreenSphere.Application.Features.Auth.Commands.Login;
+using GreenSphere.Application.Features.Auth.Commands.RefreshToken;
+using GreenSphere.Application.Features.Auth.Commands.Register;
+using GreenSphere.Application.Features.Auth.Commands.RevokeToken;
+using GreenSphere.Application.Features.Auth.Commands.SendConfirmEmailCode;
+using GreenSphere.Application.Features.Auth.Commands.ValidateToken;
+using GreenSphere.Application.Features.Auth.Commands.Verify2FaCode;
 
 namespace GreenSphere.Application.Interfaces.Identity;
 

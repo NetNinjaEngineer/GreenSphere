@@ -1,11 +1,10 @@
 ﻿using FluentValidation;
 using GreenSphere.Application.Bases;
-using GreenSphere.Application.Features.Auth.Requests.Commands;
-using GreenSphere.Application.Features.Auth.Validators.Commands;
+using GreenSphere.Application.Features.Auth.Commands.FacebookLogin;
 using GreenSphere.Application.Helpers;
 using GreenSphere.Application.Interfaces.Infrastructure;
 using GreenSphere.Application.Interfaces.Infrastructure.Models;
-using GreenSphere.Domain.Identity.Entities;
+using GreenSphere.Domain.Entities;
 using Microsoft.AspNetCore.Identity;
 using System.Net;
 using System.Text.Json;

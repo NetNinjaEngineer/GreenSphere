@@ -1,6 +1,4 @@
-﻿using GreenSphere.Api.ExceptionHandling.Handlers;
-
-namespace GreenSphere.Api.Extensions;
+﻿namespace GreenSphere.Api.Extensions;
 
 public static class GlobalExceptionHandlerExtensions
 {

@@ -31,6 +31,8 @@ public static class ApplicationDependencies
             return new PrivacyAuthorizationHandler(service);
         });
 
+        services.AddAutoMapper(Assembly.GetExecutingAssembly());
+
         return services;
     }
 }

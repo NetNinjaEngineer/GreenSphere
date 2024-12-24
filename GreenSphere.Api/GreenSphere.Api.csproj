@@ -4,7 +4,7 @@
     <TargetFramework>net8.0</TargetFramework>
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
-    <UserSecretsId>05263956-ce69-4c51-917a-9f576fb92b38</UserSecretsId>
+    <UserSecretsId>85541ed0-3b23-4cd0-b30c-5fdde7947404</UserSecretsId>
   </PropertyGroup>
 
   <ItemGroup>
@@ -19,7 +19,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\GreenSphere.Identity\GreenSphere.Identity.csproj" />
     <ProjectReference Include="..\GreenSphere.Infrastructure\GreenSphere.Infrastructure.csproj" />
     <ProjectReference Include="..\GreenSphere.Persistence\GreenSphere.Persistence.csproj" />
     <ProjectReference Include="..\GreenSphere.Services\GreenSphere.Services.csproj" />

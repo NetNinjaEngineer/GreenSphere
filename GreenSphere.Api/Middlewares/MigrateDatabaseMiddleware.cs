@@ -1,4 +1,4 @@
-﻿using GreenSphere.Identity;
+﻿using GreenSphere.Persistence;
 using Microsoft.EntityFrameworkCore;
 
 namespace GreenSphere.Api.Middlewares;
@@ -9,8 +9,8 @@ public class MigrateDatabaseMiddleware : IMiddleware
     {
         var serviceScopeFactory = context.RequestServices.GetRequiredService<IServiceScopeFactory>();
         var serviceScope = serviceScopeFactory.CreateScope();
-        var identityDbContext = serviceScope.ServiceProvider.GetRequiredService<ApplicationIdentityDbContext>();
-        await identityDbContext.Database.MigrateAsync();
+        var dbContext = serviceScope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
+        await dbContext.Database.MigrateAsync();
         await next(context);
     }
 }

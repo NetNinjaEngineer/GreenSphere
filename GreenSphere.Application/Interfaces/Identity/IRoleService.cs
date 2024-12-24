@@ -1,5 +1,10 @@
 ﻿using GreenSphere.Application.Abstractions;
-using GreenSphere.Application.Features.Roles.Requests.Commands;
+using GreenSphere.Application.Features.Roles.Commands.AddClaimToRole;
+using GreenSphere.Application.Features.Roles.Commands.AssignClaimToUser;
+using GreenSphere.Application.Features.Roles.Commands.AssignRoleToUser;
+using GreenSphere.Application.Features.Roles.Commands.CreateRole;
+using GreenSphere.Application.Features.Roles.Commands.DeleteRole;
+using GreenSphere.Application.Features.Roles.Commands.EditRole;
 
 namespace GreenSphere.Application.Interfaces.Identity;
 public interface IRoleService

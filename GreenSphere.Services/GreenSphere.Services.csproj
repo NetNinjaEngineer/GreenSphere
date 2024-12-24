@@ -7,13 +7,13 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Asp.Versioning.Http" Version="8.1.0" />
     <PackageReference Include="MailKit" Version="4.8.0" />
     <PackageReference Include="SendGrid" Version="9.29.3" />
   </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\GreenSphere.Application\GreenSphere.Application.csproj" />
+    <ProjectReference Include="..\GreenSphere.Persistence\GreenSphere.Persistence.csproj" />
   </ItemGroup>
 
 </Project>
