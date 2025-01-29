@@ -8,5 +8,5 @@ public class ApplicationUser : IdentityUser
     public string? Code { get; set; }
     public DateTimeOffset? CodeExpiration { get; set; }
     public List<RefreshToken>? RefreshTokens { get; set; }
-    public PrivacySetting PrivacySetting { get; set; }
+    public PrivacySetting PrivacySetting { get; set; } = null!;
 }

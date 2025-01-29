@@ -6,5 +6,5 @@ using System.Security.Claims;
 namespace GreenSphere.Services.Services;
 public class CurrentUser(IHttpContextAccessor contextAccessor) : ICurrentUser
 {
-    public string Id => contextAccessor.HttpContext!.User.FindFirstValue(CustomClaimTypes.Uid)!;
+    public string Id => contextAccessor.HttpContext?.User.FindFirstValue(CustomClaimTypes.Uid)!;
 }

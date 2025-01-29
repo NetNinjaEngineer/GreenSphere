@@ -37,7 +37,6 @@ public sealed class TokenService(
             new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
             new Claim(JwtRegisteredClaimNames.Email, user.Email ?? string.Empty),
             new Claim("FullName", $"{user.FirstName} {user.LastName}".Trim()),
-            new Claim("uid", user.Id),
             new Claim(CustomClaimTypes.Uid, user.Id),
             new Claim(CustomClaimTypes.IP, ipAddress!),
             new Claim(CustomClaimTypes.UserAgent, userAgent!),
