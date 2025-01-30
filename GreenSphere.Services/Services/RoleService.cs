@@ -9,6 +9,7 @@ using GreenSphere.Application.Helpers;
 using GreenSphere.Application.Interfaces.Identity;
 using GreenSphere.Domain.Entities;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.Extensions.Localization;
 using System.Security.Claims;
 
 namespace GreenSphere.Services.Services;
@@ -16,7 +17,8 @@ namespace GreenSphere.Services.Services;
 public sealed class RoleService(
     RoleManager<IdentityRole> roleManager,
     UserManager<ApplicationUser> userManager,
-    ICurrentUser currentUser) : BaseResponseHandler, IRoleService
+    ICurrentUser currentUser,
+    IStringLocalizer<BaseResponseHandler> localizer) : BaseResponseHandler(localizer), IRoleService
 {
     public async Task<Result<string>> CreateRole(CreateRoleCommand request)
     {

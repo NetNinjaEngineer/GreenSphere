@@ -1,31 +1,32 @@
-﻿using System.Net;
+﻿using Microsoft.Extensions.Localization;
+using System.Net;
 
 namespace GreenSphere.Application.Abstractions;
 
-public class BaseResponseHandler
+public class BaseResponseHandler(IStringLocalizer<BaseResponseHandler> localizer)
 {
-    public static Result<T> Deleted<T>()
+    public Result<T> Deleted<T>()
     {
         return new SuccessResult<T>()
         {
             StatusCode = HttpStatusCode.NoContent,
             Succeeded = true,
-            Message = "Deleted Successfully"
+            Message = localizer["DeletedSuccessfully"]
         };
     }
 
-    public static Result<T> Success<T>(T entity)
+    public Result<T> Success<T>(T entity)
     {
         return new SuccessResult<T>()
         {
             Data = entity,
             StatusCode = HttpStatusCode.OK,
             Succeeded = true,
-            Message = "Success",
+            Message = localizer["Successfully"],
         };
     }
 
-    public static Result<T> Success<T>(T entity, string message)
+    public Result<T> Success<T>(T entity, string message)
     {
         return new SuccessResult<T>()
         {
@@ -37,17 +38,17 @@ public class BaseResponseHandler
     }
 
 
-    public static Result<T> Unauthorized<T>()
+    public Result<T> Unauthorized<T>()
     {
         return new FailedResult<T>()
         {
             StatusCode = HttpStatusCode.Unauthorized,
             Succeeded = false,
-            Message = "UnAuthorized"
+            Message = localizer["UnAuthorized"]
         };
     }
 
-    public static Result<T> Unauthorized<T>(string message)
+    public Result<T> Unauthorized<T>(string message)
     {
         return new FailedResult<T>()
         {
@@ -58,55 +59,55 @@ public class BaseResponseHandler
     }
 
 
-    public static Result<T> BadRequest<T>(string message, List<string> errors = null)
+    public Result<T> BadRequest<T>(string message, List<string> errors = null)
     {
         return new FailedResult<T>()
         {
             StatusCode = HttpStatusCode.BadRequest,
             Succeeded = false,
-            Message = string.IsNullOrWhiteSpace(message) ? "BadRequest" : message,
+            Message = string.IsNullOrWhiteSpace(message) ? localizer["BadRequest"] : message,
             Errors = errors
         };
     }
 
-    public static Result<T> Conflict<T>(string message = null)
+    public Result<T> Conflict<T>(string message = null)
     {
         return new FailedResult<T>()
         {
             StatusCode = HttpStatusCode.Conflict,
             Succeeded = false,
-            Message = string.IsNullOrWhiteSpace(message) ? "Conflict" : message
+            Message = string.IsNullOrWhiteSpace(message) ? localizer["Conflict"] : message
         };
     }
 
-    public static Result<T> UnprocessableEntity<T>(string message = null)
+    public Result<T> UnprocessableEntity<T>(string message = null)
     {
         return new FailedResult<T>()
         {
             StatusCode = HttpStatusCode.UnprocessableEntity,
             Succeeded = false,
-            Message = string.IsNullOrWhiteSpace(message) ? "Unprocessable Entity" : message
+            Message = string.IsNullOrWhiteSpace(message) ? localizer["UnprocessableEntity"] : message
         };
     }
 
-    public static Result<T> NotFound<T>(string message = null)
+    public Result<T> NotFound<T>(string message = null)
     {
         return new FailedResult<T>()
         {
             StatusCode = HttpStatusCode.NotFound,
             Succeeded = false,
-            Message = string.IsNullOrWhiteSpace(message) ? "Not Found" : message
+            Message = string.IsNullOrWhiteSpace(message) ? localizer["NotFound"] : message
         };
     }
 
-    public static Result<T> Created<T>(T entity)
+    public Result<T> Created<T>(T entity)
     {
         return new SuccessResult<T>()
         {
             Data = entity,
             StatusCode = HttpStatusCode.Created,
             Succeeded = true,
-            Message = "Created"
+            Message = localizer["Created"]
         };
     }
 
@@ -117,7 +118,7 @@ public class BaseResponseHandler
             Data = default!,
             StatusCode = HttpStatusCode.Created,
             Succeeded = true,
-            Message = "Created"
+            Message = localizer["Created"]
         };
     }
 }

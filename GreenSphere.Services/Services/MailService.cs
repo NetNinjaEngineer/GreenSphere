@@ -7,13 +7,15 @@ using GreenSphere.Application.Interfaces.Services;
 using GreenSphere.Application.Interfaces.Services.Models;
 using MailKit.Net.Smtp;
 using Microsoft.AspNetCore.Http;
+using Microsoft.Extensions.Localization;
 using Microsoft.Extensions.Options;
 using MimeKit;
 
 namespace GreenSphere.Services.Services;
 public class MailService(
-    IOptions<EmailSettings> emailSettingsOptions)
-    : BaseResponseHandler, IMailService
+    IOptions<EmailSettings> emailSettingsOptions,
+    IStringLocalizer<BaseResponseHandler> localizer)
+    : BaseResponseHandler(localizer), IMailService
 {
     private readonly EmailSettings _emailSetting = emailSettingsOptions.Value;
 

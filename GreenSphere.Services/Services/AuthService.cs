@@ -29,6 +29,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Caching.Memory;
 using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Localization;
 using Microsoft.Extensions.Logging;
 using System.Net;
 using System.Security.Cryptography;
@@ -46,7 +47,8 @@ public sealed class AuthService(
     IHttpContextAccessor contextAccessor,
     IMemoryCache memoryCache,
     ILogger<AuthService> logger,
-    ITokenService tokenService) : BaseResponseHandler, IAuthService
+    ITokenService tokenService,
+    IStringLocalizer<BaseResponseHandler> localizer) : BaseResponseHandler(localizer), IAuthService
 {
     private const string CacheKeyPrefix = "GoogleToken_";
 
