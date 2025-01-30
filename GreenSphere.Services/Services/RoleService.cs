@@ -63,7 +63,7 @@ public sealed class RoleService(
         var result = await roleManager.DeleteAsync(role);
 
         return result.Succeeded
-            ? Success<string>(_localizer["RoleDeletedSuccessfully", request.Name])
+            ? Success<string>(_localizer["RoleDeletedSuccessfully", request.RoleName])
             : BadRequest<string>(_localizer["ErrorDeletingRole", request.RoleName]);
     }
 
