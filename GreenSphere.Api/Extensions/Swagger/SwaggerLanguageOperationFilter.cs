@@ -10,7 +10,6 @@ namespace GreenSphere.Api.Extensions.Swagger
         {
             operation.Parameters ??= [];
 
-            // Add a language header parameter as a dropdown list
             operation.Parameters.Add(new OpenApiParameter
             {
                 Name = "Accept-Language",

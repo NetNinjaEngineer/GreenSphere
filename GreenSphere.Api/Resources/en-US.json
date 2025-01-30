@@ -7,7 +7,6 @@
   "UnprocessableEntity": "Unable to process the request due to invalid or missing data.",
   "NotFound": "The requested item could not be found.",
   "Created": "The item has been created successfully.",
-
   "UnableToCreateAccount": "Some errors happened when creating your account, please try again !!",
   "UnknownUser": "Unknown user.",
   "UnableToUpdateUser": "Unable to update the user.",
@@ -27,7 +26,6 @@
   "TwoFactorRequired": "Two-factor authentication is required to complete login. Check your inbox and verify your 2FA code.",
   "TwoFactorAlreadyDisabled": "Two-factor authentication is already disabled for this user.",
   "Disable2FaFailed": "Failed to disable two-factor authentication.",
-
   "ErrorCreatingRole": "Error creating role '{0}'.",
   "RoleNotFound": "Role not found: '{0}'.",
   "ErrorUpdatingRole": "Error updating role '{0}'.",
@@ -43,9 +41,7 @@
   "TwoFactorCodeSent": "A 2FA code has been sent. Please validate the 2FA code to complete the setup.",
   "TwoFactorEnabled": "Your two-factor authentication has been successfully enabled.",
   "Disable2FaSuccess": "Two-factor authentication has been disabled successfully.",
-
   "UserCanViewProfilePolicy": "CanViewProfile",
-
   "UserRole": "User",
   "AdminRole": "Admin",
   "RoleCreatedSuccessfully": "Role '{0}' has been created successfully.",
@@ -53,5 +49,12 @@
   "RoleDeletedSuccessfully": "Role '{0}' has been deleted successfully.",
   "RoleAssignedSuccessfully": "Role '{0}' has been assigned successfully to user '{1}'.",
   "ClaimAddedSuccessfully": "Claim '{0}:{1}' has been added successfully to user '{2}'.",
-  "ClaimAddedToRoleSuccessfully": "Claim '{0}:{1}' has been added successfully to role '{2}'."
+  "ClaimAddedToRoleSuccessfully": "Claim '{0}:{1}' has been added successfully to role '{2}'.",
+  "PasswordResetCodeSent": "Password reset code has been sent to your email.",
+  "PasswordResetSuccessfully": "Reset Password Successfuly.",
+  "InvalidToken": "Token is invalid.",
+  "TokenCanNotBeNullOrEmpty": "Token cannot be null or empty.",
+  "TokenNotFound": "Token Not Found",
+  "InactiveToken": "Inactive token",
+  "AccountLocked": "Your account is locked until {0}"
 }

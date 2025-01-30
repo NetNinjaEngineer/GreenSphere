@@ -7,7 +7,6 @@
   "UnprocessableEntity": "لا يمكن معالجة هذا الطلب بسبب بيانات غير صحيحة أو مفقودة.",
   "NotFound": "العنصر المطلوب غير موجود.",
   "Created": "تم إنشاء العنصر بنجاح.",
-
   "UnableToCreateAccount": "حدثت بعض الأخطاء أثناء إنشاء حسابك، يرجى المحاولة مرة أخرى!!",
   "UnknownUser": "المستخدم غير معروف.",
   "UnableToUpdateUser": "تعذر تحديث المستخدم.",
@@ -27,7 +26,6 @@
   "TwoFactorRequired": "مطلوب المصادقة الثنائية لإكمال تسجيل الدخول. تحقق من بريدك الإلكتروني وأدخل رمز 2FA.",
   "TwoFactorAlreadyDisabled": "المصادقة الثنائية معطلة بالفعل لهذا المستخدم.",
   "Disable2FaFailed": "فشل تعطيل المصادقة الثنائية.",
-
   "ErrorCreatingRole": "خطأ في إنشاء الدور '{0}'.",
   "RoleNotFound": "الدور غير موجود: '{0}'.",
   "ErrorUpdatingRole": "خطأ في تحديث الدور '{0}'.",
@@ -35,7 +33,6 @@
   "ErrorAssigningRole": "خطأ في تعيين الدور '{0}' للمستخدم '{1}'.",
   "ErrorAddingClaim": "خطأ في إضافة المطالبة إلى '{0}'.",
   "ErrorAddingClaimToRole": "خطأ في إضافة المطالبة إلى دور '{0}'.",
-
   "ConfirmEmailCodeSentSuccessfully": "تم إرسال رمز تأكيد البريد الإلكتروني بنجاح. تحقق من بريدك الوارد.",
   "EmailConfirmed": "تم تأكيد البريد الإلكتروني للمستخدم.",
   "AuthCodeExpireKey": "مدة صلاحية رمز المصادقة بالدقائق.",
@@ -44,9 +41,7 @@
   "TwoFactorCodeSent": "تم إرسال رمز المصادقة الثنائية. يرجى التحقق منه لإكمال الإعداد.",
   "TwoFactorEnabled": "تم تفعيل المصادقة الثنائية بنجاح.",
   "Disable2FaSuccess": "تم تعطيل المصادقة الثنائية بنجاح.",
-
   "UserCanViewProfilePolicy": "يمكنه عرض الملف الشخصي",
-
   "UserRole": "مستخدم",
   "AdminRole": "مسؤول",
   "RoleCreatedSuccessfully": "تم إنشاء الدور '{0}' بنجاح.",
@@ -54,5 +49,15 @@
   "RoleDeletedSuccessfully": "تم حذف الدور '{0}' بنجاح.",
   "RoleAssignedSuccessfully": "تم تعيين الدور '{0}' بنجاح للمستخدم '{1}'.",
   "ClaimAddedSuccessfully": "تمت إضافة المطالبة '{0}:{1}' بنجاح إلى المستخدم '{2}'.",
-  "ClaimAddedToRoleSuccessfully": "تمت إضافة المطالبة '{0}:{1}' بنجاح إلى الدور '{2}'."
+  "ClaimAddedToRoleSuccessfully": "تمت إضافة المطالبة '{0}:{1}' بنجاح إلى الدور '{2}'.",
+  "PasswordResetCodeSent": "تم إرسال رمز إعادة تعيين كلمة المرور إلى بريدك الإلكتروني.",
+  "PasswordResetSuccessfully": "تمت إعادة تعيين كلمة المرور بنجاح.",
+  "InvalidToken": "الرمز غير صالح.",
+  "TokenCanNotBeNullOrEmpty": "لا يمكن أن يكون الرمز فارغًا أو null.",
+  "TokenNotFound": "الرمز غير موجود",
+  "InactiveToken": "رمز غير نشط",
+  "AccountLocked": "حسابك مقفل حتى {0}"
+
+
+
 }

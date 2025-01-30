@@ -1,7 +1,6 @@
 ﻿using Asp.Versioning;
 using GreenSphere.Api.Controllers.Base;
 using GreenSphere.Application.Abstractions;
-using GreenSphere.Application.Attributes;
 using GreenSphere.Application.Features.Roles.Commands.AddClaimToRole;
 using GreenSphere.Application.Features.Roles.Commands.AssignClaimToUser;
 using GreenSphere.Application.Features.Roles.Commands.AssignRoleToUser;
@@ -12,13 +11,11 @@ using GreenSphere.Application.Features.Roles.Queries.GetAllRoles;
 using GreenSphere.Application.Features.Roles.Queries.GetRoleClaims;
 using GreenSphere.Application.Features.Roles.Queries.GetUserClaims;
 using GreenSphere.Application.Features.Roles.Queries.GetUserRoles;
-using GreenSphere.Application.Helpers;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 
 namespace GreenSphere.Api.Controllers;
 [ApiVersion(1.0)]
-[Guard(roles: [Constants.Roles.User])]
 [Route("api/v{ver:apiVersion}/roles")]
 [ApiController]
 public class RolesController(IMediator mediator) : BaseApiController(mediator)
