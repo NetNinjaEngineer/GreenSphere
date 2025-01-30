@@ -4,6 +4,7 @@ using GreenSphere.Application.Attributes;
 using GreenSphere.Application.Bases;
 using GreenSphere.Application.DTOs.Users;
 using GreenSphere.Application.Features.Users.Commands.AssignUserPrivacy;
+using GreenSphere.Application.Features.Users.Commands.EditUserProfile;
 using GreenSphere.Application.Features.Users.Queries.GetUserPrivacySetting;
 using GreenSphere.Application.Features.Users.Queries.GetUserProfile;
 using GreenSphere.Application.Helpers;
@@ -42,4 +43,19 @@ public class UsersController(IMediator mediator) : BaseApiController(mediator)
     [ProducesResponseType(StatusCodes.Status403Forbidden)]
     public async Task<ActionResult<Result<PrivacySettingListDto>>> GetUserProfileAsync(string userId)
         => CustomResult(await Mediator.Send(new GetUserProfileQuery { UserId = userId }));
+
+    [Guard]
+    [HttpPost("edit-profile")]
+    [ProducesResponseType(typeof(Result<UserProfileDto>), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(Result<UserProfileDto>), StatusCodes.Status404NotFound)]
+    [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+    [ProducesResponseType(StatusCodes.Status403Forbidden)]
+    public async Task<ActionResult<Result<UserProfileDto>>> EditUserProfileAsync(
+           [FromBody] EditUserProfileCommand request)
+    {
+
+        var result = await Mediator.Send(request);
+
+        return CustomResult(result);
+    }
 }

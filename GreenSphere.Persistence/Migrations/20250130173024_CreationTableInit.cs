@@ -8,7 +8,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace GreenSphere.Persistence.Migrations
 {
     /// <inheritdoc />
-    public partial class InitialCreate : Migration
+    public partial class CreationTableInit : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -36,6 +36,8 @@ namespace GreenSphere.Persistence.Migrations
                     LastName = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
                     Code = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     CodeExpiration = table.Column<DateTimeOffset>(type: "datetimeoffset", nullable: true),
+                    Gender = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    DateOfBirth = table.Column<DateTime>(type: "datetime2", nullable: true),
                     UserName = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: true),
                     NormalizedUserName = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: true),
                     Email = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: true),
@@ -219,8 +221,8 @@ namespace GreenSphere.Persistence.Migrations
 
             migrationBuilder.InsertData(
                 table: "AspNetUsers",
-                columns: new[] { "Id", "AccessFailedCount", "Code", "CodeExpiration", "ConcurrencyStamp", "Email", "EmailConfirmed", "FirstName", "LastName", "LockoutEnabled", "LockoutEnd", "NormalizedEmail", "NormalizedUserName", "PasswordHash", "PhoneNumber", "PhoneNumberConfirmed", "SecurityStamp", "TwoFactorEnabled", "UserName" },
-                values: new object[] { "DB01BCAD-04F0-42E4-9CC1-52C03F3DC635", 0, null, null, "b5b351c8-df4c-4a2b-8b6f-328273207476", "me5260287@gmail.com", true, "Mohamed", "Ehab", false, null, "ME5260287@GMAIL.COM", "MOEHAB@2002", "AQAAAAIAAYagAAAAEPvmU9dJVwnfRL3s6XLceOHLpY5z+VVVJO046llodYXn2rd1Yc69snQFGI6dHxr6yw==", null, false, "87449da4-1ffb-4985-b8b2-302e48062eb6", false, "Moehab@2002" });
+                columns: new[] { "Id", "AccessFailedCount", "Code", "CodeExpiration", "ConcurrencyStamp", "DateOfBirth", "Email", "EmailConfirmed", "FirstName", "Gender", "LastName", "LockoutEnabled", "LockoutEnd", "NormalizedEmail", "NormalizedUserName", "PasswordHash", "PhoneNumber", "PhoneNumberConfirmed", "SecurityStamp", "TwoFactorEnabled", "UserName" },
+                values: new object[] { "DB01BCAD-04F0-42E4-9CC1-52C03F3DC635", 0, null, null, "942473e9-7fc1-4cfb-8f33-ad298fccf396", null, "me5260287@gmail.com", true, "Mohamed", null, "Ehab", false, null, "ME5260287@GMAIL.COM", "MOEHAB@2002", "AQAAAAIAAYagAAAAEJmx00IvWI9DLsmjh2WZQltPpSvK+SPKggyn+ciNFVnsuWBhczaTRiPukKl+s2djJw==", null, false, "96be4abc-5034-41f3-bd0b-bed34968720b", false, "Moehab@2002" });
 
             migrationBuilder.InsertData(
                 table: "AspNetUserRoles",

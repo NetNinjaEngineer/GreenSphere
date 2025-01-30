@@ -40,6 +40,9 @@ namespace GreenSphere.Persistence.Migrations
                         .IsConcurrencyToken()
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<DateTime?>("DateOfBirth")
+                        .HasColumnType("datetime2");
+
                     b.Property<string>("Email")
                         .HasMaxLength(256)
                         .HasColumnType("nvarchar(256)");
@@ -51,6 +54,9 @@ namespace GreenSphere.Persistence.Migrations
                         .IsRequired()
                         .HasMaxLength(50)
                         .HasColumnType("nvarchar(50)");
+
+                    b.Property<string>("Gender")
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("LastName")
                         .IsRequired()
@@ -107,7 +113,7 @@ namespace GreenSphere.Persistence.Migrations
                         {
                             Id = "DB01BCAD-04F0-42E4-9CC1-52C03F3DC635",
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "b5b351c8-df4c-4a2b-8b6f-328273207476",
+                            ConcurrencyStamp = "942473e9-7fc1-4cfb-8f33-ad298fccf396",
                             Email = "me5260287@gmail.com",
                             EmailConfirmed = true,
                             FirstName = "Mohamed",
@@ -115,9 +121,9 @@ namespace GreenSphere.Persistence.Migrations
                             LockoutEnabled = false,
                             NormalizedEmail = "ME5260287@GMAIL.COM",
                             NormalizedUserName = "MOEHAB@2002",
-                            PasswordHash = "AQAAAAIAAYagAAAAEPvmU9dJVwnfRL3s6XLceOHLpY5z+VVVJO046llodYXn2rd1Yc69snQFGI6dHxr6yw==",
+                            PasswordHash = "AQAAAAIAAYagAAAAEJmx00IvWI9DLsmjh2WZQltPpSvK+SPKggyn+ciNFVnsuWBhczaTRiPukKl+s2djJw==",
                             PhoneNumberConfirmed = false,
-                            SecurityStamp = "87449da4-1ffb-4985-b8b2-302e48062eb6",
+                            SecurityStamp = "96be4abc-5034-41f3-bd0b-bed34968720b",
                             TwoFactorEnabled = false,
                             UserName = "Moehab@2002"
                         });

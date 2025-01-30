@@ -1,4 +1,5 @@
-﻿using GreenSphere.Domain.Entities;
+﻿using GreenSphere.Domain.Common;
+using GreenSphere.Domain.Entities;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
@@ -7,6 +8,7 @@ namespace GreenSphere.Persistence.Configurations;
 
 public sealed class ApplicationUserConfiguration : IEntityTypeConfiguration<ApplicationUser>
 {
+
     public void Configure(EntityTypeBuilder<ApplicationUser> builder)
     {
         builder.Property(u => u.FirstName)
@@ -18,6 +20,8 @@ public sealed class ApplicationUserConfiguration : IEntityTypeConfiguration<Appl
             .IsRequired();
 
         builder.HasData(LoadUsers());
+        builder.Property(u => u.Gender)
+            .HasConversion(x => x.ToString(), x => (Gender)Enum.Parse(typeof(Gender), x));
     }
 
     private static ApplicationUser[] LoadUsers()
