@@ -2,17 +2,21 @@
 using GreenSphere.Application.Bases;
 using GreenSphere.Application.DTOs.Users;
 using GreenSphere.Application.Features.Users.Commands.AssignUserPrivacy;
+using GreenSphere.Application.Features.Users.Commands.EditUserProfile;
+using GreenSphere.Application.Helpers;
 using GreenSphere.Application.Interfaces.Identity;
 using GreenSphere.Domain.Entities;
 using GreenSphere.Persistence;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Localization;
 using System.Net;
 
 namespace GreenSphere.Services.Services;
 public sealed class UserPrivacyService(
     UserManager<ApplicationUser> userManager,
     ApplicationDbContext context,
+    ICurrentUser currentUser,
     IMapper mapper,
     IStringLocalizer<UserPrivacyService> localizer) : IUserPrivacyService
 {
