@@ -58,6 +58,8 @@ public static class ApiDependencies
                 .AllowAnyHeader());
         });
 
+        services.AddDistributedMemoryCache();
+
         services.AddGlobalExceptionHandler();
 
         services.AddLocalization();
