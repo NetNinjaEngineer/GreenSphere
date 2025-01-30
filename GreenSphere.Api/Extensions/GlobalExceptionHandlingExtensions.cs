@@ -1,6 +1,6 @@
 ﻿namespace GreenSphere.Api.Extensions;
 
-public static class GlobalExceptionHandlerExtensions
+public static class GlobalExceptionHandlingExtensions
 {
     public static IServiceCollection AddGlobalExceptionHandler(this IServiceCollection services)
     {

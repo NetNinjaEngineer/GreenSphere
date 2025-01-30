@@ -1,6 +1,6 @@
 ﻿using Microsoft.OpenApi.Models;
 
-namespace GreenSphere.Api.Extensions;
+namespace GreenSphere.Api.Extensions.Swagger;
 
 public static class SwaggerExtensions
 {
@@ -53,6 +53,8 @@ public static class SwaggerExtensions
                     []
                 }
             });
+
+            options.OperationFilter<SwaggerLanguageOperationFilter>();
 
         });
 

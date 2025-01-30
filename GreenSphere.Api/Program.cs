@@ -1,5 +1,7 @@
 using GreenSphere.Api;
 using GreenSphere.Api.Extensions;
+using GreenSphere.Api.Extensions.Localization;
+using GreenSphere.Api.Extensions.Swagger;
 using GreenSphere.Api.Middlewares;
 using GreenSphere.Application;
 using GreenSphere.Infrastructure;
@@ -19,6 +21,8 @@ var app = builder.Build();
 app.UseMiddleware<MigrateDatabaseMiddleware>();
 
 app.UseMiddleware<JwtValidationMiddleware>();
+
+app.UseLocalization();
 
 app.UseGlobalExceptionHandler();
 
