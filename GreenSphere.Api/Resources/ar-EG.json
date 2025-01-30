@@ -56,8 +56,10 @@
   "TokenCanNotBeNullOrEmpty": "لا يمكن أن يكون الرمز فارغًا أو null.",
   "TokenNotFound": "الرمز غير موجود",
   "InactiveToken": "رمز غير نشط",
-  "AccountLocked": "حسابك مقفل حتى {0}"
-
-
-
+  "AccountLocked": "تم قفل حسابك حتى {0}",
+  "EmailCanNotNull": "لا يمكن أن يكون البريد الإلكتروني فارغًا",
+  "EmailCanNotBeEmpty": "البريد الإلكتروني مطلوب",
+  "EmailIsNotValid": "البريد الإلكتروني ليس بتنسيق صالح",
+  "FirstNameExceedsMaxLength": "لا يمكن أن يتجاوز الاسم الأول {0} حرفًا",
+  "LastNameExceedsMaxLength": "لا يمكن أن يتجاوز الاسم الأخير {0} حرفًا"
 }

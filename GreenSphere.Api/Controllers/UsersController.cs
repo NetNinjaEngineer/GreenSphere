@@ -51,7 +51,7 @@ public class UsersController(IMediator mediator) : BaseApiController(mediator)
     [ProducesResponseType(StatusCodes.Status401Unauthorized)]
     [ProducesResponseType(StatusCodes.Status403Forbidden)]
     public async Task<ActionResult<Result<UserProfileDto>>> EditUserProfileAsync(
-           [FromBody] EditUserProfileCommand request)
+           [FromForm] EditUserProfileCommand request)
     {
 
         var result = await Mediator.Send(request);

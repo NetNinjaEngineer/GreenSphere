@@ -56,5 +56,11 @@
   "TokenCanNotBeNullOrEmpty": "Token cannot be null or empty.",
   "TokenNotFound": "Token Not Found",
   "InactiveToken": "Inactive token",
-  "AccountLocked": "Your account is locked until {0}"
+  "AccountLocked": "Your account is locked until {0}",
+  "EmailCanNotNull": "Email can not be null",
+  "EmailCanNotBeEmpty": "Email is required",
+  "EmailIsNotValid": "Email is not in a valid format",
+  "FirstNameExceedsMaxLength": "FirstName can not exceeded {0} characters",
+  "LastNameExceedsMaxLength":  "LastName can not be exceeded {0} characters"
+
 }

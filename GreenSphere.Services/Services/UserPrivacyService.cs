@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using FluentValidation;
 using GreenSphere.Application.Bases;
 using GreenSphere.Application.DTOs.Users;
 using GreenSphere.Application.Features.Users.Commands.AssignUserPrivacy;
@@ -85,6 +86,8 @@ public sealed class UserPrivacyService(
 
     public async Task<Result<UserProfileDto>> EditUserProfileAsync(EditUserProfileCommand command)
     {
+        await new EditUserProfileCommandValidator().ValidateAndThrowAsync(command);
+
         var user = await userManager.FindByIdAsync(currentUser.Id);
         if (user is null)
             return Result<UserProfileDto>.Failure(HttpStatusCode.NotFound, DomainErrors.User.UnkownUser);
@@ -97,8 +100,11 @@ public sealed class UserPrivacyService(
 
         var result = await userManager.UpdateAsync(user);
         if (!result.Succeeded)
-            return Result<UserProfileDto>.Failure(HttpStatusCode.InternalServerError, "Failed to update user profile");
-
+        {
+            var errors = result.Errors.Select(e => $"{e.Code}: {e.Description}").ToList();
+            return Result<UserProfileDto>.Failure(
+                HttpStatusCode.BadRequest, errors: errors);
+        }
         var mappedUserProfile = mapper.Map<UserProfileDto>(user);
         return Result<UserProfileDto>.Success(mappedUserProfile);
     }
