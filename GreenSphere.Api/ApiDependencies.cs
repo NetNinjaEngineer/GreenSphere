@@ -1,8 +1,8 @@
 ﻿using Asp.Versioning;
 using GreenSphere.Api.Extensions;
 using GreenSphere.Api.Extensions.Swagger;
+using GreenSphere.Api.Localization;
 using GreenSphere.Api.Middlewares;
-using GreenSphere.Api.Middlewares.Localization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Formatters;
 using Microsoft.Extensions.Localization;
@@ -27,7 +27,6 @@ public static class ApiDependencies
         services.AddSwaggerDocumentation();
 
         services.AddSingleton<IStringLocalizerFactory, JsonStringLocalizerFactory>();
-
 
         services.AddApiVersioning(options =>
         {
@@ -62,7 +61,7 @@ public static class ApiDependencies
 
         services.AddGlobalExceptionHandler();
 
-        services.AddLocalization();
+        services.AddLocalization(options => options.ResourcesPath = "Resources");
 
         return services;
     }

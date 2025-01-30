@@ -1,10 +1,13 @@
 ﻿using Microsoft.Extensions.Caching.Distributed;
 using Microsoft.Extensions.Localization;
 using Newtonsoft.Json;
+using System.Globalization;
 
-namespace GreenSphere.Api.Middlewares.Localization;
+namespace GreenSphere.Api.Localization;
 
-public class JsonStringLocalizer(IDistributedCache cache) : IStringLocalizer
+public class JsonStringLocalizer(
+    IDistributedCache cache,
+    ILogger<JsonStringLocalizer> logger) : IStringLocalizer
 {
     private readonly JsonSerializer _serializer = new();
 
@@ -30,7 +33,7 @@ public class JsonStringLocalizer(IDistributedCache cache) : IStringLocalizer
 
     public IEnumerable<LocalizedString> GetAllStrings(bool includeParentCultures)
     {
-        var filePath = $"Resources/{Thread.CurrentThread.CurrentCulture.Name}.json";
+        var filePath = $"Resources/{CultureInfo.CurrentCulture.Name}.json";
 
         using FileStream stream = new(filePath, FileMode.Open, FileAccess.Read, FileShare.Read);
         using StreamReader streamReader = new(stream);
@@ -50,8 +53,10 @@ public class JsonStringLocalizer(IDistributedCache cache) : IStringLocalizer
 
     private string GetString(string key)
     {
-        var filePath = $"Resources/{Thread.CurrentThread.CurrentCulture.Name}.json";
+        var filePath = $"Resources/{CultureInfo.CurrentCulture.Name}.json";
         var fullFilePath = Path.GetFullPath(filePath);
+
+        logger.LogInformation($"Reading JSON file from {fullFilePath}");
 
         if (File.Exists(fullFilePath))
         {
@@ -88,7 +93,7 @@ public class JsonStringLocalizer(IDistributedCache cache) : IStringLocalizer
                 if (reader.TokenType == JsonToken.PropertyName && reader.Value as string == propertyName)
                 {
                     reader.Read();
-                    return _serializer.Deserialize<string>(reader);
+                    return _serializer.Deserialize<string>(reader)!;
                 }
             }
 
@@ -96,8 +101,7 @@ public class JsonStringLocalizer(IDistributedCache cache) : IStringLocalizer
         }
         catch (JsonReaderException ex)
         {
-            // Log or debug information about the exception.
-            Console.WriteLine($"Error reading JSON at line {ex.LineNumber}, position {ex.LinePosition}: {ex.Message}");
+            logger.LogError($"Error reading JSON at line {ex.LineNumber}, position {ex.LinePosition}: {ex.Message}");
             return string.Empty;
         }
     }
