@@ -13,6 +13,8 @@ public static class DomainErrors
         public const string AuthCodeExpired = "Authentication code is expired.";
         public const string AlreadyEmailConfirmed = "Email is cofirmed yet.";
         public const string UserNotFound = "User '{0}' not found.";
+        public const string EmailNotFound = "Email '{0}' not found.";
+        public const string EmailInUse = "Email '{0}' is already in use";
         public const string CannotCreateFbUser = "Can not create facebook user.";
         public const string FbFailedAuthentication = "Facebook authentication failed!";
         public const string EmailNotConfirmed = "Email is not confirmed.";
@@ -22,7 +24,8 @@ public static class DomainErrors
         public const string UserNotHasPrivacySetting = "User not have privacy settings";
         public const string Invalid2FaCode = "Invalid 2FA Code.";
         public const string InvalidTokenProvider = "Invalid 2FA Token Provider.";
-
+        public const string InvalidCurrentPassword = "Current Password is not valid";
+        public const string FailedToChangeEmail = "Change email is not updated";
         public const string TwoFactorRequired =
             "Two Factor Authentication Required To Complete Login, check your inbox and verify your 2fa code.";
 

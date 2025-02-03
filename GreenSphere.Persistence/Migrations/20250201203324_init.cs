@@ -8,7 +8,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace GreenSphere.Persistence.Migrations
 {
     /// <inheritdoc />
-    public partial class Initial : Migration
+    public partial class init : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -222,7 +222,7 @@ namespace GreenSphere.Persistence.Migrations
             migrationBuilder.InsertData(
                 table: "AspNetUsers",
                 columns: new[] { "Id", "AccessFailedCount", "Code", "CodeExpiration", "ConcurrencyStamp", "DateOfBirth", "Email", "EmailConfirmed", "FirstName", "Gender", "LastName", "LockoutEnabled", "LockoutEnd", "NormalizedEmail", "NormalizedUserName", "PasswordHash", "PhoneNumber", "PhoneNumberConfirmed", "SecurityStamp", "TwoFactorEnabled", "UserName" },
-                values: new object[] { "DB01BCAD-04F0-42E4-9CC1-52C03F3DC635", 0, null, null, "49b575cd-cf10-4e21-8b1c-028bb4152f40", null, "me5260287@gmail.com", true, "Mohamed", null, "Ehab", false, null, "ME5260287@GMAIL.COM", "MOEHAB@2002", "AQAAAAIAAYagAAAAEMQsB7oJ0wFcGb+IJKC10PPR03yFXO7CFrM+49cz5nmMF07DJicAXcrfnJtixeJ5XQ==", null, false, "116be0a2-3182-4c17-8ea7-70dc1bbe39a3", false, "Moehab@2002" });
+                values: new object[] { "DB01BCAD-04F0-42E4-9CC1-52C03F3DC635", 0, null, null, "cf8d65a4-dc98-4765-b0fd-18a7bd2c88c1", null, "me5260287@gmail.com", true, "Mohamed", null, "Ehab", false, null, "ME5260287@GMAIL.COM", "MOEHAB@2002", "AQAAAAIAAYagAAAAEFMxKsBsZGogKuH0M2ZrAzZKePZx5n3xhCl2e8cVV/XNE3KgMdKK/C7xETdobh8b6A==", null, false, "dfd13439-3d83-4f22-b8fc-4c8a0e6e70cb", false, "Moehab@2002" });
 
             migrationBuilder.InsertData(
                 table: "AspNetUserRoles",

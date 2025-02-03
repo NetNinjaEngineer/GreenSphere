@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace GreenSphere.Persistence.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20250130180400_Initial")]
-    partial class Initial
+    [Migration("20250201203324_init")]
+    partial class init
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -116,7 +116,7 @@ namespace GreenSphere.Persistence.Migrations
                         {
                             Id = "DB01BCAD-04F0-42E4-9CC1-52C03F3DC635",
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "49b575cd-cf10-4e21-8b1c-028bb4152f40",
+                            ConcurrencyStamp = "cf8d65a4-dc98-4765-b0fd-18a7bd2c88c1",
                             Email = "me5260287@gmail.com",
                             EmailConfirmed = true,
                             FirstName = "Mohamed",
@@ -124,9 +124,9 @@ namespace GreenSphere.Persistence.Migrations
                             LockoutEnabled = false,
                             NormalizedEmail = "ME5260287@GMAIL.COM",
                             NormalizedUserName = "MOEHAB@2002",
-                            PasswordHash = "AQAAAAIAAYagAAAAEMQsB7oJ0wFcGb+IJKC10PPR03yFXO7CFrM+49cz5nmMF07DJicAXcrfnJtixeJ5XQ==",
+                            PasswordHash = "AQAAAAIAAYagAAAAEFMxKsBsZGogKuH0M2ZrAzZKePZx5n3xhCl2e8cVV/XNE3KgMdKK/C7xETdobh8b6A==",
                             PhoneNumberConfirmed = false,
-                            SecurityStamp = "116be0a2-3182-4c17-8ea7-70dc1bbe39a3",
+                            SecurityStamp = "dfd13439-3d83-4f22-b8fc-4c8a0e6e70cb",
                             TwoFactorEnabled = false,
                             UserName = "Moehab@2002"
                         });
