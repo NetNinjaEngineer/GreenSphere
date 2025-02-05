@@ -13,5 +13,8 @@ public class ApplicationUser : IdentityUser
     public Gender? Gender { get; set; }
     public DateTime? DateOfBirth { get; set; }
 
+
 }
+
+
 
