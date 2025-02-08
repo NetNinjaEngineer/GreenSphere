@@ -34,4 +34,5 @@ public sealed class Product : BaseEntity
     public Guid CategoryId { get; set; }
     public Category Category { get; set; } = null!;
     public ICollection<Rating> Ratings { get; set; } = [];
+    public ICollection<ProductTranslation> ProductTranslations { get; set; } = [];
 }

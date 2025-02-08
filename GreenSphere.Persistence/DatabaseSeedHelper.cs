@@ -44,5 +44,16 @@ public static class DatabaseSeedHelper
                 await context.SaveChangesAsync();
             }
         }
+
+        if (!context.ProductTranslations.Any())
+        {
+            var productTranslationsJson = await File.ReadAllTextAsync($"..//GreenSphere.Persistence//DataSeed//productTranslations.json");
+            var productTranslations = JsonSerializer.Deserialize<IEnumerable<ProductTranslation>>(productTranslationsJson, Options);
+            if (productTranslations != null)
+            {
+                await context.ProductTranslations.AddRangeAsync(productTranslations);
+                await context.SaveChangesAsync();
+            }
+        }
     }
 }

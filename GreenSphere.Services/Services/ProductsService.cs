@@ -3,6 +3,8 @@ using FluentValidation;
 using GreenSphere.Application.Bases;
 using GreenSphere.Application.DTOs.Products;
 using GreenSphere.Application.Features.Products.Commands.CreateProduct;
+using GreenSphere.Application.Features.Products.Commands.DeleteProduct;
+using GreenSphere.Application.Features.Products.Commands.UpdateProduct;
 using GreenSphere.Application.Features.Products.Queries.GetProduct;
 using GreenSphere.Application.Interfaces.Services;
 using GreenSphere.Domain.Entities;
@@ -49,9 +51,9 @@ public sealed class ProductsService(
     {
         await new CreateProductCommandValidator().ValidateAndThrowAsync(command);
 
-        var existedCategoyry = await categoryRepository.GetByIdAsync(command.CategoryId);
+        var existedCategory = await categoryRepository.GetByIdAsync(command.CategoryId);
 
-        if (existedCategoyry is null)
+        if (existedCategory is null)
             return Result<Guid>.Failure(HttpStatusCode.NotFound, localizer["CategoryNotFound", command.CategoryId]);
 
         var uploadedImageName = await fileService.UploadFileAsync(command.Image, "Images");
@@ -72,5 +74,56 @@ public sealed class ProductsService(
         await productsRepository.SaveChangesAsync();
 
         return Result<Guid>.Success(product.Id);
+    }
+
+    public async Task<Result<bool>> DeleteProductAsync(DeleteProductCommand command)
+    {
+        var existedProduct = await productsRepository.GetByIdAsync(command.ProductId);
+
+        if (existedProduct is null)
+            return Result<bool>.Failure(HttpStatusCode.NotFound, localizer["ProductNotFound", command.ProductId]);
+
+        productsRepository.Delete(existedProduct);
+
+        await productsRepository.SaveChangesAsync();
+
+        return Result<bool>.Success(true);
+    }
+
+    public async Task<Result<bool>> UploadProductAsync(UpdateProductCommand command)
+    {
+        await new UpdateProductCommandValidator().ValidateAndThrowAsync(command);
+
+        var existedProduct = await productsRepository.GetByIdAsync(command.ProductId);
+
+        if (existedProduct is null)
+            return Result<bool>.Failure(HttpStatusCode.NotFound, localizer["ProductNotFound", command.ProductId]);
+
+        existedProduct.Name = command.Name;
+        existedProduct.Description = command.Description;
+        existedProduct.DiscountPercentage = command.DiscountPercentage;
+
+        if (command.Image is not null)
+        {
+            fileService.DeleteFileFromPath(existedProduct.Img, "Images");
+            var uploadedImageName = await fileService.UploadFileAsync(command.Image, "Images");
+            existedProduct.Img = uploadedImageName;
+        }
+
+        if (command.CategoryId.HasValue)
+        {
+            var existedCategory = await categoryRepository.GetByIdAsync(command.CategoryId.Value);
+
+            if (existedCategory is null)
+                return Result<bool>.Failure(HttpStatusCode.NotFound, localizer["CategoryNotFound", command.CategoryId]);
+
+            existedProduct.CategoryId = command.CategoryId.Value;
+        }
+
+        productsRepository.Update(existedProduct);
+
+        await productsRepository.SaveChangesAsync();
+
+        return Result<bool>.Success(true);
     }
 }

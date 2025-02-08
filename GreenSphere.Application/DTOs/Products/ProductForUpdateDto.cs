@@ -1,11 +1,9 @@
-﻿using GreenSphere.Application.Bases;
-using MediatR;
-using Microsoft.AspNetCore.Http;
+﻿using Microsoft.AspNetCore.Http;
 
-namespace GreenSphere.Application.Features.Products.Commands.UpdateProduct;
-public sealed class UpdateProductCommand : IRequest<Result<bool>>
+namespace GreenSphere.Application.DTOs.Products;
+
+public sealed class ProductForUpdateDto
 {
-    public Guid ProductId { get; set; }
     public string Name { get; set; } = null!;
     public decimal Price { get; set; }
     public IFormFile? Image { get; set; }

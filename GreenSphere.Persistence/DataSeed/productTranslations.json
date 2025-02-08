@@ -1,0 +1,142 @@
+﻿[
+  {
+    "Id": "32F9569B-79E1-494F-BF6F-11953AAC8558",
+    "LanguageCode": "ar-EG",
+    "Name": "طقم ري بالتنقيط برو",
+    "Description": "نظام ري بالتنقيط احترافي لتوصيل المياه بدقة",
+    "ProductId": "434B463D-B8E8-43AB-99AE-92FA4801DAB1"
+  },
+  {
+    "Id": "06E010F6-EDCA-40D1-A8E3-EA9503F9AE43",
+    "LanguageCode": "ar-EG",
+    "Name": "مضخة مياه شمسية 2000 واط",
+    "Description": "مضخة مياه عالية الكفاءة تعمل بالطاقة الشمسية للاستخدام الزراعي",
+    "ProductId": "2B282E5F-F4FA-472B-9F82-BA42BFD37321"
+  },
+  {
+    "Id": "F600C8AA-8966-44FB-A676-23658F148273",
+    "LanguageCode": "ar-EG",
+    "Name": "نظام رش ذكي",
+    "Description": "نظام رش تلقائي مع مراقبة الطقس",
+    "ProductId": "99A03A03-3D86-4FE6-9A11-F3CFBB08FC7D"
+  },
+  {
+    "Id": "4FCDDB28-C492-4FC1-811F-5318554D1815",
+    "LanguageCode": "ar-EG",
+    "Name": "فلتر مياه صناعي",
+    "Description": "نظام تصفية مياه قوي للتطبيقات الزراعية",
+    "ProductId": "6E6985ED-41F5-4E1F-955D-27EBEF767E45"
+  },
+  {
+    "Id": "4AA32CF5-4442-4956-9A79-58F50D06E564",
+    "LanguageCode": "ar-EG",
+    "Name": "طقم حساس رطوبة التربة",
+    "Description": "نظام احترافي لمراقبة رطوبة التربة",
+    "ProductId": "2DDE9738-CA76-4598-83D1-B4835F91668D"
+  },
+  {
+    "Id": "E9C26F5A-063D-4F1B-8BA8-D166FA6C162E",
+    "LanguageCode": "ar-EG",
+    "Name": "خزان مياه سعة 5000 لتر",
+    "Description": "خزان مياه سعة كبيرة للاستخدام الزراعي",
+    "ProductId": "9BBBA2FA-DBC5-4C3B-87C5-69D8169DFC7A"
+  },
+  {
+    "Id": "AB065F7A-0CD4-43CF-A917-B4FB7FBB3161",
+    "LanguageCode": "ar-EG",
+    "Name": "نظام مراقبة الأس الهيدروجيني",
+    "Description": "نظام مراقبة الأس الهيدروجيني المتقدم للتحكم في جودة المياه",
+    "ProductId": "D71E164F-84A4-4280-B909-D6B0BAE30D4E"
+  },
+  {
+    "Id": "6E24BED6-7510-46B2-A78A-070CDF27FD53",
+    "LanguageCode": "ar-EG",
+    "Name": "مضخة غاطسة 3 حصان",
+    "Description": "مضخة غاطسة قوية لتطبيقات الآبار العميقة",
+    "ProductId": "C7F14151-C1EA-44D3-A9A5-A18FC971D5D3"
+  },
+  {
+    "Id": "1B034A87-E2C0-4542-A1ED-DD2D1EBD17C5",
+    "LanguageCode": "ar-EG",
+    "Name": "مجموعة رشاشات دقيقة",
+    "Description": "نظام رشاشات دقيقة للري المستهدف",
+    "ProductId": "5BAC401E-8C8C-4740-8226-D5F30623E237"
+  },
+  {
+    "Id": "2E0763B8-D202-422D-A47C-24C82B52135E",
+    "LanguageCode": "ar-EG",
+    "Name": "مقياس تدفق المياه",
+    "Description": "نظام رقمي لمراقبة تدفق المياه",
+    "ProductId": "B6ECC469-8F0E-4D3A-9FD2-DBF2CFD19E69"
+  },
+  {
+    "Id": "610F1BC4-D470-4B09-B441-139B967C692A",
+    "LanguageCode": "ar-EG",
+    "Name": "مُعقم مياه بالأشعة فوق البنفسجية",
+    "Description": "نظام تعقيم المياه بالأشعة فوق البنفسجية لتنقية المياه",
+    "ProductId": "6FD6E858-8BC1-4D9B-A515-7FD1B97B8D40"
+  },
+  {
+    "Id": "250C1502-6DA9-46CF-BF23-DC6C6F3F3EE3",
+    "LanguageCode": "ar-EG",
+    "Name": "نظام تجميع مياه الأمطار",
+    "Description": "حل كامل لجمع مياه الأمطار",
+    "ProductId": "E3388402-CCDD-4F44-BC86-F480A6BDBCEF"
+  },
+  {
+    "Id": "B76B93BA-30D7-4E55-9173-A2F587F8A16F",
+    "LanguageCode": "ar-EG",
+    "Name": "مقياس جودة المياه",
+    "Description": "مجموعة احترافية لاختبار جودة المياه",
+    "ProductId": "9B0C1A73-511F-46D7-ABF4-21C120052044"
+  },
+  {
+    "Id": "70D1F2DE-9E3A-4999-83C8-7AA20885EBB6",
+    "LanguageCode": "ar-EG",
+    "Name": "لفافة شريط ري بالتنقيط 1000 متر",
+    "Description": "شريط ري بالتنقيط احترافي عالي الجودة",
+    "ProductId": "8B146046-355E-4094-8E44-995A3D7C8A89"
+  },
+  {
+    "Id": "BDDE3CD9-298F-4426-BDB9-262D0BB729ED",
+    "LanguageCode": "ar-EG",
+    "Name": "مضخة طرد مركزي 5 حصان",
+    "Description": "مضخة مياه طرد مركزي عالية الأداء",
+    "ProductId": "009F65D5-5E15-4BDE-9087-CC2876DA6081"
+  },
+  {
+    "Id": "8DCFC3FE-0118-49E6-9B27-669BA85E4F1A",
+    "LanguageCode": "ar-EG",
+    "Name": "نظام فلترة الرواسب",
+    "Description": "نظام فلترة متعدد المراحل للرواسب",
+    "ProductId": "1ABD4AEB-0705-439D-A999-8675084A5405"
+  },
+  {
+    "Id": "2797ECA3-5A8A-4034-8D51-BC9AFDC2BDF2",
+    "LanguageCode": "ar-EG",
+    "Name": "محطة الطقس برو",
+    "Description": "محطة مراقبة الطقس الاحترافية",
+    "ProductId": "F354CD6D-F961-45C6-96E2-1BBDEED2F15F"
+  },
+  {
+    "Id": "3325A9D6-FE68-4625-B1FC-74B3F1615666",
+    "LanguageCode": "ar-EG",
+    "Name": "خزان مياه تحت الأرض",
+    "Description": "نظام تخزين مياه تحت الأرض بسعة كبيرة",
+    "ProductId": "F0528755-9AA1-400A-BDFA-7B184A043B8E"
+  },
+  {
+    "Id": "7A6674FB-C7D8-40F7-BD67-10A6AA2F36D5",
+    "LanguageCode": "ar-EG",
+    "Name": "جهاز تحكم ري ذكي",
+    "Description": "نظام تحكم ذكي في الري يعمل عبر الواي فاي",
+    "ProductId": "A4B63BB9-A299-413C-ACCF-3EFEAE4646A4"
+  },
+  {
+    "Id": "1D17C562-3EC6-4DE4-B355-D61BD10EBB1E",
+    "LanguageCode": "ar-EG",
+    "Name": "نظام التسميد الآلي",
+    "Description": "نظام حقن الأسمدة الآلي",
+    "ProductId": "6C5B86B8-E1EA-4AB7-A47C-01E27E833E79"
+  }
+]

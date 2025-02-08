@@ -8,6 +8,7 @@ using GreenSphere.Application.Features.Products.Commands.CreateProduct;
 using GreenSphere.Application.Resolvers;
 using GreenSphere.Domain.Entities;
 using GreenSphere.Domain.Entities.Identity;
+using System.Globalization;
 
 namespace GreenSphere.Application.Profiles;
 public sealed class MappingProfile : Profile
@@ -32,7 +33,15 @@ public sealed class MappingProfile : Profile
             .ForMember(dest => dest.Price, options => options.MapFrom(src => src.OriginalPrice))
             .ForMember(dest => dest.RecentRatings,
                 options => options.MapFrom(src => src.Ratings.OrderByDescending(rating => rating.CreatedAt).Take(5)))
-            .ForMember(dest => dest.RatingStatistics, options => options.MapFrom(src => src.Ratings));
+            .ForMember(dest => dest.RatingStatistics, options => options.MapFrom(src => src.Ratings))
+            .ForMember(dest => dest.Name, options => options.MapFrom(src =>
+                src.ProductTranslations.Any(pt => pt.LanguageCode == CultureInfo.CurrentCulture.Name)
+                    ? src.ProductTranslations.FirstOrDefault(pt => pt.LanguageCode == CultureInfo.CurrentCulture.Name)!.Name
+                    : src.Name))
+            .ForMember(dest => dest.Description, options => options.MapFrom(src =>
+                src.ProductTranslations.Any(pt => pt.LanguageCode == CultureInfo.CurrentCulture.Name)
+                    ? src.ProductTranslations.FirstOrDefault(pt => pt.LanguageCode == CultureInfo.CurrentCulture.Name)!.Description
+                    : src.Description));
 
         CreateMap<ICollection<Rating>, RatingStatisticsDto>()
             .ForMember(dest => dest.TotalComments,

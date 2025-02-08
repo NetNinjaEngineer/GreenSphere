@@ -1,4 +1,4 @@
-﻿using GreenSphere.Application.Abstractions;
+﻿using GreenSphere.Application.Bases;
 using MediatR;
 
 namespace GreenSphere.Application.Features.Products.Commands.DeleteProduct;
