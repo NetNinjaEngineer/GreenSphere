@@ -10,6 +10,7 @@ using GreenSphere.Application.Interfaces.Services;
 using GreenSphere.Domain.Entities;
 using GreenSphere.Domain.Interfaces;
 using GreenSphere.Domain.Specifications;
+using GreenSphere.Domain.Utils;
 using Microsoft.Extensions.Localization;
 using System.Net;
 
@@ -21,9 +22,9 @@ public sealed class ProductsService(
     IFileService fileService,
     IStringLocalizer<ProductsService> localizer) : IProductsService
 {
-    public async Task<Result<IReadOnlyList<ProductDto>>> GetAllProductsAsync()
+    public async Task<Result<IReadOnlyList<ProductDto>>> GetAllProductsAsync(ProductSpecParams? @params)
     {
-        var specification = new GetAllProductsSpecification();
+        var specification = new GetAllProductsSpecification(@params);
 
         var products = await productsRepository.GetAllWithSpecificationAsync(specification);
 

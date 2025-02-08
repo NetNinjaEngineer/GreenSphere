@@ -9,6 +9,7 @@ using GreenSphere.Application.Features.Products.Commands.UpdateProduct;
 using GreenSphere.Application.Features.Products.Queries.GetAllProducts;
 using GreenSphere.Application.Features.Products.Queries.GetProduct;
 using GreenSphere.Application.Helpers;
+using GreenSphere.Domain.Utils;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 
@@ -19,8 +20,8 @@ public class ProductsController(IMediator mediator) : BaseApiController(mediator
 {
     [HttpGet]
     [ProducesResponseType(typeof(Result<IReadOnlyList<ProductDto>>), StatusCodes.Status200OK)]
-    public async Task<ActionResult<Result<IReadOnlyList<ProductDto>>>> GetAllProductsAsync()
-        => CustomResult(await Mediator.Send(new GetAllProductsQuery()));
+    public async Task<ActionResult<Result<IReadOnlyList<ProductDto>>>> GetAllProductsAsync([FromQuery] ProductSpecParams @params)
+        => CustomResult(await Mediator.Send(new GetAllProductsQuery() { ProductSpecParams = @params }));
 
 
     [HttpGet("{id:guid}")]

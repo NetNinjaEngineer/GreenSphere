@@ -8,5 +8,6 @@ public sealed class GetAllProductsQueryHandler(IProductsService service)
     : IRequestHandler<GetAllProductsQuery, Result<IReadOnlyList<ProductDto>>>
 {
     public async Task<Result<IReadOnlyList<ProductDto>>> Handle(
-        GetAllProductsQuery request, CancellationToken cancellationToken) => await service.GetAllProductsAsync();
+        GetAllProductsQuery request, CancellationToken cancellationToken)
+        => await service.GetAllProductsAsync(request.ProductSpecParams);
 }
