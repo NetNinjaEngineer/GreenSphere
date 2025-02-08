@@ -8,7 +8,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace GreenSphere.Persistence.Migrations
 {
     /// <inheritdoc />
-    public partial class InitialMigration : Migration
+    public partial class Initial : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -202,6 +202,27 @@ namespace GreenSphere.Persistence.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "CategoryTranslations",
+                columns: table => new
+                {
+                    Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    LanguageCode = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Name = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Description = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    CategoryId = table.Column<Guid>(type: "uniqueidentifier", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_CategoryTranslations", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_CategoryTranslations_Categories_CategoryId",
+                        column: x => x.CategoryId,
+                        principalTable: "Categories",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "Products",
                 columns: table => new
                 {
@@ -220,6 +241,27 @@ namespace GreenSphere.Persistence.Migrations
                         name: "FK_Products_Categories_CategoryId",
                         column: x => x.CategoryId,
                         principalTable: "Categories",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "ProductTranslations",
+                columns: table => new
+                {
+                    Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    LanguageCode = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Name = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Description = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    ProductId = table.Column<Guid>(type: "uniqueidentifier", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_ProductTranslations", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_ProductTranslations_Products_ProductId",
+                        column: x => x.ProductId,
+                        principalTable: "Products",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 });
@@ -266,17 +308,17 @@ namespace GreenSphere.Persistence.Migrations
                 columns: new[] { "Id", "AccessFailedCount", "Code", "CodeExpiration", "ConcurrencyStamp", "DateOfBirth", "Email", "EmailConfirmed", "FirstName", "Gender", "LastName", "LockoutEnabled", "LockoutEnd", "NormalizedEmail", "NormalizedUserName", "PasswordHash", "PhoneNumber", "PhoneNumberConfirmed", "ProfilePictureUrl", "SecurityStamp", "TwoFactorEnabled", "UserName" },
                 values: new object[,]
                 {
-                    { "049759F5-3AD8-46BF-89EE-AC51F3BEED88", 0, null, null, "2d988c4f-1490-43e0-94a0-663e5ac12f11", new DateOnly(1985, 2, 14), "chrisa@example.com", true, "Chris", "Male", "Anderson", false, null, "CHRISA@EXAMPLE.COM", "CHRISA@707", "AQAAAAIAAYagAAAAEDLsZIwTTSe4EkOscImuXtuFSXHYo01BuqYgoILDWkWLWhdSI69r+6fE5+aAPfTIgg==", null, false, null, "bc70e537-6382-4d52-82b9-cd199a2d5cec", false, "ChrisA@707" },
-                    { "0821819C-64AE-4C73-96F2-4E607AA59D7E", 0, null, null, "af7bf90f-df02-4c40-94ed-b0f1fd3d0dfa", new DateOnly(1980, 12, 5), "bobbrown@example.com", true, "Bob", "Male", "Brown", false, null, "BOBBROWN@EXAMPLE.COM", "BOBBROWN@101", "AQAAAAIAAYagAAAAEF707Fj1Wrl6z+KAeN14Kxov05BbMWN93kX340wSY7m8g2UTODdyV0jX6WO4j2gGDQ==", null, false, null, "d6072d7d-a66e-49a4-9fe3-cf471933e0d7", false, "BobBrown@101" },
-                    { "0A9232F3-BC6D-4610-AAFF-F1032831E847", 0, null, null, "aff952f7-4b5b-47de-9a9b-20227c85d079", new DateOnly(1990, 6, 20), "laurat@example.com", true, "Laura", "Female", "Taylor", false, null, "LAURAT@EXAMPLE.COM", "LAURAT@606", "AQAAAAIAAYagAAAAEMjRGAKRAddQ/xQ3FnV3J/jnHxqPYQ7u+LcMI/Kz6J8R8o5Q4SDMwtvhGKs669cHLA==", null, false, null, "55006865-b7e7-4e18-a9a5-bd237fd50e88", false, "LauraT@606" },
-                    { "3944C201-0184-4F97-83A6-B6E4852C961F", 0, null, null, "980437a0-3620-413a-bebc-3a4174a2534a", new DateOnly(1975, 11, 12), "davidm@example.com", true, "David", "Male", "Moore", false, null, "DAVIDM@EXAMPLE.COM", "DAVIDM@505", "AQAAAAIAAYagAAAAEJL1BDSD1XsZk1+/ny7Si5zXZGV0X/Cdaqbf0KgZFTgoN+/AFe7ey5iihSYhBcMYVA==", null, false, null, "8d6d91bc-b8e4-4ab3-bf77-4f564f2aea61", false, "DavidM@505" },
-                    { "3EB45CDA-F2EE-43E7-B9F1-D52562E05929", 0, null, null, "372aa472-da4f-4dd1-8893-f47b540d764c", new DateOnly(1990, 5, 15), "johndoe@example.com", true, "John", "Male", "Doe", false, null, "JOHNDOE@EXAMPLE.COM", "JOHNDOE@123", "AQAAAAIAAYagAAAAEEuaHIkf3u/1GxLUmQCRQEE7P33fD0gNF5Wg3VEtpLdyauxDPqebwBkDZOfVbHog0w==", null, false, null, "96b326a7-2398-46e5-8c80-599b1844c9f4", false, "JohnDoe@123" },
-                    { "5326BB55-A26F-47FE-ABC4-9DF44F7B0333", 0, null, null, "ee9b91ea-5b17-4fa5-82e2-944c9b7ae9c0", new DateOnly(1988, 9, 25), "michaelw@example.com", true, "Michael", "Male", "Wilson", false, null, "MICHAELW@EXAMPLE.COM", "MICHAELW@303", "AQAAAAIAAYagAAAAEDI8wB2jPWLQ5xNEOSusfg5zfbaoBfvMizsxcPZRyMAUuWS5wDjcwiOXO4HGg5REPQ==", null, false, null, "469426b1-175a-4aaf-8e24-ab2b223c1d13", false, "MichaelW@303" },
-                    { "5B91855C-2D98-4E2B-B919-CDE322C9002D", 0, null, null, "0a8fce8b-370c-486f-903f-f22f0ad7eb2d", new DateOnly(1992, 7, 18), "emilyd@example.com", true, "Emily", "Female", "Davis", false, null, "EMILYD@EXAMPLE.COM", "EMILYD@202", "AQAAAAIAAYagAAAAEEctZCwETtgi0I3gB/CQYEyhQQB4s9zJ9Ag/WWNYx5U7fK2qFutC91+J8B3NSFYOrA==", null, false, null, "2029ce53-b3b7-4073-aab5-57586765822a", false, "EmilyD@202" },
-                    { "702C7401-F83C-4684-9421-9AA74FC40050", 0, null, null, "aa3d759f-ccc4-4a0e-b665-3cb97d92a7b6", new DateOnly(2002, 1, 1), "me5260287@gmail.com", true, "Mohamed", "Male", "Ehab", false, null, "ME5260287@GMAIL.COM", "MOEHAB@2002", "AQAAAAIAAYagAAAAEOzvujyRjxcVswKwoYxCiuGjWmoL03K6stkL7FE7dPVChCEsUUBxmNU4QXJxRxfTXA==", null, false, null, "67e83bd0-5800-4833-86a1-265146629b7c", false, "Moehab@2002" },
-                    { "9818FAE0-A167-4808-A30D-BC7418A53CB0", 0, null, null, "89199bf6-208a-4f62-ba54-4f929ce7c6fa", new DateOnly(1985, 8, 22), "janesmith@example.com", true, "Jane", "Female", "Smith", false, null, "JANESMITH@EXAMPLE.COM", "JANESMITH@456", "AQAAAAIAAYagAAAAEEwyyXn8PTv1bP6tvhjjFJ9Vmt3tUw4DyWbgSncftZULxGdoBDCSOhxN+vXf5pISzA==", null, false, null, "b19dbf84-9556-41a2-aadb-f6588db2f3f0", false, "JaneSmith@456" },
-                    { "B3945AB7-1F46-4829-9DEA-6860E283582F", 0, null, null, "a57db13c-0d68-4d49-90a0-8e9d1d3c1ecb", new DateOnly(1998, 4, 30), "sarahm@example.com", true, "Sarah", "Female", "Miller", false, null, "SARAHM@EXAMPLE.COM", "SARAHM@404", "AQAAAAIAAYagAAAAEPmvLaoGR47PxeJ7msmvN1iozaIyd//kyXG84x0O+R2pxeBOgu1Gb7PIiOWv00GEyg==", null, false, null, "0203ff0d-ee7c-4605-b6a7-8c0dfc50cb4d", false, "SarahM@404" },
-                    { "FE2FB445-6562-49DD-B0A3-77E0A3A1C376", 0, null, null, "9992ef72-e105-40c0-bfa4-2e9dd13294a5", new DateOnly(1995, 3, 10), "alicej@example.com", true, "Alice", "Female", "Johnson", false, null, "ALICEJ@EXAMPLE.COM", "ALICEJ@789", "AQAAAAIAAYagAAAAECjIEscT32AH19UARY9pm/bzjpfL62DbEZh0FbniB+i7uGSMDYs8xp3ed4AFHgKsuw==", null, false, null, "809ce159-2ea5-4bd0-8c04-b4577ea60325", false, "AliceJ@789" }
+                    { "049759F5-3AD8-46BF-89EE-AC51F3BEED88", 0, null, null, "8bb8de39-1e72-4c55-a784-d16800205b3a", new DateOnly(1985, 2, 14), "chrisa@example.com", true, "Chris", "Male", "Anderson", false, null, "CHRISA@EXAMPLE.COM", "CHRISA@707", "AQAAAAIAAYagAAAAEGEPpq88RJhgdP0ifHma2pvjdzp8gTCqKcuNLDLPcQZOmdokCvL19PhsB3vbZBeUdQ==", null, false, null, "6b6721b6-08d1-4d70-a325-c354bd399555", false, "ChrisA@707" },
+                    { "0821819C-64AE-4C73-96F2-4E607AA59D7E", 0, null, null, "139192b4-1239-49c4-924d-ca0f6a602417", new DateOnly(1980, 12, 5), "bobbrown@example.com", true, "Bob", "Male", "Brown", false, null, "BOBBROWN@EXAMPLE.COM", "BOBBROWN@101", "AQAAAAIAAYagAAAAEIrQqOajeDb1Isz/vQpPEMW8sBQGoq8rTFYAn9BNHUGsa95lhBwfHH8fvt/8kNBKPQ==", null, false, null, "f4d1a93c-7060-4487-b1b5-0366727374a1", false, "BobBrown@101" },
+                    { "0A9232F3-BC6D-4610-AAFF-F1032831E847", 0, null, null, "c6d08786-e93c-4ebd-9a4c-16ad9832147a", new DateOnly(1990, 6, 20), "laurat@example.com", true, "Laura", "Female", "Taylor", false, null, "LAURAT@EXAMPLE.COM", "LAURAT@606", "AQAAAAIAAYagAAAAEHhOvyPjMkbueU7Np0FdJzM247hsuXlnrJhXKMCO56QMAcN4gYm0MHCj9igqVtJyOQ==", null, false, null, "7a4a6378-7fb5-4938-abac-6df55c37ab6a", false, "LauraT@606" },
+                    { "3944C201-0184-4F97-83A6-B6E4852C961F", 0, null, null, "ecd74e5f-555b-4408-9eb9-13b5ba5e67a1", new DateOnly(1975, 11, 12), "davidm@example.com", true, "David", "Male", "Moore", false, null, "DAVIDM@EXAMPLE.COM", "DAVIDM@505", "AQAAAAIAAYagAAAAECfp1BSj1TK5aymPP55NepulXRjk1Sx0dKLsuWKmuhrMFbW/46zKAMA6a9K5QCIFjg==", null, false, null, "43da367b-41b7-4523-97c4-8de77b9d181c", false, "DavidM@505" },
+                    { "3EB45CDA-F2EE-43E7-B9F1-D52562E05929", 0, null, null, "5854e60a-602d-499d-87bf-15dccb7c86fd", new DateOnly(1990, 5, 15), "johndoe@example.com", true, "John", "Male", "Doe", false, null, "JOHNDOE@EXAMPLE.COM", "JOHNDOE@123", "AQAAAAIAAYagAAAAEP4t+fmxiiQgB8l4xY6Fao9nk3gqKlT+z36KaI1Gnam8eCGZeQ4FvofheRYFDF3auw==", null, false, null, "10773851-ec83-4ba9-8976-0297f1cb159b", false, "JohnDoe@123" },
+                    { "5326BB55-A26F-47FE-ABC4-9DF44F7B0333", 0, null, null, "09aee0b7-35c6-4530-8513-366e21afdb79", new DateOnly(1988, 9, 25), "michaelw@example.com", true, "Michael", "Male", "Wilson", false, null, "MICHAELW@EXAMPLE.COM", "MICHAELW@303", "AQAAAAIAAYagAAAAEPH6Bwzo8KNtnigIrg9OAFsr4d9ldntNL9wQSUuttY6uPfLJb6DV1ka64a+BmjAouA==", null, false, null, "9e8a98f4-28aa-45a8-b1dc-6360e3763009", false, "MichaelW@303" },
+                    { "5B91855C-2D98-4E2B-B919-CDE322C9002D", 0, null, null, "f299b7ab-979a-4ecb-bb4e-39a737a79d37", new DateOnly(1992, 7, 18), "emilyd@example.com", true, "Emily", "Female", "Davis", false, null, "EMILYD@EXAMPLE.COM", "EMILYD@202", "AQAAAAIAAYagAAAAEJYf80Rmw3Vjqi2sT36qf0ls75WPNDck8ahQ/3n5mA1vR1oBc7DWVfR4+mSmu4cn6w==", null, false, null, "8863157c-3db6-49c5-9eb7-d80525b1ffa4", false, "EmilyD@202" },
+                    { "702C7401-F83C-4684-9421-9AA74FC40050", 0, null, null, "1bda050e-a46a-4a2d-81de-5a597b526d63", new DateOnly(2002, 1, 1), "me5260287@gmail.com", true, "Mohamed", "Male", "Ehab", false, null, "ME5260287@GMAIL.COM", "MOEHAB@2002", "AQAAAAIAAYagAAAAEKEURo+SjclnO0xzHue2mevWKoW7GKC9/daAn5ctDsZpI0/5w37BwfqbTQi8SOkR6Q==", null, false, null, "016be945-7fe2-49b3-ace4-73c82bb386b6", false, "Moehab@2002" },
+                    { "9818FAE0-A167-4808-A30D-BC7418A53CB0", 0, null, null, "c3638827-1491-490d-bb6f-a9c3960a17ca", new DateOnly(1985, 8, 22), "janesmith@example.com", true, "Jane", "Female", "Smith", false, null, "JANESMITH@EXAMPLE.COM", "JANESMITH@456", "AQAAAAIAAYagAAAAEIgDXwgPswFwH0ZbO1DYzIGb5aThIvPYAhkWHIcxF5opmwBRuVKQcNBhZLQdamh8xQ==", null, false, null, "1e840e0d-0c38-4583-b81a-fdc90b394171", false, "JaneSmith@456" },
+                    { "B3945AB7-1F46-4829-9DEA-6860E283582F", 0, null, null, "fe2870bf-9ff6-40cc-b9b6-c04fd9e099c9", new DateOnly(1998, 4, 30), "sarahm@example.com", true, "Sarah", "Female", "Miller", false, null, "SARAHM@EXAMPLE.COM", "SARAHM@404", "AQAAAAIAAYagAAAAELqDkjzSW8KVtrSkIs2ovQzUsDChKBoXS1CLiygm22QnYrFiWYoFq+0qToIPa8u8kQ==", null, false, null, "ea4fbadd-e1db-4a40-941f-833503342903", false, "SarahM@404" },
+                    { "FE2FB445-6562-49DD-B0A3-77E0A3A1C376", 0, null, null, "2b50a670-f90a-4924-8144-3c95e35790e7", new DateOnly(1995, 3, 10), "alicej@example.com", true, "Alice", "Female", "Johnson", false, null, "ALICEJ@EXAMPLE.COM", "ALICEJ@789", "AQAAAAIAAYagAAAAELbNSERzfwLRRWXGd048QaGwgwMZAF4SJbERqVLGhVichRXRURn//3eTvnoSt8jC4w==", null, false, null, "60096633-2ad2-42a8-b8e7-0c127a564848", false, "AliceJ@789" }
                 });
 
             migrationBuilder.InsertData(
@@ -337,9 +379,19 @@ namespace GreenSphere.Persistence.Migrations
                 filter: "[NormalizedUserName] IS NOT NULL");
 
             migrationBuilder.CreateIndex(
+                name: "IX_CategoryTranslations_CategoryId",
+                table: "CategoryTranslations",
+                column: "CategoryId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_Products_CategoryId",
                 table: "Products",
                 column: "CategoryId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_ProductTranslations_ProductId",
+                table: "ProductTranslations",
+                column: "ProductId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Ratings_CreatedById",
@@ -375,6 +427,12 @@ namespace GreenSphere.Persistence.Migrations
 
             migrationBuilder.DropTable(
                 name: "AspNetUserTokens");
+
+            migrationBuilder.DropTable(
+                name: "CategoryTranslations");
+
+            migrationBuilder.DropTable(
+                name: "ProductTranslations");
 
             migrationBuilder.DropTable(
                 name: "Ratings");

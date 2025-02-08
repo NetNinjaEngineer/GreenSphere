@@ -10,5 +10,7 @@ public sealed class GetProductWithDetailsSpecification : BaseSpecification<Produ
         AddInclude(p => p.Category);
         AddInclude(p => p.Ratings);
         AddInclude(p => p.Ratings, r => r.CreatedBy);
+        AddInclude(p => p.ProductTranslations);
+        AddInclude(p => p.Category.CategoryTranslations);
     }
 }
