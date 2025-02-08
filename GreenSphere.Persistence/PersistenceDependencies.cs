@@ -1,4 +1,6 @@
 ﻿using GreenSphere.Domain.Entities.Identity;
+using GreenSphere.Domain.Interfaces;
+using GreenSphere.Persistence.Repositories;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
@@ -30,6 +32,8 @@ public static class PersistenceDependencies
         })
         .AddEntityFrameworkStores<ApplicationDbContext>()
         .AddDefaultTokenProviders();
+
+        services.AddScoped(typeof(IGenericRepository<>), typeof(GenericRepository<>));
 
         return services;
     }

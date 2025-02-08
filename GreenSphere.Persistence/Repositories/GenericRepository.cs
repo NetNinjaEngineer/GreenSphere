@@ -1,6 +1,6 @@
 ﻿using GreenSphere.Domain.Common;
 using GreenSphere.Domain.Interfaces;
-using GreenSphere.Domain.Specifications;
+using GreenSphere.Domain.Utils;
 using Microsoft.EntityFrameworkCore;
 
 namespace GreenSphere.Persistence.Repositories;

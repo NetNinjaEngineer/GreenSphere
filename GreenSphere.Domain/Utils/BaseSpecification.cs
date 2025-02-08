@@ -1,10 +1,10 @@
 ﻿using GreenSphere.Domain.Common;
 using System.Linq.Expressions;
 
-namespace GreenSphere.Domain.Specifications;
+namespace GreenSphere.Domain.Utils;
 public abstract class BaseSpecification<TEntity> : IBaseSpecification<TEntity> where TEntity : BaseEntity
 {
-    public List<Expression<Func<TEntity, object>>> Includes { get; set; } = [];
+    private readonly List<IIncludeExpression<TEntity>> _includeExpressions = [];
     public List<Expression<Func<TEntity, object>>> OrderBy { get; set; } = [];
     public List<Expression<Func<TEntity, object>>> OrderByDescending { get; set; } = [];
     public Expression<Func<TEntity, bool>>? Criteria { get; set; }
@@ -18,8 +18,21 @@ public abstract class BaseSpecification<TEntity> : IBaseSpecification<TEntity> w
     protected BaseSpecification(Expression<Func<TEntity, bool>> criteriaExpression)
         => Criteria = criteriaExpression;
 
-    protected void AddIncludes(Expression<Func<TEntity, object>> includeExpression)
-        => Includes.Add(includeExpression);
+    protected void AddInclude(Expression<Func<TEntity, object>> includeExpression)
+    {
+        _includeExpressions.Add(new IncludeExpression<TEntity>(includeExpression));
+    }
+
+    protected void AddInclude<TPreviousProperty, TProperty>(
+        Expression<Func<TEntity, IEnumerable<TPreviousProperty>>> previousExpression,
+        Expression<Func<TPreviousProperty, TProperty>> thenExpression)
+    {
+        _includeExpressions.Add(
+            new ThenIncludeExpression<TEntity, TPreviousProperty, TProperty>(
+                previousExpression, thenExpression));
+    }
+
+    public IReadOnlyList<IIncludeExpression<TEntity>> IncludeExpressions => _includeExpressions;
 
     protected void AddOrderBy(Expression<Func<TEntity, object>> orderByExpression)
         => OrderBy.Add(orderByExpression);
@@ -35,6 +48,5 @@ public abstract class BaseSpecification<TEntity> : IBaseSpecification<TEntity> w
         Skip = skip;
         Take = take;
     }
-
 
 }

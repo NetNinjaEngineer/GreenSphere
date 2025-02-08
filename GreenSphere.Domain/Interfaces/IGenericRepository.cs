@@ -1,5 +1,5 @@
 ﻿using GreenSphere.Domain.Common;
-using GreenSphere.Domain.Specifications;
+using GreenSphere.Domain.Utils;
 
 namespace GreenSphere.Domain.Interfaces;
 public interface IGenericRepository<T> where T : BaseEntity

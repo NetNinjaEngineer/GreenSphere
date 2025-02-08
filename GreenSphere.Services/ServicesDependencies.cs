@@ -23,18 +23,6 @@ public static class ServicesDependencies
 
         services.Configure<EmailSettings>(configuration.GetSection(nameof(EmailSettings)));
 
-        services.AddScoped<IAuthService, AuthService>();
-
-        services.AddScoped<IRoleService, RoleService>();
-
-        services.AddScoped<ICurrentUser, CurrentUser>();
-
-        services.AddScoped<IUserService, UserService>();
-
-        services.AddMemoryCache();
-
-        services.AddScoped<ITokenService, TokenService>();
-
         services.Configure<JWT>(configuration.GetSection(nameof(JWT)));
 
         services.Configure<JWT>(configuration.GetSection(nameof(JWT)));
@@ -61,6 +49,20 @@ public static class ServicesDependencies
         });
 
         services.AddHttpContextAccessor();
+
+        services.AddScoped<IAuthService, AuthService>();
+
+        services.AddScoped<IRoleService, RoleService>();
+
+        services.AddScoped<ICurrentUser, CurrentUser>();
+
+        services.AddScoped<IUserService, UserService>();
+
+        services.AddMemoryCache();
+
+        services.AddScoped<ITokenService, TokenService>();
+
+        services.AddScoped<IProductsService, ProductsService>();
 
         return services;
     }

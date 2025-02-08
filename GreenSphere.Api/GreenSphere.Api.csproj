@@ -23,5 +23,9 @@
     <ProjectReference Include="..\GreenSphere.Persistence\GreenSphere.Persistence.csproj" />
     <ProjectReference Include="..\GreenSphere.Services\GreenSphere.Services.csproj" />
   </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="wwwroot\Uploads\Images\" />
+  </ItemGroup>
 	
 </Project>

@@ -1,17 +1,22 @@
 ﻿using GreenSphere.Domain.Common;
 using Microsoft.EntityFrameworkCore;
 
-namespace GreenSphere.Domain.Specifications;
+namespace GreenSphere.Domain.Utils;
 public static class SpecificationQueryEvaluator
 {
     public static IQueryable<TEntity> BuildQuery<TEntity>(
         IQueryable<TEntity> query,
         IBaseSpecification<TEntity> specification) where TEntity : BaseEntity
     {
-        var inputQuery = query.AsQueryable();
+        var inputQuery = query;
 
-        if (specification.Includes.Count != 0)
-            inputQuery = specification.Includes.Aggregate(inputQuery, (currentQuery, includeExpression) => currentQuery.Include(includeExpression));
+        if (specification.IncludeExpressions.Count > 0)
+        {
+            inputQuery = specification.IncludeExpressions.Aggregate(
+                inputQuery,
+                (current, includeExpression) => includeExpression.AddInclude(current));
+        }
+
 
         if (specification.Criteria != null)
             inputQuery = inputQuery.Where(specification.Criteria);
@@ -20,11 +25,7 @@ public static class SpecificationQueryEvaluator
         {
             var firstOrderBy = specification.OrderBy.First();
             var orderedQuery = inputQuery.OrderBy(firstOrderBy);
-
-            foreach (var additionalOrderBy in specification.OrderBy.Skip(1))
-            {
-                orderedQuery = orderedQuery.ThenBy(additionalOrderBy);
-            }
+            orderedQuery = specification.OrderBy.Skip(1).Aggregate(orderedQuery, (current, additionalOrderBy) => current.ThenBy(additionalOrderBy));
             inputQuery = orderedQuery;
         }
 
@@ -32,10 +33,7 @@ public static class SpecificationQueryEvaluator
         {
             var firstOrderByExpression = specification.OrderByDescending.First();
             var orderedQuery = inputQuery.OrderByDescending(firstOrderByExpression);
-            foreach (var additionalOrderByExpression in specification.OrderByDescending.Skip(1))
-            {
-                orderedQuery = orderedQuery.ThenByDescending(additionalOrderByExpression);
-            }
+            orderedQuery = specification.OrderByDescending.Skip(1).Aggregate(orderedQuery, (current, additionalOrderByExpression) => current.ThenByDescending(additionalOrderByExpression));
             inputQuery = orderedQuery;
         }
 
