@@ -25,12 +25,11 @@ public sealed class UserService(
     IStringLocalizer<UserService> localizer,
     UserManager<ApplicationUser> userManager) : IUserService
 {
-    public async Task<Result<UserProfileDto>> GetUserProfileAsync(string userId)
+    public async Task<Result<UserProfileDto>> GetUserProfileAsync()
     {
-        var user = await userManager.FindByIdAsync(userId);
-
+        var user = await userManager.FindByIdAsync(currentUser.Id);
         if (user is null)
-            return Result<UserProfileDto>.Failure(HttpStatusCode.NotFound, localizer["UnkownUser"]);
+            return Result<UserProfileDto>.Failure(HttpStatusCode.NotFound, localizer["UnknownUser"]);
 
         var mappedUserProfile = mapper.Map<UserProfileDto>(user);
 

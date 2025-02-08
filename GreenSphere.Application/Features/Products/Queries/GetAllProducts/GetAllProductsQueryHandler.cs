@@ -5,8 +5,8 @@ using MediatR;
 
 namespace GreenSphere.Application.Features.Products.Queries.GetAllProducts;
 public sealed class GetAllProductsQueryHandler(IProductsService service)
-    : IRequestHandler<GetAllProductsQuery, Result<IEnumerable<ProductDto>>>
+    : IRequestHandler<GetAllProductsQuery, Result<IReadOnlyList<ProductDto>>>
 {
-    public async Task<Result<IEnumerable<ProductDto>>> Handle(
+    public async Task<Result<IReadOnlyList<ProductDto>>> Handle(
         GetAllProductsQuery request, CancellationToken cancellationToken) => await service.GetAllProductsAsync();
 }

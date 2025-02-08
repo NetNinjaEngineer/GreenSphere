@@ -64,6 +64,8 @@ public static class ServicesDependencies
 
         services.AddScoped<IProductsService, ProductsService>();
 
+        services.AddScoped<IFileService, FileService>();
+
         return services;
     }
 }

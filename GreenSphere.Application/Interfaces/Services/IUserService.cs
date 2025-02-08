@@ -8,7 +8,7 @@ using GreenSphere.Application.Features.Users.Commands.VerifyChangeUserEmail;
 namespace GreenSphere.Application.Interfaces.Services;
 public interface IUserService
 {
-    Task<Result<UserProfileDto>> GetUserProfileAsync(string userId);
+    Task<Result<UserProfileDto>> GetUserProfileAsync();
     Task<Result<UserProfileDto>> EditUserProfileAsync(EditUserProfileCommand command);
     Task<Result<bool>> ChangeUserEmailAsync(ChangeUserEmailCommand command);
     Task<Result<bool>> VerifyChangeUserEmailAsync(VerifyChangeUserEmailCommand command);

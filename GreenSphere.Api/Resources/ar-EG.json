@@ -61,5 +61,7 @@
   "EmailCanNotBeEmpty": "البريد الإلكتروني مطلوب",
   "EmailIsNotValid": "البريد الإلكتروني ليس بتنسيق صالح",
   "FirstNameExceedsMaxLength": "لا يمكن أن يتجاوز الاسم الأول {0} حرفًا",
-  "LastNameExceedsMaxLength": "لا يمكن أن يتجاوز الاسم الأخير {0} حرفًا"
+  "LastNameExceedsMaxLength": "لا يمكن أن يتجاوز الاسم الأخير {0} حرفًا",
+  "ProductNotFound": "المنتج الذي يحمل المعرف {0} غير موجود.",
+  "CategoryNotFound": "الفئة التي تحمل المعرف {0} غير موجودة."
 }

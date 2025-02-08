@@ -4,6 +4,7 @@ using GreenSphere.Application.DTOs.Products;
 using GreenSphere.Application.DTOs.Ratings;
 using GreenSphere.Application.DTOs.Users;
 using GreenSphere.Application.Features.Auth.Commands.Register;
+using GreenSphere.Application.Features.Products.Commands.CreateProduct;
 using GreenSphere.Application.Resolvers;
 using GreenSphere.Domain.Entities;
 using GreenSphere.Domain.Entities.Identity;
@@ -14,7 +15,8 @@ public sealed class MappingProfile : Profile
     public MappingProfile()
     {
         CreateMap<RegisterCommand, ApplicationUser>();
-        CreateMap<ApplicationUser, UserProfileDto>();
+        CreateMap<ApplicationUser, UserProfileDto>()
+            .ForMember(dest => dest.ProfilePictureUrl, options => options.MapFrom<AppUserProfileUrlValueResolver>());
 
         CreateMap<Rating, RatingDto>()
             .ForMember(dest => dest.CreatedBy,
@@ -45,6 +47,9 @@ public sealed class MappingProfile : Profile
             .ForMember(dest => dest.RatingDistribution,
                 options => options.MapFrom(src =>
                     src.GroupBy(rating => rating.Score).ToDictionary(selector => selector.Key, g => g.Count())));
+
+
+        CreateMap<CreateProductCommand, Product>();
 
     }
 }
