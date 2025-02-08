@@ -1,0 +1,37 @@
+﻿[
+  {
+    "id": "6E202CFF-7394-4C26-BCBB-228B5E22C5A3",
+    "languageCode": "ar-EG",
+    "name": "أنظمة الري",
+    "description": "حلول الري المتكاملة للتطبيقات الزراعية",
+    "categoryId": "E0070C91-4F0B-4343-A37D-72B27921423E"
+  },
+  {
+    "id": "C7D147FB-FD4A-433E-8969-3EC2CCAC71C3",
+    "languageCode": "ar-EG",
+    "name": "مضخات المياه",
+    "description": "مضخات عالية الأداء لإدارة المياه الزراعية",
+    "categoryId": "AE5A9CFB-A064-455A-9234-3B55C6255479"
+  },
+  {
+    "id": "DC8AB9A7-CA85-46F9-8A4E-C3508776A399",
+    "languageCode": "ar-EG",
+    "name": "أنظمة الفلترة",
+    "description": "حلول الفلترة وتنقية المياه",
+    "categoryId": "540F7661-1CFC-4FB9-B5FD-52DEC51617D3"
+  },
+  {
+    "id": "FDDD23E3-8D02-4706-801E-AE3B0B1CF722",
+    "languageCode": "ar-EG",
+    "name": "معدات المراقبة",
+    "description": "أجهزة استشعار وأدوات مراقبة لإدارة المياه",
+    "categoryId": "D1B0C257-4622-4DD9-AD71-6DBBE9C808F1"
+  },
+  {
+    "id": "06F922B2-2806-4B5F-92C9-44952E532363",
+    "languageCode": "ar-EG",
+    "name": "تخزين المياه",
+    "description": "خزانات وحلول تخزين المياه للزراعة",
+    "categoryId": "BC6EB2C3-2AD5-4AB0-A84A-C3173A85E3EA"
+  }
+]

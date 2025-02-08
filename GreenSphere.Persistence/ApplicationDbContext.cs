@@ -11,6 +11,7 @@ public class ApplicationDbContext(
     public DbSet<Product> Products { get; set; }
     public DbSet<Rating> Ratings { get; set; }
     public DbSet<ProductTranslation> ProductTranslations { get; set; }
+    public DbSet<CategoryTranslation> CategoryTranslations { get; set; }
 
     protected override void OnModelCreating(ModelBuilder builder)
     {

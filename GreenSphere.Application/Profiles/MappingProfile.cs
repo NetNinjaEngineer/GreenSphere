@@ -25,8 +25,15 @@ public sealed class MappingProfile : Profile
             .ForMember(dest => dest.ProfilePictureUrl, options => options.MapFrom<UserProfileUrlValueResolver>());
 
         CreateMap<Category, CategoryDto>()
-            .ForMember(dest => dest.TotalProducts, options => options.MapFrom(src => src.Products.Count));
-
+            .ForMember(dest => dest.TotalProducts, options => options.MapFrom(src => src.Products.Count))
+            .ForMember(dest => dest.Name, options => options.MapFrom(src =>
+                src.CategoryTranslations.Any(ct => ct.LanguageCode == CultureInfo.CurrentCulture.Name)
+                    ? src.CategoryTranslations.FirstOrDefault(pt => pt.LanguageCode == CultureInfo.CurrentCulture.Name)!.Name
+                    : src.Name))
+            .ForMember(dest => dest.Description, options => options.MapFrom(src =>
+                src.CategoryTranslations.Any(ct => ct.LanguageCode == CultureInfo.CurrentCulture.Name)
+                    ? src.CategoryTranslations.FirstOrDefault(pt => pt.LanguageCode == CultureInfo.CurrentCulture.Name)!.Description
+                    : src.Description));
 
         CreateMap<Product, ProductDto>()
             .ForMember(dest => dest.ImageUrl, options => options.MapFrom<ProductsImageUrlValueResolver>())
