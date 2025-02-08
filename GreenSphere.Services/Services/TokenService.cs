@@ -1,5 +1,5 @@
 ﻿using GreenSphere.Application.Helpers;
-using GreenSphere.Application.Interfaces.Identity;
+using GreenSphere.Application.Interfaces.Services;
 using GreenSphere.Domain.Entities.Identity;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;

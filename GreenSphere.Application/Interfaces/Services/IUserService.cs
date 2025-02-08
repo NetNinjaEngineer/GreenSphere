@@ -5,7 +5,7 @@ using GreenSphere.Application.Features.Users.Commands.ChangeUserPassword;
 using GreenSphere.Application.Features.Users.Commands.EditUserProfile;
 using GreenSphere.Application.Features.Users.Commands.VerifyChangeUserEmail;
 
-namespace GreenSphere.Application.Interfaces.Identity;
+namespace GreenSphere.Application.Interfaces.Services;
 public interface IUserService
 {
     Task<Result<UserProfileDto>> GetUserProfileAsync(string userId);

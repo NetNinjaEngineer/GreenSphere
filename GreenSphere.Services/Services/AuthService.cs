@@ -18,7 +18,6 @@ using GreenSphere.Application.Features.Auth.Commands.SendConfirmEmailCode;
 using GreenSphere.Application.Features.Auth.Commands.ValidateToken;
 using GreenSphere.Application.Features.Auth.Commands.Verify2FaCode;
 using GreenSphere.Application.Helpers;
-using GreenSphere.Application.Interfaces.Identity;
 using GreenSphere.Application.Interfaces.Services;
 using GreenSphere.Application.Interfaces.Services.Models;
 using GreenSphere.Domain.Entities.Identity;

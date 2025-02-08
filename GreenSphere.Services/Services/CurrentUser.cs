@@ -1,5 +1,5 @@
 ﻿using GreenSphere.Application.Helpers;
-using GreenSphere.Application.Interfaces.Identity;
+using GreenSphere.Application.Interfaces.Services;
 using Microsoft.AspNetCore.Http;
 using System.Security.Claims;
 

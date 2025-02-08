@@ -1,6 +1,6 @@
 ﻿using GreenSphere.Application.Abstractions;
 using GreenSphere.Application.DTOs.Auth;
-using GreenSphere.Application.Interfaces.Identity;
+using GreenSphere.Application.Interfaces.Services;
 using MediatR;
 using Microsoft.AspNetCore.Http;
 using System.Text;

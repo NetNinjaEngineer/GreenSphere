@@ -1,5 +1,5 @@
 ﻿using GreenSphere.Application.Bases;
-using GreenSphere.Application.Interfaces.Identity;
+using GreenSphere.Application.Interfaces.Services;
 using MediatR;
 
 namespace GreenSphere.Application.Features.Users.Commands.ChangeUserEmail

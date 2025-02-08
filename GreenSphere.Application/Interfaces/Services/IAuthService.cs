@@ -15,7 +15,7 @@ using GreenSphere.Application.Features.Auth.Commands.SendConfirmEmailCode;
 using GreenSphere.Application.Features.Auth.Commands.ValidateToken;
 using GreenSphere.Application.Features.Auth.Commands.Verify2FaCode;
 
-namespace GreenSphere.Application.Interfaces.Identity;
+namespace GreenSphere.Application.Interfaces.Services;
 
 public interface IAuthService
 {

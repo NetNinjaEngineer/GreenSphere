@@ -7,7 +7,6 @@ using GreenSphere.Application.Features.Users.Commands.ChangeUserPassword;
 using GreenSphere.Application.Features.Users.Commands.EditUserProfile;
 using GreenSphere.Application.Features.Users.Commands.VerifyChangeUserEmail;
 using GreenSphere.Application.Helpers;
-using GreenSphere.Application.Interfaces.Identity;
 using GreenSphere.Application.Interfaces.Services;
 using GreenSphere.Application.Interfaces.Services.Models;
 using GreenSphere.Domain.Entities.Identity;

@@ -6,7 +6,7 @@ using GreenSphere.Application.Features.Roles.Commands.CreateRole;
 using GreenSphere.Application.Features.Roles.Commands.DeleteRole;
 using GreenSphere.Application.Features.Roles.Commands.EditRole;
 
-namespace GreenSphere.Application.Interfaces.Identity;
+namespace GreenSphere.Application.Interfaces.Services;
 public interface IRoleService
 {
     Task<Result<string>> CreateRole(CreateRoleCommand request);

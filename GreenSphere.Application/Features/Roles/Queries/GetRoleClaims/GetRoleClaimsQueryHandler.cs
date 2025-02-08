@@ -1,5 +1,5 @@
 ﻿using GreenSphere.Application.Abstractions;
-using GreenSphere.Application.Interfaces.Identity;
+using GreenSphere.Application.Interfaces.Services;
 using MediatR;
 
 namespace GreenSphere.Application.Features.Roles.Queries.GetRoleClaims;

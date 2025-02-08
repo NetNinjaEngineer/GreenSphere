@@ -6,7 +6,7 @@ using GreenSphere.Application.Features.Roles.Commands.CreateRole;
 using GreenSphere.Application.Features.Roles.Commands.DeleteRole;
 using GreenSphere.Application.Features.Roles.Commands.EditRole;
 using GreenSphere.Application.Helpers;
-using GreenSphere.Application.Interfaces.Identity;
+using GreenSphere.Application.Interfaces.Services;
 using GreenSphere.Domain.Entities.Identity;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Localization;
