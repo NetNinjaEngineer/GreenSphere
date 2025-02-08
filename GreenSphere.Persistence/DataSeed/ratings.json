@@ -1,0 +1,42 @@
+[
+  {
+    "id": "4DAEB86A-2098-4183-BDA9-AA96A812F09B",
+    "score": 5,
+    "comment": "Excellent irrigation system, very efficient water distribution",
+    "createdDate": "2024-01-15T10:30:00",
+    "productId": "6C5B86B8-E1EA-4AB7-A47C-01E27E833E79",
+    "createdById": "702C7401-F83C-4684-9421-9AA74FC40050"
+  },
+  {
+    "id": "BE58D7AD-7198-4C39-A99B-78CD94025BAE",
+    "score": 4,
+    "comment": "Good product but installation could be simpler",
+    "createdDate": "2024-01-16T14:20:00",
+    "productId": "A4B63BB9-A299-413C-ACCF-3EFEAE4646A4",
+    "createdById": "3EB45CDA-F2EE-43E7-B9F1-D52562E05929"
+  },
+  {
+    "id": "5ECB650F-AE82-4AE1-AF06-9445695B8E3F",
+    "score": 5,
+    "comment": "Solar pump works perfectly, great energy savings",
+    "createdDate": "2024-01-17T09:15:00",
+    "productId": "F0528755-9AA1-400A-BDFA-7B184A043B8E",
+    "createdById": "9818FAE0-A167-4808-A30D-BC7418A53CB0"
+  },
+  {
+    "id": "7B470F0D-A48C-4569-94FB-454A9EDC8FB8",
+    "score": 5,
+    "comment": "Amazing water quality improvement",
+    "createdDate": "2024-01-18T16:45:00",
+    "productId": "F354CD6D-F961-45C6-96E2-1BBDEED2F15F",
+    "createdById": "FE2FB445-6562-49DD-B0A3-77E0A3A1C376"
+  },
+  {
+    "id": "161F6CEA-1FC2-41EB-8014-457D998F8D51",
+    "score": 4,
+    "comment": "Reliable moisture readings, helpful for irrigation planning",
+    "createdDate": "2024-01-19T11:30:00",
+    "productId": "1ABD4AEB-0705-439D-A999-8675084A5405",
+    "createdById": "0821819C-64AE-4C73-96F2-4E607AA59D7E"
+  }
+]

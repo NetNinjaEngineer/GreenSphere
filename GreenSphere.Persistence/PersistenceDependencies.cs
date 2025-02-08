@@ -1,4 +1,4 @@
-﻿using GreenSphere.Domain.Entities;
+﻿using GreenSphere.Domain.Entities.Identity;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;

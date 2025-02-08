@@ -1,0 +1,184 @@
+[
+  {
+    "id": "434B463D-B8E8-43AB-99AE-92FA4801DAB1",
+    "name": "Drip Irrigation Kit Pro",
+    "originalPrice": 599.99,
+    "img": "drip-irrigation-pro.jpg",
+    "description": "Professional drip irrigation system for precise water delivery",
+    "discountPercentage": 10,
+    "categoryId": "E0070C91-4F0B-4343-A37D-72B27921423E"
+  },
+  {
+    "id": "2B282E5F-F4FA-472B-9F82-BA42BFD37321",
+    "name": "Solar Water Pump 2000W",
+    "originalPrice": 1299.99,
+    "img": "solar-pump-2000w.jpg",
+    "description": "High-efficiency solar-powered water pump for agricultural use",
+    "discountPercentage": 15,
+    "categoryId": "AE5A9CFB-A064-455A-9234-3B55C6255479"
+  },
+  {
+    "id": "99A03A03-3D86-4FE6-9A11-F3CFBB08FC7D",
+    "name": "Smart Sprinkler System",
+    "originalPrice": 799.99,
+    "img": "smart-sprinkler.jpg",
+    "description": "Automated sprinkler system with weather monitoring",
+    "discountPercentage": null,
+    "categoryId": "E0070C91-4F0B-4343-A37D-72B27921423E"
+  },
+  {
+    "id": "6E6985ED-41F5-4E1F-955D-27EBEF767E45",
+    "name": "Industrial Water Filter",
+    "originalPrice": 899.99,
+    "img": "industrial-filter.jpg",
+    "description": "Heavy-duty water filtration system for agricultural applications",
+    "discountPercentage": 5,
+    "categoryId": "540F7661-1CFC-4FB9-B5FD-52DEC51617D3"
+  },
+  {
+    "id": "2DDE9738-CA76-4598-83D1-B4835F91668D",
+    "name": "Soil Moisture Sensor Kit",
+    "originalPrice": 299.99,
+    "img": "moisture-sensor.jpg",
+    "description": "Professional soil moisture monitoring system",
+    "discountPercentage": null,
+    "categoryId": "D1B0C257-4622-4DD9-AD71-6DBBE9C808F1"
+  },
+  {
+    "id": "9BBBA2FA-DBC5-4C3B-87C5-69D8169DFC7A",
+    "name": "Water Storage Tank 5000L",
+    "originalPrice": 1499.99,
+    "img": "storage-tank-5000l.jpg",
+    "description": "Large capacity water storage tank for agricultural use",
+    "discountPercentage": 8,
+    "categoryId": "BC6EB2C3-2AD5-4AB0-A84A-C3173A85E3EA"
+  },
+  {
+    "id": "D71E164F-84A4-4280-B909-D6B0BAE30D4E",
+    "name": "pH Monitoring System",
+    "originalPrice": 399.99,
+    "img": "ph-monitor.jpg",
+    "description": "Advanced pH monitoring system for water quality control",
+    "discountPercentage": null,
+    "categoryId": "D1B0C257-4622-4DD9-AD71-6DBBE9C808F1"
+  },
+  {
+    "id": "C7F14151-C1EA-44D3-A9A5-A18FC971D5D3",
+    "name": "Submersible Pump 3HP",
+    "originalPrice": 899.99,
+    "rate": 4.8,
+    "img": "submersible-pump.jpg",
+    "description": "Heavy-duty submersible pump for deep well applications",
+    "discountPercentage": 12,
+    "categoryId": "AE5A9CFB-A064-455A-9234-3B55C6255479"
+  },
+  {
+    "id": "5BAC401E-8C8C-4740-8226-D5F30623E237",
+    "name": "Micro Sprinkler Set",
+    "originalPrice": 199.99,
+    "img": "micro-sprinkler.jpg",
+    "description": "Precision micro sprinkler system for targeted irrigation",
+    "discountPercentage": null,
+    "categoryId": "E0070C91-4F0B-4343-A37D-72B27921423E"
+  },
+  {
+    "id": "B6ECC469-8F0E-4D3A-9FD2-DBF2CFD19E69",
+    "name": "Water Flow Meter",
+    "originalPrice": 299.99,
+    "img": "flow-meter.jpg",
+    "description": "Digital water flow monitoring system",
+    "discountPercentage": 5,
+    "categoryId": "D1B0C257-4622-4DD9-AD71-6DBBE9C808F1"
+  },
+  {
+    "id": "6FD6E858-8BC1-4D9B-A515-7FD1B97B8D40",
+    "name": "UV Water Sterilizer",
+    "originalPrice": 699.99,
+    "img": "uv-sterilizer.jpg",
+    "description": "UV sterilization system for water purification",
+    "discountPercentage": 10,
+    "categoryId": "540F7661-1CFC-4FB9-B5FD-52DEC51617D3"
+  },
+  {
+    "id": "E3388402-CCDD-4F44-BC86-F480A6BDBCEF",
+    "name": "Rainwater Collection System",
+    "originalPrice": 999.99,
+    "img": "rainwater-collection.jpg",
+    "description": "Complete rainwater harvesting solution",
+    "discountPercentage": 15,
+    "categoryId": "BC6EB2C3-2AD5-4AB0-A84A-C3173A85E3EA"
+  },
+  {
+    "id": "9B0C1A73-511F-46D7-ABF4-21C120052044",
+    "name": "Water Quality Analyzer",
+    "originalPrice": 599.99,
+    "rate": 4.8,
+    "img": "water-analyzer.jpg",
+    "description": "Professional water quality testing kit",
+    "discountPercentage": null,
+    "categoryId": "D1B0C257-4622-4DD9-AD71-6DBBE9C808F1"
+  },
+  {
+    "id": "8B146046-355E-4094-8E44-995A3D7C8A89",
+    "name": "Drip Tape Roll 1000m",
+    "originalPrice": 149.99,
+    "img": "drip-tape.jpg",
+    "description": "Professional-grade drip irrigation tape",
+    "discountPercentage": 5,
+    "categoryId": "E0070C91-4F0B-4343-A37D-72B27921423E"
+  },
+  {
+    "id": "009F65D5-5E15-4BDE-9087-CC2876DA6081",
+    "name": "Centrifugal Pump 5HP",
+    "originalPrice": 1099.99,
+    "img": "centrifugal-pump.jpg",
+    "description": "High-performance centrifugal water pump",
+    "discountPercentage": 8,
+    "categoryId": "AE5A9CFB-A064-455A-9234-3B55C6255479"
+  },
+  {
+    "id": "1ABD4AEB-0705-439D-A999-8675084A5405",
+    "name": "Sediment Filter System",
+    "originalPrice": 449.99,
+    "img": "sediment-filter.jpg",
+    "description": "Multi-stage sediment filtration system",
+    "discountPercentage": null,
+    "categoryId": "540F7661-1CFC-4FB9-B5FD-52DEC51617D3"
+  },
+  {
+    "id": "F354CD6D-F961-45C6-96E2-1BBDEED2F15F",
+    "name": "Weather Station Pro",
+    "originalPrice": 799.99,
+    "img": "weather-station.jpg",
+    "description": "Professional weather monitoring station",
+    "discountPercentage": 12,
+    "categoryId": "D1B0C257-4622-4DD9-AD71-6DBBE9C808F1"
+  },
+  {
+    "id": "F0528755-9AA1-400A-BDFA-7B184A043B8E",
+    "name": "Underground Storage Tank",
+    "originalPrice": 2499.99,
+    "img": "underground-tank.jpg",
+    "description": "Large capacity underground water storage system",
+    "discountPercentage": 10,
+    "categoryId": "BC6EB2C3-2AD5-4AB0-A84A-C3173A85E3EA"
+  },
+  {
+    "id": "A4B63BB9-A299-413C-ACCF-3EFEAE4646A4",
+    "name": "Smart Irrigation Controller",
+    "originalPrice": 349.99,
+    "img": "smart-controller.jpg",
+    "description": "WiFi-enabled smart irrigation control system",
+    "discountPercentage": 5,
+    "categoryId": "E0070C91-4F0B-4343-A37D-72B27921423E"
+  },
+  {
+    "id": "6C5B86B8-E1EA-4AB7-A47C-01E27E833E79",
+    "name": "Fertigation System",
+    "originalPrice": 899.99,
+    "img": "fertigation-system.jpg",
+    "description": "Automated fertilizer injection system",
+    "discountPercentage": 15,
+    "categoryId": "E0070C91-4F0B-4343-A37D-72B27921423E"
+  }
+]

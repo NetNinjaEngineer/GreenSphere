@@ -4,7 +4,7 @@ using GreenSphere.Application.Features.Auth.Commands.FacebookLogin;
 using GreenSphere.Application.Helpers;
 using GreenSphere.Application.Interfaces.Infrastructure;
 using GreenSphere.Application.Interfaces.Infrastructure.Models;
-using GreenSphere.Domain.Entities;
+using GreenSphere.Domain.Entities.Identity;
 using Microsoft.AspNetCore.Identity;
 using System.Net;
 using System.Text.Json;

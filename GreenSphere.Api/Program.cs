@@ -8,7 +8,7 @@ using GreenSphere.Infrastructure;
 using GreenSphere.Persistence;
 using GreenSphere.Services;
 
-WebApplicationBuilder builder = WebApplication.CreateBuilder(args);
+var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddInfrastructureDependencies()
     .AddPersistenceDependencies(builder.Configuration)

@@ -1,7 +1,7 @@
 ﻿using AutoMapper;
 using GreenSphere.Application.DTOs.Users;
 using GreenSphere.Application.Features.Auth.Commands.Register;
-using GreenSphere.Domain.Entities;
+using GreenSphere.Domain.Entities.Identity;
 
 namespace GreenSphere.Application.Profiles;
 public class UserProfile : Profile

@@ -1,4 +1,4 @@
-﻿using GreenSphere.Domain.Common;
+﻿using GreenSphere.Domain.Enumerations;
 
 namespace GreenSphere.Application.DTOs.Users;
 

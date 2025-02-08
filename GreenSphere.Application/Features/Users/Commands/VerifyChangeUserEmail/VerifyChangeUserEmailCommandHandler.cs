@@ -4,15 +4,14 @@ using MediatR;
 
 namespace GreenSphere.Application.Features.Users.Commands.VerifyChangeUserEmail
 {
-    public sealed class VerifyChangeUserEmailCommandHandler(
-        IUserPrivacyService privacyService)
+    public sealed class VerifyChangeUserEmailCommandHandler(IUserService userService)
         : IRequestHandler<VerifyChangeUserEmailCommand, Result<bool>>
     {
         public async Task<Result<bool>> Handle(
             VerifyChangeUserEmailCommand request,
             CancellationToken cancellationToken)
         {
-            return await privacyService.VerifyChangeUserEmailAsync(request);
+            return await userService.VerifyChangeUserEmailAsync(request);
         }
     }
 }

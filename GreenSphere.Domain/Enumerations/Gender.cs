@@ -1,4 +1,4 @@
-﻿namespace GreenSphere.Domain.Common
+﻿namespace GreenSphere.Domain.Enumerations
 {
     public enum Gender
     {

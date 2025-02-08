@@ -1,4 +1,4 @@
-﻿using GreenSphere.Domain.Entities;
+﻿using GreenSphere.Domain.Entities.Identity;
 using System.Security.Claims;
 
 namespace GreenSphere.Application.Interfaces.Identity;

@@ -1,4 +1,4 @@
-﻿namespace GreenSphere.Domain.Entities
+﻿namespace GreenSphere.Domain.Common
 {
     public abstract class BaseEntity
     {

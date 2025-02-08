@@ -1,6 +1,6 @@
 ﻿using GreenSphere.Application.Helpers;
 using GreenSphere.Application.Interfaces.Identity;
-using GreenSphere.Domain.Entities;
+using GreenSphere.Domain.Entities.Identity;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Options;

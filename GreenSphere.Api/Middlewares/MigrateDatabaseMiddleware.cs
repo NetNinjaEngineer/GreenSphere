@@ -11,6 +11,7 @@ public class MigrateDatabaseMiddleware : IMiddleware
         var serviceScope = serviceScopeFactory.CreateScope();
         var dbContext = serviceScope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
         await dbContext.Database.MigrateAsync();
+        await dbContext.SeedDatabaseAsync();
         await next(context);
     }
 }

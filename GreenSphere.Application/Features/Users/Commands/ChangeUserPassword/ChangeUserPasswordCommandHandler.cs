@@ -5,14 +5,14 @@ using MediatR;
 namespace GreenSphere.Application.Features.Users.Commands.ChangeUserPassword
 {
     public sealed class ChangeUserPasswordCommandHandler(
-        IUserPrivacyService privacyService)
+        IUserService userService)
         : IRequestHandler<ChangeUserPasswordCommand, Result<bool>>
     {
         public async Task<Result<bool>> Handle(
             ChangeUserPasswordCommand request,
             CancellationToken cancellationToken)
         {
-            return await privacyService.ChangeUserPasswordAsync(request);
+            return await userService.ChangeUserPasswordAsync(request);
         }
     }
 }

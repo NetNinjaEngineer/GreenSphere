@@ -1,9 +1,9 @@
 ﻿using Microsoft.EntityFrameworkCore;
 
-namespace GreenSphere.Domain.Entities;
+namespace GreenSphere.Domain.Entities.Identity;
 
 [Owned]
-public class RefreshToken
+public sealed class RefreshToken
 {
     public string Token { get; set; } = string.Empty;
     public DateTimeOffset ExpiresOn { get; set; }

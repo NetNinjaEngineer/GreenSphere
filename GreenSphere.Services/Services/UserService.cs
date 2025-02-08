@@ -2,7 +2,6 @@
 using FluentValidation;
 using GreenSphere.Application.Bases;
 using GreenSphere.Application.DTOs.Users;
-using GreenSphere.Application.Features.Users.Commands.AssignUserPrivacy;
 using GreenSphere.Application.Features.Users.Commands.ChangeUserEmail;
 using GreenSphere.Application.Features.Users.Commands.ChangeUserPassword;
 using GreenSphere.Application.Features.Users.Commands.EditUserProfile;
@@ -11,78 +10,22 @@ using GreenSphere.Application.Helpers;
 using GreenSphere.Application.Interfaces.Identity;
 using GreenSphere.Application.Interfaces.Services;
 using GreenSphere.Application.Interfaces.Services.Models;
-using GreenSphere.Domain.Entities;
-using GreenSphere.Persistence;
+using GreenSphere.Domain.Entities.Identity;
 using Microsoft.AspNetCore.Identity;
-using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Localization;
 using System.Net;
 using System.Text;
 
 namespace GreenSphere.Services.Services;
-public sealed class UserPrivacyService(
-    UserManager<ApplicationUser> userManager,
-    ApplicationDbContext context,
+public sealed class UserService(
     ICurrentUser currentUser,
-    SignInManager<ApplicationUser> _signInManage,
-    IMailService _mailService,
-    IConfiguration _configuration,
+    IMailService mailService,
+    IConfiguration configuration,
     IMapper mapper,
-    IStringLocalizer<UserPrivacyService> localizer) : IUserPrivacyService
+    IStringLocalizer<UserService> localizer,
+    UserManager<ApplicationUser> userManager) : IUserService
 {
-
-    public async Task<Result<string>> AssignPrivacyToUserAsync(AssignUserPrivacyCommand command)
-    {
-        var user = await userManager.FindByIdAsync(command.UserId);
-
-        if (user is null)
-            return Result<string>.Failure(HttpStatusCode.NotFound, localizer["UnkownUser"]);
-
-        if (await context.PrivacySettings.AnyAsync(s => s.UserId == command.UserId))
-            return Result<string>.Failure(HttpStatusCode.Conflict, localizer["UserHasPrivacy"]);
-
-        var privacySetting = new PrivacySetting
-        {
-            Id = Guid.NewGuid().ToString(),
-            UserId = command.UserId,
-            SendMessages = command.AssignPrivacySettingsRequest.MessagePermission,
-            ViewActivityStatus = command.AssignPrivacySettingsRequest.ActivityStatusVisibility,
-            TagInPosts = command.AssignPrivacySettingsRequest.TaggingPermission,
-            ViewPosts = command.AssignPrivacySettingsRequest.PostVisibility,
-            ViewProfile = command.AssignPrivacySettingsRequest.ProfileVisibility
-        };
-
-        context.PrivacySettings.Add(privacySetting);
-
-        await context.SaveChangesAsync();
-
-        return Result<string>.Success(privacySetting.Id);
-    }
-
-    public async Task<Result<PrivacySettingListDto>> GetUserPrivacySettingsAsync(string userId)
-    {
-        var user = await userManager.FindByIdAsync(userId);
-
-        if (user == null)
-            return Result<PrivacySettingListDto>.Failure(HttpStatusCode.NotFound, localizer["UnkownUser"]);
-
-        var setting = await context.PrivacySettings.FirstOrDefaultAsync(x => x.UserId == userId);
-
-        if (setting == null)
-            return Result<PrivacySettingListDto>.Failure(HttpStatusCode.NotFound, localizer["UserNotHasPrivacySetting"]);
-
-        return Result<PrivacySettingListDto>.Success(
-            new PrivacySettingListDto
-            {
-                SendMessages = setting.SendMessages.ToString(),
-                TagInPosts = setting.TagInPosts.ToString(),
-                ViewActivityStatus = setting.ViewActivityStatus.ToString(),
-                ViewPosts = setting.ViewPosts.ToString(),
-                ViewProfile = setting.ViewProfile.ToString()
-            });
-    }
-
     public async Task<Result<UserProfileDto>> GetUserProfileAsync(string userId)
     {
         var user = await userManager.FindByIdAsync(userId);
@@ -141,7 +84,7 @@ public sealed class UserPrivacyService(
 
         user.Code = encodedAuthenticationCode;
         user.CodeExpiration = DateTimeOffset.Now.AddMinutes(
-            minutes: Convert.ToDouble(_configuration[Constants.AuthCodeExpireKey])
+            minutes: Convert.ToDouble(configuration[Constants.AuthCodeExpireKey])
         );
 
         user.Email = command.NewEmail;
@@ -153,7 +96,7 @@ public sealed class UserPrivacyService(
             var errors = updateResult.Errors.Select(e => e.Description).ToList();
             return Result<bool>.Failure(HttpStatusCode.BadRequest, errors: errors);
         }
-        await _mailService.SendEmailAsync(new MailkitEmail
+        await mailService.SendEmailAsync(new MailkitEmail
         {
             To = command.NewEmail,
             Subject = "Confirm Email",
@@ -168,7 +111,7 @@ public sealed class UserPrivacyService(
                        </div>
 
                        <p style='font-size: 14px; line-height: 1.5;'>
-                           This code will expire in <strong>{_configuration[Constants.AuthCodeExpireKey]} minutes</strong>.
+                           This code will expire in <strong>{configuration[Constants.AuthCodeExpireKey]} minutes</strong>.
                        </p>
                        
                        <p style='font-size: 14px; line-height: 1.5; color: #888;'>
@@ -200,10 +143,8 @@ public sealed class UserPrivacyService(
         user.EmailConfirmed = true;
 
         var updateResult = await userManager.UpdateAsync(user);
-        if (!updateResult.Succeeded)
-            return Result<bool>.Failure(HttpStatusCode.BadRequest, DomainErrors.User.FailedToChangeEmail);
 
-        return Result<bool>.Success(true);
+        return !updateResult.Succeeded ? Result<bool>.Failure(HttpStatusCode.BadRequest, DomainErrors.User.FailedToChangeEmail) : Result<bool>.Success(true);
     }
     public async Task<Result<bool>> ChangeUserPasswordAsync(ChangeUserPasswordCommand command)
     {
@@ -220,15 +161,11 @@ public sealed class UserPrivacyService(
 
 
         var changePasswordResult = await userManager.ChangePasswordAsync(user, command.CurrentPassword, command.NewPassword);
-        if (!changePasswordResult.Succeeded)
-        {
-            var errors = changePasswordResult.Errors.Select(e => $"{e.Code}: {e.Description}").ToList();
-            return Result<bool>.Failure(HttpStatusCode.BadRequest, errors: errors);
-        }
+        if (changePasswordResult.Succeeded) return Result<bool>.Success(true);
 
-        return Result<bool>.Success(true);
+        var errors = changePasswordResult.Errors.Select(e => $"{e.Code}: {e.Description}").ToList();
+        return Result<bool>.Failure(HttpStatusCode.BadRequest, errors: errors);
+
     }
-
-    public async Task LogoutAsync() => await _signInManage.SignOutAsync();
 
 }

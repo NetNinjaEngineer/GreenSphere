@@ -12,7 +12,7 @@ using Microsoft.Extensions.Options;
 using MimeKit;
 
 namespace GreenSphere.Services.Services;
-public class MailService(
+public sealed class MailService(
     IOptions<EmailSettings> emailSettingsOptions,
     IStringLocalizer<BaseResponseHandler> localizer)
     : BaseResponseHandler(localizer), IMailService

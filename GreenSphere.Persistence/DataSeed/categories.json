@@ -1,0 +1,27 @@
+[
+  {
+    "id": "E0070C91-4F0B-4343-A37D-72B27921423E",
+    "name": "Irrigation Systems",
+    "description": "Complete irrigation solutions for agricultural applications"
+  },
+  {
+    "id": "AE5A9CFB-A064-455A-9234-3B55C6255479",
+    "name": "Water Pumps",
+    "description": "High-performance pumps for agricultural water management"
+  },
+  {
+    "id": "540F7661-1CFC-4FB9-B5FD-52DEC51617D3",
+    "name": "Filtration Systems",
+    "description": "Water filtration and purification solutions"
+  },
+  {
+    "id": "D1B0C257-4622-4DD9-AD71-6DBBE9C808F1",
+    "name": "Monitoring Equipment",
+    "description": "Sensors and monitoring devices for water management"
+  },
+  {
+    "id": "BC6EB2C3-2AD5-4AB0-A84A-C3173A85E3EA",
+    "name": "Water Storage",
+    "description": "Tanks and storage solutions for agricultural water"
+  }
+]

@@ -21,7 +21,7 @@ using GreenSphere.Application.Helpers;
 using GreenSphere.Application.Interfaces.Identity;
 using GreenSphere.Application.Interfaces.Services;
 using GreenSphere.Application.Interfaces.Services.Models;
-using GreenSphere.Domain.Entities;
+using GreenSphere.Domain.Entities.Identity;
 using GreenSphere.Domain.Enumerations;
 using GreenSphere.Persistence;
 using Microsoft.AspNetCore.Http;

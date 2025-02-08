@@ -30,7 +30,7 @@ public static class ServicesDependencies
 
         services.AddScoped<ICurrentUser, CurrentUser>();
 
-        services.AddScoped<IUserPrivacyService, UserPrivacyService>();
+        services.AddScoped<IUserService, UserService>();
 
         services.AddMemoryCache();
 

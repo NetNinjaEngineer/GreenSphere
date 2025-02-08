@@ -1,7 +1,7 @@
-﻿using GreenSphere.Domain.Common;
+﻿using GreenSphere.Domain.Enumerations;
 using Microsoft.AspNetCore.Identity;
 
-namespace GreenSphere.Domain.Entities;
+namespace GreenSphere.Domain.Entities.Identity;
 public class ApplicationUser : IdentityUser
 {
     public string FirstName { get; set; } = string.Empty;
@@ -9,12 +9,7 @@ public class ApplicationUser : IdentityUser
     public string? Code { get; set; }
     public DateTimeOffset? CodeExpiration { get; set; }
     public List<RefreshToken>? RefreshTokens { get; set; }
-    public PrivacySetting PrivacySetting { get; set; } = null!;
     public Gender? Gender { get; set; }
-    public DateTime? DateOfBirth { get; set; }
-
-
+    public DateOnly? DateOfBirth { get; set; }
+    public ICollection<Rating> Ratings { get; set; } = [];
 }
-
-
-

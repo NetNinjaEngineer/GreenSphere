@@ -5,13 +5,14 @@ using MediatR;
 
 namespace GreenSphere.Application.Features.Users.Queries.GetUserProfile;
 public sealed class GetUserProfileQueryHandler(
-    IUserPrivacyService privacyService)
+    IUserService userService,
+    ICurrentUser currentUser)
     : IRequestHandler<GetUserProfileQuery, Result<UserProfileDto>>
 {
     public async Task<Result<UserProfileDto>> Handle(
         GetUserProfileQuery request,
         CancellationToken cancellationToken)
     {
-        return await privacyService.GetUserProfileAsync(request.UserId);
+        return await userService.GetUserProfileAsync(currentUser.Id);
     }
 }
