@@ -22,7 +22,7 @@ public sealed class FileService : IFileService
         await using var fileStream = new FileStream(filePath, FileMode.CreateNew);
         await file.CopyToAsync(fileStream);
 
-        return filePath;
+        return uniqueFileName;
     }
 
     public bool DeleteFileFromPath(string filePath, string locationFolder)

@@ -5,6 +5,14 @@ namespace GreenSphere.Domain.Utils;
 public abstract class BaseSpecification<TEntity> : IBaseSpecification<TEntity> where TEntity : BaseEntity
 {
     private readonly List<IIncludeExpression<TEntity>> _includeExpressions = [];
+
+    // Func<TEntity, object> =>  fuction => // e => // user profile => u => u.Profile
+
+    // context.Users.Where(u => u.IsActive== true) // Expression<Func<T, bool>>
+    // name email // .OrderBy(u => u.id) // Func<T, object> // List<Expression< Func<T, object>>> // 
+    // .Skip().Take() // Paging => 1 => 10 2=> 10 // 1 2 3 4 5 // 1 - 5 // 20
+    // context.Users.Include(u => u.Address).Include()
+
     public List<Expression<Func<TEntity, object>>> OrderBy { get; set; } = [];
     public List<Expression<Func<TEntity, object>>> OrderByDescending { get; set; } = [];
     public Expression<Func<TEntity, bool>>? Criteria { get; set; }

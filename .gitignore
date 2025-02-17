@@ -1,4 +1,5 @@
 GreenSphere.Api/appsettings.Production.json
+GreenSphere.Persistence/Migrations
 
 
 ## Ignore Visual Studio temporary files, build results, and

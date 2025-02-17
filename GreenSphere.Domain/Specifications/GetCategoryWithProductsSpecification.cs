@@ -8,5 +8,7 @@ public sealed class GetCategoryWithProductsSpecification : BaseSpecification<Cat
     public GetCategoryWithProductsSpecification(Guid categoryId) : base(c => c.Id == categoryId)
     {
         AddInclude(c => c.Products);
+        AddInclude(c => c.Products, p => p.ProductTranslations);
+        AddInclude(c => c.CategoryTranslations);
     }
 }

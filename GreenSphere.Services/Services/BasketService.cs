@@ -80,11 +80,13 @@ public sealed class BasketService(
         if (existedProduct is null)
             return Result<BasketDto>.Failure(HttpStatusCode.NotFound, localizer["ProductNotExists"]);
 
-        var customerBasket = await basketRepository.GetBySpecificationAsync(
-            specification: new GetCustomerBasketWithItemsSpecification(currentUser.Email));
+        var customerBasket = await GetCustomerBasketAsync();
 
-        if (customerBasket is null)
-            return Result<BasketDto>.Failure(HttpStatusCode.NotFound, localizer["ShoppingCartNotFound"]);
+        //var customerBasket = await basketRepository.GetBySpecificationAsync(
+        //    specification: new GetCustomerBasketWithItemsSpecification(currentUser.Email));
+
+        //if (customerBasket is null)
+        //    return Result<BasketDto>.Failure(HttpStatusCode.NotFound, localizer["ShoppingCartNotFound"]);
 
         var specification = new GetBasketItemSpecification(
             customerEmail: currentUser.Email,
@@ -103,7 +105,7 @@ public sealed class BasketService(
             {
                 Id = Guid.NewGuid(),
                 Name = existedProduct.Name,
-                CustomerBasketId = customerBasket.Id,
+                CustomerBasketId = customerBasket.Value.BasketId,
                 ImageUrl = contextAccessor.HttpContext!.Request.IsHttps ?
                     $"{configuration["Urls:BaseApiUrl"]}/Uploads/Images/{existedProduct.Img}" :
                     $"{configuration["Urls:FallbackUrl"]}/Uploads/Images/{existedProduct.Img}",

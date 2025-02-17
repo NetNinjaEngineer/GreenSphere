@@ -25,7 +25,7 @@ public interface IProductsService
 
     Task<Result<Guid>> CreatCategoryAsync(CreateCategoryCommand command);
     Task<Result<Guid>> UpdateCategoryAsync(UpdateCategoryCommand command);
-    Task<Result<Guid>> DeleteCategoryAsync(DeleteCategoryCommand command);
+    Task<Result<bool>> DeleteCategoryAsync(DeleteCategoryCommand command);
     Task<Result<IReadOnlyList<CategoryDto>>> GetAllCategoriesAsync(CategorySpecParams? @params);
     Task<Result<CategoryWithProductsDto>> GetCategoryWithProductsAsync(Guid categoryId);
 }

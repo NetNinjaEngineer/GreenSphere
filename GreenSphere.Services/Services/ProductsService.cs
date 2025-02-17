@@ -143,6 +143,7 @@ public sealed class ProductsService(
 
         var category = new Category
         {
+            Id = Guid.NewGuid(),
             Name = command.Name,
             Description = command.Description
         };
@@ -172,17 +173,17 @@ public sealed class ProductsService(
         return Result<Guid>.Success(existingCategory.Id);
     }
 
-    public async Task<Result<Guid>> DeleteCategoryAsync(DeleteCategoryCommand command)
+    public async Task<Result<bool>> DeleteCategoryAsync(DeleteCategoryCommand command)
     {
         var existingCategory = await categoryRepository.GetByIdAsync(command.CategoryId);
 
         if (existingCategory is null)
-            return Result<Guid>.Failure(HttpStatusCode.NotFound, localizer["CategoryNotFound", command.CategoryId]);
+            return Result<bool>.Failure(HttpStatusCode.NotFound, localizer["CategoryNotFound", command.CategoryId]);
 
         categoryRepository.Delete(existingCategory);
         await categoryRepository.SaveChangesAsync();
 
-        return Result<Guid>.Success(existingCategory.Id);
+        return Result<bool>.Success(true);
     }
 
 
@@ -201,7 +202,7 @@ public sealed class ProductsService(
     {
         var specification = new GetCategoryWithProductsSpecification(categoryId);
 
-        var category = await categoryRepository.GetBySpecificationAndIdAsync(specification, categoryId);
+        var category = await categoryRepository.GetBySpecificationAsync(specification);
 
         if (category is null)
             return Result<CategoryWithProductsDto>.Failure(HttpStatusCode.NotFound, localizer["CategoryNotFound", categoryId]);

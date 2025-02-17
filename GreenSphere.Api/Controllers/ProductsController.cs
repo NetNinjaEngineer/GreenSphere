@@ -2,13 +2,7 @@
 using GreenSphere.Api.Controllers.Base;
 using GreenSphere.Application.Attributes;
 using GreenSphere.Application.Bases;
-using GreenSphere.Application.DTOs.Category;
 using GreenSphere.Application.DTOs.Products;
-using GreenSphere.Application.Features.Categories.Commands.CreateCategory;
-using GreenSphere.Application.Features.Categories.Commands.DeleteCategory;
-using GreenSphere.Application.Features.Categories.Commands.UpdateCategory;
-using GreenSphere.Application.Features.Categories.Queries.GetAllCategories;
-using GreenSphere.Application.Features.Categories.Queries.GetCategoryWithProducts;
 using GreenSphere.Application.Features.Products.Commands.CreateProduct;
 using GreenSphere.Application.Features.Products.Commands.DeleteProduct;
 using GreenSphere.Application.Features.Products.Commands.UpdateProduct;
@@ -69,42 +63,4 @@ public class ProductsController(IMediator mediator) : BaseApiController(mediator
     [ProducesResponseType(typeof(Result<bool>), StatusCodes.Status404NotFound)]
     public async Task<ActionResult<Result<Guid>>> DeleteProductAsync([FromRoute] Guid id)
         => CustomResult(await Mediator.Send(new DeleteProductCommand { ProductId = id }));
-
-
-    //[Guard(roles: [Constants.Roles.Admin])]
-    [HttpPost("create-category")]
-    [ProducesResponseType(typeof(Result<Guid>), StatusCodes.Status200OK)]
-    [ProducesResponseType(typeof(Result<Guid>), StatusCodes.Status404NotFound)]
-    [ProducesResponseType(StatusCodes.Status422UnprocessableEntity)]
-    public async Task<ActionResult<Result<Guid>>> CreatCategoryAsync(CreateCategoryCommand command)
-       => CustomResult(await Mediator.Send(command));
-
-    [HttpPut("update-category")]
-    [ProducesResponseType(typeof(Result<Guid>), StatusCodes.Status200OK)]
-    [ProducesResponseType(typeof(Result<Guid>), StatusCodes.Status404NotFound)]
-    [ProducesResponseType(StatusCodes.Status422UnprocessableEntity)]
-    public async Task<ActionResult<Result<Guid>>> UpdateCategoryAsync(UpdateCategoryCommand command)
-    => CustomResult(await Mediator.Send(command));
-
-    [HttpDelete("delete-category/{categoryId}")]
-    [ProducesResponseType(typeof(Result<Guid>), StatusCodes.Status200OK)]
-    [ProducesResponseType(typeof(Result<Guid>), StatusCodes.Status404NotFound)]
-    public async Task<ActionResult<Result<Guid>>> DeleteCategoryAsync(Guid categoryId)
-    => CustomResult(await Mediator.Send(new DeleteCategoryCommand { CategoryId = categoryId }));
-
-
-    [HttpGet("get-all-categories")]
-    [ProducesResponseType(typeof(Result<IReadOnlyList<CategoryDto>>), StatusCodes.Status200OK)]
-    [ProducesResponseType(typeof(Result<IReadOnlyList<CategoryDto>>), StatusCodes.Status404NotFound)]
-    public async Task<ActionResult<Result<IReadOnlyList<CategoryDto>>>> GetAllCategoriesAsync([FromQuery] CategorySpecParams? @params)
-    => CustomResult(await Mediator.Send(new GetAllCategoriesQuery { CategorySpecParams = @params }));
-
-
-    [HttpGet("get-category-with-products/{categoryId}")]
-    [ProducesResponseType(typeof(Result<CategoryWithProductsDto>), StatusCodes.Status200OK)]
-    [ProducesResponseType(typeof(Result<CategoryWithProductsDto>), StatusCodes.Status404NotFound)]
-    public async Task<ActionResult<Result<CategoryWithProductsDto>>> GetCategoryWithProductsAsync(Guid categoryId)
-    => CustomResult(await Mediator.Send(new GetCategoryWithProductsQuery { CategoryId = categoryId }));
-
-
 }

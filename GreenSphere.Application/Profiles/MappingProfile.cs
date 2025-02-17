@@ -80,6 +80,16 @@ public sealed class MappingProfile : Profile
             .ForMember(dest => dest.BasketId, options => options.MapFrom(src => src.Id))
             .ForMember(dest => dest.Items, options => options.MapFrom(src => src.BasketItems));
 
+        CreateMap<Category, CategoryWithProductsDto>()
+            .ForMember(dest => dest.Name, options => options.MapFrom(src =>
+                src.CategoryTranslations.Any(ct => ct.LanguageCode == CultureInfo.CurrentCulture.Name)
+                    ? src.CategoryTranslations.FirstOrDefault(pt => pt.LanguageCode == CultureInfo.CurrentCulture.Name)!.Name
+                    : src.Name))
+            .ForMember(dest => dest.Description, options => options.MapFrom(src =>
+                src.CategoryTranslations.Any(ct => ct.LanguageCode == CultureInfo.CurrentCulture.Name)
+                    ? src.CategoryTranslations.FirstOrDefault(pt => pt.LanguageCode == CultureInfo.CurrentCulture.Name)!.Description
+                    : src.Description));
+
 
     }
 }
