@@ -1,7 +1,12 @@
 ﻿using AutoMapper;
 using FluentValidation;
 using GreenSphere.Application.Bases;
+using GreenSphere.Application.DTOs.Category;
 using GreenSphere.Application.DTOs.Products;
+using GreenSphere.Application.Features.Categories.Commands.CreateCategory;
+using GreenSphere.Application.Features.Categories.Commands.DeleteCategory;
+using GreenSphere.Application.Features.Categories.Commands.UpdateCategory;
+using GreenSphere.Application.Features.Categories.Queries.GetCategoryWithProducts;
 using GreenSphere.Application.Features.Products.Commands.CreateProduct;
 using GreenSphere.Application.Features.Products.Commands.DeleteProduct;
 using GreenSphere.Application.Features.Products.Commands.UpdateProduct;
@@ -126,5 +131,83 @@ public sealed class ProductsService(
         await productsRepository.SaveChangesAsync();
 
         return Result<bool>.Success(true);
+    }
+
+    public async Task<Result<Guid>> CreatCategoryAsync(CreateCategoryCommand command)
+    {
+        await new CreateCategoryCommandValidator().ValidateAndThrowAsync(command);
+        var existedCategory = await categoryRepository.GetBySpecificationAsync(new CheckIsCategoryExistsSpecification(command.Name));
+
+        if (existedCategory != null)
+            return Result<Guid>.Failure(HttpStatusCode.BadRequest, localizer["CategoryAlreadyExists", command.Name]);
+
+        var category = new Category
+        {
+            Name = command.Name,
+            Description = command.Description
+        };
+
+        categoryRepository.Create(category);
+        await categoryRepository.SaveChangesAsync();
+
+        return Result<Guid>.Success(category.Id);
+    }
+    public async Task<Result<Guid>> UpdateCategoryAsync(UpdateCategoryCommand command)
+    {
+        await new UpdateCategoryCommandValidator().ValidateAndThrowAsync(command);
+
+        var existingCategory = await categoryRepository.GetByIdAsync(command.CategoryId);
+
+        if (existingCategory is null)
+            return Result<Guid>.Failure(HttpStatusCode.NotFound, localizer["CategoryNotFound", command.CategoryId]);
+
+        if (command.Name != null)
+            existingCategory.Name = command.Name;
+
+        existingCategory.Description = command.Description;
+
+        categoryRepository.Update(existingCategory);
+        await categoryRepository.SaveChangesAsync();
+
+        return Result<Guid>.Success(existingCategory.Id);
+    }
+
+    public async Task<Result<Guid>> DeleteCategoryAsync(DeleteCategoryCommand command)
+    {
+        var existingCategory = await categoryRepository.GetByIdAsync(command.CategoryId);
+
+        if (existingCategory is null)
+            return Result<Guid>.Failure(HttpStatusCode.NotFound, localizer["CategoryNotFound", command.CategoryId]);
+
+        categoryRepository.Delete(existingCategory);
+        await categoryRepository.SaveChangesAsync();
+
+        return Result<Guid>.Success(existingCategory.Id);
+    }
+
+
+    public async Task<Result<IReadOnlyList<CategoryDto>>> GetAllCategoriesAsync(CategorySpecParams? @params)
+    {
+        var specification = new GetAllCategoriesSpecification(@params);
+
+        var categories = await categoryRepository.GetAllWithSpecificationAsync(specification);
+
+        var mappedResults = mapper.Map<IReadOnlyList<CategoryDto>>(categories);
+
+        return Result<IReadOnlyList<CategoryDto>>.Success(mappedResults);
+    }
+
+    public async Task<Result<CategoryWithProductsDto>> GetCategoryWithProductsAsync(Guid categoryId)
+    {
+        var specification = new GetCategoryWithProductsSpecification(categoryId);
+
+        var category = await categoryRepository.GetBySpecificationAndIdAsync(specification, categoryId);
+
+        if (category is null)
+            return Result<CategoryWithProductsDto>.Failure(HttpStatusCode.NotFound, localizer["CategoryNotFound", categoryId]);
+
+        var mappedResult = mapper.Map<CategoryWithProductsDto>(category);
+
+        return Result<CategoryWithProductsDto>.Success(mappedResult);
     }
 }

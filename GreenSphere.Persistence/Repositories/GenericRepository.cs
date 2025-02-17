@@ -33,4 +33,6 @@ public class GenericRepository<T>(ApplicationDbContext context) : IGenericReposi
 
     public async Task<int> GetCountWithSpecificationAsync(IBaseSpecification<T> specification)
         => await SpecificationQueryEvaluator.BuildQuery(context.Set<T>(), specification).CountAsync();
+
+
 }

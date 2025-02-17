@@ -63,5 +63,6 @@
   "FirstNameExceedsMaxLength": "FirstName can not exceeded {0} characters",
   "LastNameExceedsMaxLength": "LastName can not be exceeded {0} characters",
   "ProductNotFound": "Product with ID {0} not found.",
-  "CategoryNotFound": "Category with ID {0} is not found."
+  "CategoryNotFound": "Category with ID {0} is not found.",
+  "CategoryAlreadyExists": "Category with name {0} already exists."
 }

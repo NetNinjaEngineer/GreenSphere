@@ -4,6 +4,7 @@ using GreenSphere.Application.DTOs.Products;
 using GreenSphere.Application.DTOs.Ratings;
 using GreenSphere.Application.DTOs.Users;
 using GreenSphere.Application.Features.Auth.Commands.Register;
+using GreenSphere.Application.Features.Categories.Queries.GetCategoryWithProducts;
 using GreenSphere.Application.Features.Products.Commands.CreateProduct;
 using GreenSphere.Application.Resolvers;
 using GreenSphere.Domain.Entities;
@@ -66,6 +67,9 @@ public sealed class MappingProfile : Profile
 
 
         CreateMap<CreateProductCommand, Product>();
+
+        CreateMap<Category, CategoryWithProductsDto>()
+            .ForMember(dest => dest.Products, options => options.MapFrom(src => src.Products));
 
     }
 }
