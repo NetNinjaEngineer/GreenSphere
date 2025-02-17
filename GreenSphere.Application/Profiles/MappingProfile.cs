@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using GreenSphere.Application.DTOs.Basket;
 using GreenSphere.Application.DTOs.Category;
 using GreenSphere.Application.DTOs.Products;
 using GreenSphere.Application.DTOs.Ratings;
@@ -68,8 +69,17 @@ public sealed class MappingProfile : Profile
 
         CreateMap<CreateProductCommand, Product>();
 
-        CreateMap<Category, CategoryWithProductsDto>()
-            .ForMember(dest => dest.Products, options => options.MapFrom(src => src.Products));
+        CreateMap<BasketItem, BasketItemDto>()
+            .ForMember(dest => dest.Name, options => options.MapFrom(src =>
+                src.Product.ProductTranslations.Any(pt => pt.LanguageCode == CultureInfo.CurrentCulture.Name)
+                    ? src.Product.ProductTranslations.FirstOrDefault(
+                        pt => pt.LanguageCode == CultureInfo.CurrentCulture.Name)!.Name : src.Product.Name));
+
+        CreateMap<CustomerBasket, BasketDto>()
+            .ForMember(dest => dest.OwnerEmail, options => options.MapFrom(src => src.CustomerEmail))
+            .ForMember(dest => dest.BasketId, options => options.MapFrom(src => src.Id))
+            .ForMember(dest => dest.Items, options => options.MapFrom(src => src.BasketItems));
+
 
     }
 }

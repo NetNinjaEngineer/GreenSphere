@@ -11,7 +11,6 @@ using Microsoft.AspNetCore.Mvc;
 namespace GreenSphere.Api.Controllers;
 [ApiVersion(1.0)]
 [Route("api/v{ver:apiVersion}/emails")]
-[ApiController]
 public class EmailsController(IMediator mediator) : BaseApiController(mediator)
 {
     [HttpPost("send")]

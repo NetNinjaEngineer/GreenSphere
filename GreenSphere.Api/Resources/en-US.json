@@ -64,5 +64,10 @@
   "LastNameExceedsMaxLength": "LastName can not be exceeded {0} characters",
   "ProductNotFound": "Product with ID {0} not found.",
   "CategoryNotFound": "Category with ID {0} is not found.",
-  "CategoryAlreadyExists": "Category with name {0} already exists."
+  "QuantityMustBeAtLeastOne": "Quantity must be at least 1.",
+  "ProductNotExists": "Product not found.",
+  "ShoppingCartNotFound": "Shopping cart not found.",
+  "ItemNotFoundInCart": "Item with ID {0} not found in the shopping cart.",
+  "ShoppingCartCreated": "Shopping cart created successfully.",
+  "ProductNoLongerAvailable": "Product not found or no longer available."
 }

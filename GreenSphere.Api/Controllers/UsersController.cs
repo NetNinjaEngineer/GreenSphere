@@ -16,7 +16,6 @@ namespace GreenSphere.Api.Controllers;
 [Guard]
 [ApiVersion(1.0)]
 [Route("api/v{ver:apiVersion}/users")]
-[ApiController]
 public class UsersController(IMediator mediator) : BaseApiController(mediator)
 {
     [HttpGet("profile")]

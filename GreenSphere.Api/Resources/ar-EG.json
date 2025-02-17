@@ -64,5 +64,10 @@
   "LastNameExceedsMaxLength": "لا يمكن أن يتجاوز الاسم الأخير {0} حرفًا",
   "ProductNotFound": "المنتج الذي يحمل المعرف {0} غير موجود.",
   "CategoryNotFound": "الفئة التي تحمل المعرف {0} غير موجودة.",
-  "CategoryAlreadyExists": "الفئة التي تحمل الاسم '{0}' موجودة بالفعل.",
+  "QuantityMustBeAtLeastOne": "يجب أن تكون الكمية 1 على الأقل.",
+  "ProductNotExists": "لم يتم العثور على المنتج.",
+  "ShoppingCartNotFound": "لم يتم العثور على سلة التسوق.",
+  "ItemNotFoundInCart": "لم يتم العثور على العنصر برقم التعريف {0} في سلة التسوق.",
+  "ShoppingCartCreated": "تم إنشاء سلة التسوق بنجاح.",
+  "ProductNoLongerAvailable": "المنتج غير موجود أو لم يعد متاحًا."
 }
