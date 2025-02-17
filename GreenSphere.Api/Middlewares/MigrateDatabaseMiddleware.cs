@@ -7,11 +7,25 @@ public class MigrateDatabaseMiddleware : IMiddleware
 {
     public async Task InvokeAsync(HttpContext context, RequestDelegate next)
     {
-        var serviceScopeFactory = context.RequestServices.GetRequiredService<IServiceScopeFactory>();
-        var serviceScope = serviceScopeFactory.CreateScope();
-        var dbContext = serviceScope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
-        await dbContext.Database.MigrateAsync();
-        await dbContext.SeedDatabaseAsync();
+        var scopeFactory = context.RequestServices.GetRequiredService<IServiceScopeFactory>();
+
+        var scope = scopeFactory.CreateScope();
+
+        var dbContext = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
+
+        if ((await dbContext.Database.GetPendingMigrationsAsync()).Any())
+        {
+            await dbContext.Database.MigrateAsync();
+            await dbContext.SeedDatabaseAsync();
+        }
+
+        if (!await dbContext.Database.CanConnectAsync() ||
+            !(await dbContext.Database.GetAppliedMigrationsAsync()).Any())
+        {
+            await dbContext.Database.MigrateAsync();
+            await dbContext.SeedDatabaseAsync();
+        }
+
         await next(context);
     }
 }
