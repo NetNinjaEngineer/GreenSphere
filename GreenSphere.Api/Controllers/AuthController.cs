@@ -28,7 +28,6 @@ namespace GreenSphere.Api.Controllers;
 [AllowAnonymous]
 [ApiVersion(1.0)]
 [Route("api/v{ver:apiVersion}/auth")]
-[ApiController]
 public class AuthController(IMediator mediator) : BaseApiController(mediator)
 {
     [HttpPost("register")]

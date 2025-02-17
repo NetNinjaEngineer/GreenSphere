@@ -17,7 +17,6 @@ using Microsoft.AspNetCore.Mvc;
 namespace GreenSphere.Api.Controllers;
 [ApiVersion(1.0)]
 [Route("api/v{ver:apiVersion}/roles")]
-[ApiController]
 public class RolesController(IMediator mediator) : BaseApiController(mediator)
 {
     [HttpPost("addClaimToRole")]

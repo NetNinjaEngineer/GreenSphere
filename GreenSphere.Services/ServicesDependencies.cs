@@ -66,6 +66,8 @@ public static class ServicesDependencies
 
         services.AddScoped<IFileService, FileService>();
 
+        services.AddScoped<IBasketService, BasketService>();
+
         return services;
     }
 }
