@@ -20,10 +20,6 @@ var app = builder.Build();
 
 app.UseMiddleware<MigrateDatabaseMiddleware>();
 
-app.UseMiddleware<JwtValidationMiddleware>();
-
-app.UseLocalization();
-
 app.UseGlobalExceptionHandler();
 
 app.UseHttpsRedirection();
@@ -35,6 +31,10 @@ app.UseCors("AllowAll");
 app.UseAuthentication();
 
 app.UseAuthorization();
+
+app.UseMiddleware<JwtValidationMiddleware>();
+
+app.UseLocalization();
 
 app.UseSwaggerDocumentation();
 
