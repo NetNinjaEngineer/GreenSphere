@@ -14,6 +14,7 @@ public class ApplicationDbContext(
     public DbSet<CategoryTranslation> CategoryTranslations { get; set; }
     public DbSet<BasketItem> BasketItems { get; set; }
     public DbSet<CustomerBasket> CustomerBaskets { get; set; }
+    public DbSet<Address> Addresses { get; set; }
 
     protected override void OnModelCreating(ModelBuilder builder)
     {
