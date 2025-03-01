@@ -141,7 +141,7 @@ public sealed class AddressService(
         if (address.UserId != currentUser.Id)
             return Result<bool>.Failure(HttpStatusCode.Forbidden, localizer["NotYourAddress"]);
 
-        bool wasMain = address.IsMain;
+        var wasMain = address.IsMain;
 
         addressRepository.Delete(address);
         await addressRepository.SaveChangesAsync();
