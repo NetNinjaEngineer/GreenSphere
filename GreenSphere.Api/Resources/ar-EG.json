@@ -70,5 +70,5 @@
   "ItemNotFoundInCart": "لم يتم العثور على العنصر برقم التعريف {0} في سلة التسوق.",
   "ShoppingCartCreated": "تم إنشاء سلة التسوق بنجاح.",
   "ProductNoLongerAvailable": "المنتج غير موجود أو لم يعد متاحًا.",
-  "EmptyBasket": ""
+  "EmptyBasket": "سلتك لا تحتوي على أي عناصر"
 }
