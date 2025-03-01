@@ -87,14 +87,15 @@ public sealed class OrderService(
             PaymentMethod = PaymentMethod.Cash,
             PaymentStatus = PaymentStatus.Paid,
             OrderStatus = OrderStatus.Shipped,
-            FullName = command.FullName,
-            BuildingNumber = command.BuildingNumber,
-            City = command.City,
-            Address = command.Address,
             PhoneNumber = command.PhoneNumber,
             Latitude = command.Latitude,
             Longitude = command.Longitude,
-            DeliveryFee = deliveryFee
+            DeliveryFee = deliveryFee,
+            AdditionalDirections = command.AdditionalDirections,
+            AddressLabel = command.AddressLabel,
+            BuildingName = command.BuildingName,
+            Floor = command.Floor,
+            Street = command.Street
         };
 
         orderItems.ForEach(orderItem => orderItem.OrderId = order.Id);
@@ -132,14 +133,15 @@ public sealed class OrderService(
             PaymentMethod = PaymentMethod.Card,
             PaymentStatus = PaymentStatus.Pending,
             OrderStatus = OrderStatus.Pending,
-            FullName = command.FullName,
-            BuildingNumber = command.BuildingNumber,
-            City = command.City,
-            Address = command.Address,
             PhoneNumber = command.PhoneNumber,
             Latitude = command.Latitude,
             Longitude = command.Longitude,
-            DeliveryFee = deliveryFee
+            DeliveryFee = deliveryFee,
+            AdditionalDirections = command.AdditionalDirections,
+            AddressLabel = command.AddressLabel,
+            BuildingName = command.BuildingName,
+            Floor = command.Floor,
+            Street = command.Street
         };
 
         orderItems.ForEach(orderItem => orderItem.OrderId = order.Id);

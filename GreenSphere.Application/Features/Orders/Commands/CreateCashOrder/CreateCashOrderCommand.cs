@@ -5,11 +5,12 @@ using MediatR;
 namespace GreenSphere.Application.Features.Orders.Commands.CreateCashOrder;
 public sealed class CreateCashOrderCommand : IRequest<Result<OrderDto>>
 {
-    public string? FullName { get; set; }
-    public string? Address { get; set; }
-    public string? City { get; set; }
     public string? PhoneNumber { get; set; }
-    public string? BuildingNumber { get; set; }
     public double Latitude { get; set; }
     public double Longitude { get; set; }
+    public string? BuildingName { get; set; }
+    public string? Floor { get; set; }
+    public string? Street { get; set; }
+    public string? AdditionalDirections { get; set; }
+    public string? AddressLabel { get; set; }
 }
