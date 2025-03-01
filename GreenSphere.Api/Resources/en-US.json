@@ -70,5 +70,8 @@
   "ItemNotFoundInCart": "Item with ID {0} not found in the shopping cart.",
   "ShoppingCartCreated": "Shopping cart created successfully.",
   "ProductNoLongerAvailable": "Product not found or no longer available.",
-  "EmptyBasket": "Your basket has no items"
+  "EmptyBasket": "Your basket has no items",
+  "AddressNotFound": "The requested address was not found.",
+  "NotYourAddress": "You do not have permission to access this address.",
+  "NoMainAddressFound": "No main address found for your account."
 }
