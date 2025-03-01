@@ -83,13 +83,13 @@ public class UsersController(IMediator mediator) : BaseApiController(mediator)
     }
 
     [Guard]
-    [HttpGet("/me/addresses")]
+    [HttpGet("me/addresses")]
     [ProducesResponseType(typeof(Result<List<AddressDto>>), StatusCodes.Status200OK)]
     public async Task<IActionResult> GetCurrentUserAddressesAsync()
         => CustomResult(await Mediator.Send(new GetUserAddressesQuery()));
 
     [Guard]
-    [HttpGet("/me/addresses/{addressId:guid}")]
+    [HttpGet("me/addresses/{addressId:guid}")]
     [ProducesResponseType(typeof(Result<AddressDto>), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(Result<AddressDto>), StatusCodes.Status404NotFound)]
     [ProducesResponseType(typeof(Result<AddressDto>), StatusCodes.Status403Forbidden)]
@@ -98,20 +98,20 @@ public class UsersController(IMediator mediator) : BaseApiController(mediator)
 
 
     [Guard]
-    [HttpGet("/me/addresses/main")]
+    [HttpGet("me/addresses/main")]
     [ProducesResponseType(typeof(Result<AddressDto>), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(Result<AddressDto>), StatusCodes.Status404NotFound)]
     public async Task<IActionResult> GetMainAddressAsync()
         => CustomResult(await Mediator.Send(new GetMainAddressQuery()));
 
     [Guard]
-    [HttpPost("/me/addresses")]
+    [HttpPost("me/addresses")]
     [ProducesResponseType(typeof(Result<Guid>), StatusCodes.Status200OK)]
     public async Task<IActionResult> CreateNewAddressAsync([FromBody] CreateAddressCommand command)
         => CustomResult(await Mediator.Send(command));
 
     [Guard]
-    [HttpPut("/me/addresses")]
+    [HttpPut("me/addresses")]
     [ProducesResponseType(typeof(Result<AddressDto>), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(Result<AddressDto>), StatusCodes.Status404NotFound)]
     [ProducesResponseType(typeof(Result<AddressDto>), StatusCodes.Status403Forbidden)]
@@ -119,7 +119,7 @@ public class UsersController(IMediator mediator) : BaseApiController(mediator)
         => CustomResult(await Mediator.Send(command));
 
     [Guard]
-    [HttpPost("/me/addresses/set-main/{addressId:guid}")]
+    [HttpPost("me/addresses/set-main/{addressId:guid}")]
     [ProducesResponseType(typeof(Result<AddressDto>), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(Result<AddressDto>), StatusCodes.Status404NotFound)]
     [ProducesResponseType(typeof(Result<AddressDto>), StatusCodes.Status403Forbidden)]
@@ -127,7 +127,7 @@ public class UsersController(IMediator mediator) : BaseApiController(mediator)
         => CustomResult(await Mediator.Send(new SetMainAddressCommand { Id = addressId }));
 
     [Guard]
-    [HttpDelete("/me/addresses/{addressId:guid}")]
+    [HttpDelete("me/addresses/{addressId:guid}")]
     [ProducesResponseType(typeof(Result<bool>), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(Result<bool>), StatusCodes.Status404NotFound)]
     [ProducesResponseType(typeof(Result<bool>), StatusCodes.Status403Forbidden)]
