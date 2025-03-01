@@ -70,6 +70,8 @@ public static class ServicesDependencies
 
         services.AddScoped<IOrderService, OrderService>();
 
+        services.AddScoped<IAddressService, AddressService>();
+
         return services;
     }
 }

@@ -1,8 +1,9 @@
-﻿using GreenSphere.Domain.Common;
+﻿using GreenSphere.Application.Bases;
+using MediatR;
 
-namespace GreenSphere.Domain.Entities.Identity;
+namespace GreenSphere.Application.Features.Users.Commands.CreateAddress;
 
-public sealed class Address : BaseEntity
+public sealed class CreateAddressCommand : IRequest<Result<Guid>>
 {
     public string? BuildingName { get; set; }
     public string? Floor { get; set; }
@@ -10,6 +11,4 @@ public sealed class Address : BaseEntity
     public string? AdditionalDirections { get; set; }
     public string? AddressLabel { get; set; }
     public bool IsMain { get; set; }
-    public string UserId { get; set; } = null!;
-    public ApplicationUser User { get; set; } = null!;
 }

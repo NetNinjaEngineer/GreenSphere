@@ -1,15 +1,12 @@
-﻿using GreenSphere.Domain.Common;
+﻿namespace GreenSphere.Application.DTOs.Users;
 
-namespace GreenSphere.Domain.Entities.Identity;
-
-public sealed class Address : BaseEntity
+public class AddressDto
 {
+    public Guid Id { get; set; }
     public string? BuildingName { get; set; }
     public string? Floor { get; set; }
     public string? Street { get; set; }
     public string? AdditionalDirections { get; set; }
     public string? AddressLabel { get; set; }
     public bool IsMain { get; set; }
-    public string UserId { get; set; } = null!;
-    public ApplicationUser User { get; set; } = null!;
 }
