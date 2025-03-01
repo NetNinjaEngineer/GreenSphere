@@ -77,11 +77,13 @@ public sealed class OrderService(
 
         var orderItems = orderResult.Value.orderItems;
 
+        var deliveryFee = CalculateDeliveryFee(command.Latitude, command.Longitude);
+
         var order = new Order
         {
             Id = Guid.NewGuid(),
             UserId = currentUser.Id,
-            TotalAmount = orderResult.Value.productsTotal, // todo
+            TotalAmount = orderResult.Value.productsTotal + deliveryFee,
             PaymentMethod = PaymentMethod.Cash,
             PaymentStatus = PaymentStatus.Paid,
             OrderStatus = OrderStatus.Shipped,
@@ -92,7 +94,7 @@ public sealed class OrderService(
             PhoneNumber = command.PhoneNumber,
             Latitude = command.Latitude,
             Longitude = command.Longitude,
-            DeliveryFee = 0 // todo
+            DeliveryFee = deliveryFee
         };
 
         orderItems.ForEach(orderItem => orderItem.OrderId = order.Id);
@@ -120,11 +122,13 @@ public sealed class OrderService(
 
         var orderItems = orderResult.Value.orderItems;
 
+        var deliveryFee = CalculateDeliveryFee(command.Latitude, command.Longitude);
+
         var order = new Order
         {
             Id = Guid.NewGuid(),
             UserId = currentUser.Id,
-            TotalAmount = orderResult.Value.productsTotal, // todo
+            TotalAmount = orderResult.Value.productsTotal + deliveryFee,
             PaymentMethod = PaymentMethod.Card,
             PaymentStatus = PaymentStatus.Pending,
             OrderStatus = OrderStatus.Pending,
@@ -135,7 +139,7 @@ public sealed class OrderService(
             PhoneNumber = command.PhoneNumber,
             Latitude = command.Latitude,
             Longitude = command.Longitude,
-            DeliveryFee = 0 // todo
+            DeliveryFee = deliveryFee
         };
 
         orderItems.ForEach(orderItem => orderItem.OrderId = order.Id);
@@ -149,6 +153,47 @@ public sealed class OrderService(
 
         return Result<OrderDto>.Success(mappedOrder);
     }
+
+    private decimal CalculateDeliveryFee(double latitude, double longitude)
+    {
+        var storeLatitude = 30.5965; // Menofia Governorate latitude (Shibin El Kom - capital)
+        var storeLongitude = 30.9819; // Menofia Governorate longitude (Shibin El Kom - capital)
+
+        var distance = CalculateHaversineDistance(storeLatitude, storeLongitude, latitude, longitude);
+
+        return distance switch
+        {
+            // 0-5 km
+            <= 5 => 20m,
+            // 5-10 km
+            <= 10 => 30m,
+            // 10-20 km
+            <= 20 => 50m,
+            // 20-50 km (covers nearby governorates)
+            <= 50 => 50m + (decimal)Math.Ceiling(distance - 20) * 1.5m,
+            _ => 95m + (decimal)Math.Ceiling(distance - 50) * 2m
+        };
+    }
+
+    private static double CalculateHaversineDistance(double lat1, double lon1, double lat2, double lon2)
+    {
+        const double earthRadius = 6371;
+
+        var dLat = ToRadians(lat2 - lat1);
+        var dLon = ToRadians(lon2 - lon1);
+
+        // Haversine formula
+        var a = Math.Sin(dLat / 2) * Math.Sin(dLat / 2) +
+                Math.Cos(ToRadians(lat1)) * Math.Cos(ToRadians(lat2)) *
+                Math.Sin(dLon / 2) * Math.Sin(dLon / 2);
+
+        var c = 2 * Math.Atan2(Math.Sqrt(a), Math.Sqrt(1 - a));
+        var distance = earthRadius * c;
+
+        return distance;
+    }
+
+    private static double ToRadians(double degrees) => degrees * Math.PI / 180;
 
     public async Task<Result<IEnumerable<OrderDto>>> GetAllOrdersAsync()
     {
