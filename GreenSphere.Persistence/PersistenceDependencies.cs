@@ -34,6 +34,7 @@ public static class PersistenceDependencies
         .AddDefaultTokenProviders();
 
         services.AddScoped(typeof(IGenericRepository<>), typeof(GenericRepository<>));
+        services.AddScoped<IAddressRepository, AddressRepository>();
 
         return services;
     }

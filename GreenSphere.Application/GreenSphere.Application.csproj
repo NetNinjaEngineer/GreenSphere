@@ -22,7 +22,6 @@
 	</ItemGroup>
 
 	<ItemGroup>
-	  <Folder Include="Features\Users\Commands\SetMainAddress\" />
 	  <Folder Include="Features\Users\Queries\GetUserAddresses\" />
 	  <Folder Include="Features\Users\Queries\GetAddress\" />
 	  <Folder Include="Features\Users\Queries\GetMainAddress\" />
