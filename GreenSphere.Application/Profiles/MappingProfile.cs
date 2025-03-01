@@ -99,6 +99,7 @@ public sealed class MappingProfile : Profile
             .ForMember(dest => dest.CustomerEmail, options => options.MapFrom(src => src.User.Email))
             .ForMember(dest => dest.OrderItems, options => options.MapFrom(src => src.OrderItems));
 
+        CreateMap<Address, AddressDto>();
 
     }
 }
