@@ -1,7 +1,7 @@
 ﻿namespace GreenSphere.Domain.Enumerations;
 
-public enum Gender
+public enum PaymentMethod
 {
-    Male,
-    Female
+    Card,
+    Cash
 }

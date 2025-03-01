@@ -68,6 +68,8 @@ public static class ServicesDependencies
 
         services.AddScoped<IBasketService, BasketService>();
 
+        services.AddScoped<IOrderService, OrderService>();
+
         return services;
     }
 }

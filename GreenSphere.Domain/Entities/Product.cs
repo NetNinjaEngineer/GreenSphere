@@ -25,10 +25,8 @@ public sealed class Product : BaseEntity
             {
                 return OriginalPrice - (OriginalPrice * DiscountPercentage.Value / 100);
             }
-            else
-            {
-                return OriginalPrice;
-            }
+
+            return OriginalPrice;
         }
     }
     public Guid CategoryId { get; set; }

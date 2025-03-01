@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using GreenSphere.Application.DTOs.Basket;
 using GreenSphere.Application.DTOs.Category;
+using GreenSphere.Application.DTOs.Order;
 using GreenSphere.Application.DTOs.Products;
 using GreenSphere.Application.DTOs.Ratings;
 using GreenSphere.Application.DTOs.Users;
@@ -89,6 +90,14 @@ public sealed class MappingProfile : Profile
                 src.CategoryTranslations.Any(ct => ct.LanguageCode == CultureInfo.CurrentCulture.Name)
                     ? src.CategoryTranslations.FirstOrDefault(pt => pt.LanguageCode == CultureInfo.CurrentCulture.Name)!.Description
                     : src.Description));
+
+        CreateMap<OrderItem, OrderItemDto>();
+
+        CreateMap<Order, OrderDto>()
+            .ForMember(dest => dest.CreatedBy,
+                options => options.MapFrom(src => string.Concat(src.User.FirstName, " ", src.User.LastName)))
+            .ForMember(dest => dest.CustomerEmail, options => options.MapFrom(src => src.User.Email))
+            .ForMember(dest => dest.OrderItems, options => options.MapFrom(src => src.OrderItems));
 
 
     }

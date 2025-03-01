@@ -13,5 +13,5 @@ public class ApplicationUser : IdentityUser
     public DateOnly? DateOfBirth { get; set; }
     public string? ProfilePictureUrl { get; set; }
     public ICollection<Rating> Ratings { get; set; } = [];
-
+    public ICollection<Order> Orders { get; set; } = [];
 }

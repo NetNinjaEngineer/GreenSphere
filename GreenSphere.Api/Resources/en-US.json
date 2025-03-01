@@ -69,5 +69,6 @@
   "ShoppingCartNotFound": "Shopping cart not found.",
   "ItemNotFoundInCart": "Item with ID {0} not found in the shopping cart.",
   "ShoppingCartCreated": "Shopping cart created successfully.",
-  "ProductNoLongerAvailable": "Product not found or no longer available."
+  "ProductNoLongerAvailable": "Product not found or no longer available.",
+  "EmptyBasket": "Your basket has no items"
 }
