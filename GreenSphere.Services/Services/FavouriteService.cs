@@ -70,22 +70,13 @@ public sealed class FavouriteService(
     {
 
         var customerFavourite = await favouriteRepository.GetBySpecificationAsync(
-            specification: new GetCustomerFavouriteWithItemsSpecification(currentUser.Email));
-
-        if (customerFavourite is null)
-        {
-            customerFavourite = new CustomerFavourite
-            {
-                Id = Guid.NewGuid(),
-                CustomerEmail = currentUser.Email
-            };
-            favouriteRepository.Create(customerFavourite);
-        }
+            specification: new GetCustomerFavouriteWithItemsSpecification(currentUser.Email))
+                                ?? mapper.Map<CustomerFavourite>(await GetCustomerFavouriteAsync());
 
         var product = await productRepository.GetByIdAsync(command.ProductId);
         if (product is null)
         {
-            return Result<FavouriteDto>.Failure(HttpStatusCode.NotFound, localizer["ProductNotFound"]);
+            return Result<FavouriteDto>.Failure(HttpStatusCode.NotFound, localizer["ProductNotFound", command.ProductId]);
         }
 
         var existingItem = customerFavourite.FavouriteItems
@@ -102,7 +93,11 @@ public sealed class FavouriteService(
         {
             Id = Guid.NewGuid(),
             CustomerFavouriteId = customerFavourite.Id,
-            ProductId = command.ProductId
+            ProductId = product.Id,
+            ImageUrl = $"{configuration["Urls:BaseApiUrl"]}/Uploads/Images/{product.Img}",
+            Name = product.Name,
+            Price = product.DiscountPercentage.HasValue ?
+                product.PriceAfterDiscount : product.OriginalPrice
         };
 
         customerFavourite.FavouriteItems.Add(favouriteItem);
@@ -110,10 +105,11 @@ public sealed class FavouriteService(
 
         await favouriteRepository.SaveChangesAsync();
 
-        var newFavouriteDto = mapper.Map<FavouriteDto>(customerFavourite);
-        memoryCache.Set(_cacheKey, newFavouriteDto, _cacheEntryOptions);
+        memoryCache.Remove(_cacheKey);
 
-        return Result<FavouriteDto>.Success(newFavouriteDto, localizer["ProductAddedToFavourite"]);
+        var updatedFavourate = await GetCustomerFavouriteAsync();
+
+        return Result<FavouriteDto>.Success(updatedFavourate.Value);
     }
     public async Task<Result<FavouriteDto>> RemoveItemFromCustomerFavouriteAsync(RemoveItemFromFavouriteCommand command)
     {
@@ -122,7 +118,7 @@ public sealed class FavouriteService(
 
         if (customerFavourite is null)
         {
-            return Result<FavouriteDto>.Failure(HttpStatusCode.NotFound, localizer["ItemNotFoundInFavourite"]);
+            return Result<FavouriteDto>.Failure(HttpStatusCode.NotFound);
         }
 
         var itemToRemove = customerFavourite.FavouriteItems
@@ -130,7 +126,7 @@ public sealed class FavouriteService(
 
         if (itemToRemove is null)
         {
-            return Result<FavouriteDto>.Failure(HttpStatusCode.NotFound, localizer["ItemNotFoundInFavourite"]);
+            return Result<FavouriteDto>.Failure(HttpStatusCode.NotFound, localizer["ItemNotFoundInFavourite", command.ItemId]);
         }
 
         customerFavourite.FavouriteItems.Remove(itemToRemove);
@@ -138,52 +134,44 @@ public sealed class FavouriteService(
 
         await favouriteRepository.SaveChangesAsync();
 
-        var updatedFavouriteDto = mapper.Map<FavouriteDto>(customerFavourite);
-        memoryCache.Set(_cacheKey, updatedFavouriteDto, _cacheEntryOptions);
-
+        memoryCache.Remove(_cacheKey);
+        var updatedFavouriteDto = (await GetCustomerFavouriteAsync()).Value;
         return Result<FavouriteDto>.Success(updatedFavouriteDto);
     }
-    public async Task<Result<FavouriteDto>> ClearCustomerFavouriteAsync()
+    public async Task<Result<bool>> ClearCustomerFavouriteAsync()
     {
         var customerFavourite = await favouriteRepository.GetBySpecificationAsync(
             specification: new GetCustomerFavouriteWithItemsSpecification(currentUser.Email));
 
         if (customerFavourite is null)
         {
-            return Result<FavouriteDto>.Failure(HttpStatusCode.NotFound, localizer["FavouriteNotFound"]);
+            return Result<bool>.Failure(HttpStatusCode.NotFound, localizer["FavouriteNotFound"]);
         }
 
-        foreach (var item in customerFavourite.FavouriteItems.ToList())
-        {
-            customerFavourite.FavouriteItems.Remove(item);
-            favouriteItemRepository.Delete(item);
-        }
+        customerFavourite.FavouriteItems.Clear();
 
         await favouriteRepository.SaveChangesAsync();
 
-        var updatedFavouriteDto = mapper.Map<FavouriteDto>(customerFavourite);
-        memoryCache.Set(_cacheKey, updatedFavouriteDto, _cacheEntryOptions);
+        memoryCache.Remove(_cacheKey);
 
-        return Result<FavouriteDto>.Success(updatedFavouriteDto);
+        return Result<bool>.Success(true);
     }
-    public async Task<Result<FavouriteDto>> DeleteAllCustomerFavouriteAsync()
+    public async Task<Result<bool>> DeleteAllCustomerFavouriteAsync()
     {
         var customerFavourite = await favouriteRepository.GetBySpecificationAsync(
             specification: new GetCustomerFavouriteWithItemsSpecification(currentUser.Email));
 
         if (customerFavourite is null)
         {
-            return Result<FavouriteDto>.Failure(HttpStatusCode.NotFound, localizer["FavouriteNotFound"]);
+            return Result<bool>.Failure(HttpStatusCode.NotFound, localizer["FavouriteNotFound"]);
         }
 
         favouriteRepository.Delete(customerFavourite);
 
         await favouriteRepository.SaveChangesAsync();
 
-        var emptyFavourite = new CustomerFavourite { Id = Guid.NewGuid(), CustomerEmail = currentUser.Email };
-        var updatedFavouriteDto = mapper.Map<FavouriteDto>(emptyFavourite);
-        memoryCache.Set(_cacheKey, updatedFavouriteDto, _cacheEntryOptions);
+        memoryCache.Remove(_cacheKey);
 
-        return Result<FavouriteDto>.Success(updatedFavouriteDto);
+        return Result<bool>.Success(true);
     }
 }

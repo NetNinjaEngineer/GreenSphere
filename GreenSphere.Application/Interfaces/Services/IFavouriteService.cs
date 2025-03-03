@@ -10,6 +10,6 @@ public interface IFavouriteService
     Task<Result<FavouriteDto>> GetCustomerFavouriteAsync();
     Task<Result<FavouriteDto>> AddItemToCustomerFavouriteAsync(AddItemToFavouriteCommand command);
     Task<Result<FavouriteDto>> RemoveItemFromCustomerFavouriteAsync(RemoveItemFromFavouriteCommand command); // إضافة الدالة الجديدة
-    Task<Result<FavouriteDto>> ClearCustomerFavouriteAsync();
-    Task<Result<FavouriteDto>> DeleteAllCustomerFavouriteAsync();
+    Task<Result<bool>> ClearCustomerFavouriteAsync();
+    Task<Result<bool>> DeleteAllCustomerFavouriteAsync();
 }

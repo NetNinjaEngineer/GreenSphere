@@ -7,7 +7,7 @@ public class FavouriteItemDto
     public string Name { get; set; } = string.Empty;
     public string ImageUrl { get; set; } = string.Empty;
     public decimal Price { get; set; }
-    public Guid CustomerFavouiteId { get; set; }
+    public Guid CustomerFavouriteId { get; set; }
     public DateTimeOffset AddedAt { get; set; }
 
 }

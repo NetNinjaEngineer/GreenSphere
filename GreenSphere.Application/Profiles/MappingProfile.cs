@@ -89,7 +89,11 @@ public sealed class MappingProfile : Profile
 
         CreateMap<FavouriteItem, FavouriteItemDto>()
             .ForMember(dest => dest.Id, opt => opt.MapFrom(src => src.Id))
-            .ForMember(dest => dest.ProductId, opt => opt.MapFrom(src => src.ProductId));
+            .ForMember(dest => dest.ProductId, opt => opt.MapFrom(src => src.ProductId))
+            .ForMember(dest => dest.Name, opt => opt.MapFrom(src =>
+                src.Product.ProductTranslations.Any(pt => pt.LanguageCode == CultureInfo.CurrentCulture.Name) ?
+                    src.Product.ProductTranslations.FirstOrDefault(
+                        pt => pt.LanguageCode == CultureInfo.CurrentCulture.Name)!.Name : src.Product.Name));
 
         CreateMap<Category, CategoryWithProductsDto>()
             .ForMember(dest => dest.Name, options => options.MapFrom(src =>
@@ -111,6 +115,12 @@ public sealed class MappingProfile : Profile
 
         CreateMap<Address, AddressDto>();
 
+        CreateMap<FavouriteItemDto, FavouriteItem>();
+
+        CreateMap<FavouriteDto, CustomerFavourite>()
+            .ForMember(dest => dest.CustomerEmail, opt => opt.MapFrom(src => src.OwnerEmail))
+            .ForMember(dest => dest.Id, opt => opt.MapFrom(src => src.FavouriteId))
+            .ForMember(dest => dest.FavouriteItems, opt => opt.MapFrom(src => src.Items));
 
 
     }

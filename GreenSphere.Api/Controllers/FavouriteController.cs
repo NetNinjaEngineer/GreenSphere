@@ -29,44 +29,24 @@ public class FavouriteController(IMediator mediator) : BaseApiController(mediato
     [ProducesResponseType(typeof(Result<FavouriteDto>), StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     public async Task<IActionResult> AddItemToFavourite([FromBody] AddItemToFavouriteCommand command)
-    {
-        var result = await mediator.Send(command);
-        if (result.IsSuccess)
-        {
-            return Ok(new { Value = result.Value, Message = result.Message });
-        }
-        return BadRequest(new { Errors = result.Errors, Message = result.Message });
-    }
+        => CustomResult(await Mediator.Send(command));
 
 
     [HttpDelete("remove_item")]
     [ProducesResponseType(typeof(Result<FavouriteDto>), StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     public async Task<IActionResult> RemoveItemFromFavourite([FromBody] RemoveItemFromFavouriteCommand command)
-    {
-        var result = await mediator.Send(command);
-        if (result.IsSuccess)
-        {
-            return Ok(new { Value = result.Value, Message = result.Message });
-        }
-        return BadRequest(new { Errors = result.Errors, Message = result.Message });
-    }
+        => CustomResult(await Mediator.Send(command));
 
     [HttpDelete("clear")]
-    [ProducesResponseType(typeof(Result<FavouriteDto>), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(Result<bool>), StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
-    public async Task<IActionResult> DeleteFavourite()
-    {
-        var result = await mediator.Send(new ClearFavouriteCommand());
-        return result.IsSuccess ? Ok(result.Value) : BadRequest(result.Errors);
-    }
+    public async Task<IActionResult> ClearFavourateAsync()
+        => CustomResult(await Mediator.Send(new ClearFavouriteCommand()));
 
     [HttpDelete("delete-all")]
-    [ProducesResponseType(typeof(Result<FavouriteDto>), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(Result<bool>), StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
-    public async Task<IActionResult> DeleteAllFavourite()
-    {
-        var result = await mediator.Send(new DeleteAllFavouriteCommand());
-        return result.IsSuccess ? Ok(result.Value) : BadRequest(result.Errors);
-    }
+    public async Task<IActionResult> RemoveCustomerFavourateAsync()
+        => CustomResult(await Mediator.Send(new DeleteAllFavouriteCommand()));
 }
