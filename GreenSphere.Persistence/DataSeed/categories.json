@@ -1,27 +1,47 @@
 [
   {
-    "id": "E0070C91-4F0B-4343-A37D-72B27921423E",
-    "name": "Irrigation Systems",
-    "description": "Complete irrigation solutions for agricultural applications"
+    "categoryId": "E0070C91-4F0B-4343-A37D-72B27921423E",
+    "name": "Hydroponic Containers and Supports",
+    "description": "Includes pots, stands, and storage tubs designed for hydroponic systems to support plant growth and nutrient management."
   },
   {
-    "id": "AE5A9CFB-A064-455A-9234-3B55C6255479",
-    "name": "Water Pumps",
-    "description": "High-performance pumps for agricultural water management"
+    "categoryId": "AE5A9CFB-A064-455A-9234-3B55C6255479",
+    "name": "Plant Growth Regulators and Meters",
+    "description": "Tools and substances like growth regulators and salinity meters to optimize plant development and water quality."
   },
   {
-    "id": "540F7661-1CFC-4FB9-B5FD-52DEC51617D3",
-    "name": "Filtration Systems",
-    "description": "Water filtration and purification solutions"
+    "categoryId": "540F7661-1CFC-4FB9-B5FD-52DEC51617D3",
+    "name": "Hydroponic Storage and Pumps",
+    "description": "Equipment such as basins and submersible pumps for storing nutrients and circulating water in hydroponic setups."
   },
   {
-    "id": "D1B0C257-4622-4DD9-AD71-6DBBE9C808F1",
-    "name": "Monitoring Equipment",
-    "description": "Sensors and monitoring devices for water management"
+    "categoryId": "D1B0C257-4622-4DD9-AD71-6DBBE9C808F1",
+    "name": "Nutrient Solutions and Testing Tools",
+    "description": "Fertilizers, pH meters, air pumps, and test strips to maintain nutrient levels and water conditions for healthy plant growth."
   },
   {
-    "id": "BC6EB2C3-2AD5-4AB0-A84A-C3173A85E3EA",
-    "name": "Water Storage",
-    "description": "Tanks and storage solutions for agricultural water"
+    "categoryId": "BC6EB2C3-2AD5-4AB0-A84A-C3173A85E3EA",
+    "name": "Hydroponic Planting Cups and Pumps",
+    "description": "Cups for plant support and water pumps to ensure proper aeration and circulation in hydroponic systems."
+  },
+  {
+    "categoryId": "B27519E8-5D3C-4926-BD86-D3FE6F3438F5",
+    "name": "Specialty Fertilizers",
+    "description": "Targeted fertilizers designed to enhance specific plant types, such as tomatoes or blueberries, in hydroponic or soil-free systems."
+  },
+  {
+    "categoryId": "4BA80781-B010-4A05-AD1C-2AA38B1F6B6C",
+    "name": "Flowering and Foliage Enhancers",
+    "description": "Products like fertilizers, pH adjusters, and lighting to boost flowering plants and foliage health in controlled environments."
+  },
+  {
+    "categoryId": "A1B2C3D4-E5F6-7890-ABCD-EF1234567890",
+    "name": "Hydroponic Systems",
+    "description": "Complete hydroponic grow kits and systems designed for efficient, soil-free plant cultivation with optimized water and nutrient delivery."
+  },
+  {
+    "categoryId": "B9C8D7E6-1F2A-3B4C-5D6E-7F8910G2H3I4",
+    "name": "Monitoring and Accessories",
+    "description": "Tools and accessories like webcams for monitoring plant growth and other supportive equipment in hydroponic or controlled environments."
   }
 ]

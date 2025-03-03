@@ -9,5 +9,6 @@ public sealed class AddItemToBasketCommandHandler(IBasketService service)
 {
     public async Task<Result<BasketDto>> Handle(
         AddItemToBasketCommand request,
-        CancellationToken cancellationToken) => await service.AddItemToCustomerBasketAsync(request);
+        CancellationToken cancellationToken)
+        => await service.AddItemToCustomerBasketAsync(request);
 }

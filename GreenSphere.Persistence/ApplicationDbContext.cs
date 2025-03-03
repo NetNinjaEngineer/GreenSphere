@@ -13,6 +13,7 @@ public class ApplicationDbContext(
     public DbSet<ProductTranslation> ProductTranslations { get; set; }
     public DbSet<CategoryTranslation> CategoryTranslations { get; set; }
     public DbSet<BasketItem> BasketItems { get; set; }
+    public DbSet<FavouriteItem> FavouriteItems { get; set; }
     public DbSet<CustomerBasket> CustomerBaskets { get; set; }
     public DbSet<Address> Addresses { get; set; }
 

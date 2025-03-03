@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using GreenSphere.Application.DTOs.Basket;
 using GreenSphere.Application.DTOs.Category;
+using GreenSphere.Application.DTOs.Favourite;
 using GreenSphere.Application.DTOs.Order;
 using GreenSphere.Application.DTOs.Products;
 using GreenSphere.Application.DTOs.Ratings;
@@ -81,6 +82,15 @@ public sealed class MappingProfile : Profile
             .ForMember(dest => dest.BasketId, options => options.MapFrom(src => src.Id))
             .ForMember(dest => dest.Items, options => options.MapFrom(src => src.BasketItems));
 
+        CreateMap<CustomerFavourite, FavouriteDto>()
+            .ForMember(dest => dest.FavouriteId, opt => opt.MapFrom(src => src.Id))
+            .ForMember(dest => dest.OwnerEmail, opt => opt.MapFrom(src => src.CustomerEmail))
+            .ForMember(dest => dest.Items, opt => opt.MapFrom(src => src.FavouriteItems));
+
+        CreateMap<FavouriteItem, FavouriteItemDto>()
+            .ForMember(dest => dest.Id, opt => opt.MapFrom(src => src.Id))
+            .ForMember(dest => dest.ProductId, opt => opt.MapFrom(src => src.ProductId));
+
         CreateMap<Category, CategoryWithProductsDto>()
             .ForMember(dest => dest.Name, options => options.MapFrom(src =>
                 src.CategoryTranslations.Any(ct => ct.LanguageCode == CultureInfo.CurrentCulture.Name)
@@ -100,6 +110,8 @@ public sealed class MappingProfile : Profile
             .ForMember(dest => dest.OrderItems, options => options.MapFrom(src => src.OrderItems));
 
         CreateMap<Address, AddressDto>();
+
+
 
     }
 }

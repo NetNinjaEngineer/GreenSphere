@@ -73,5 +73,10 @@
   "EmptyBasket": "سلتك لا تحتوي على أي عناصر",
   "AddressNotFound": "لم يتم العثور على العنوان المطلوب.",
   "NotYourAddress": "ليس لديك إذن للوصول إلى هذا العنوان.",
-  "NoMainAddressFound": "لم يتم العثور على عنوان رئيسي لحسابك."
+  "NoMainAddressFound": "لم يتم العثور على عنوان رئيسي لحسابك.",
+  "ProductAlreadyInFavourite": "المنتج موجود بالفعل في المفضلة.",
+  "FavouriteNotFound": "لم يتم العثور على المفضلة.",
+  "ItemNotFoundInFavourite": "لم يتم العثور على العنصر برقم التعريف {0} في المفضلة.",
+   
+
 }

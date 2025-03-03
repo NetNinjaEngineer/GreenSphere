@@ -73,5 +73,8 @@
   "EmptyBasket": "Your basket has no items",
   "AddressNotFound": "The requested address was not found.",
   "NotYourAddress": "You do not have permission to access this address.",
-  "NoMainAddressFound": "No main address found for your account."
+  "NoMainAddressFound": "No main address found for your account.",
+  "ProductAlreadyInFavourite": "Product is already in your favourite list.",
+  "FavouriteNotFound": "Favourite not found.",
+  "ItemNotFoundInFavourite": "Item with ID {0} not found in the favourite list.",
 }
