@@ -15,7 +15,7 @@ public class MigrateDatabaseMiddleware : IMiddleware
 
         await dbContext.Database.MigrateAsync();
 
-        //await dbContext.SeedDatabaseAsync();
+        await dbContext.SeedDatabaseAsync();
 
         await next(context);
     }
