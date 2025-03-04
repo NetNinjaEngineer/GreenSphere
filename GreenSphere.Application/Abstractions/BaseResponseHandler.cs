@@ -1,16 +1,11 @@
-﻿using Microsoft.Extensions.Localization;
-using System.Net;
+﻿using System.Net;
+using Microsoft.Extensions.Localization;
 
 namespace GreenSphere.Application.Abstractions;
 
-public class BaseResponseHandler
+public class BaseResponseHandler(IStringLocalizer<BaseResponseHandler> localizer)
 {
-    protected readonly IStringLocalizer<BaseResponseHandler> _localizer;
-
-    public BaseResponseHandler(IStringLocalizer<BaseResponseHandler> localizer)
-    {
-        _localizer = localizer;
-    }
+    protected readonly IStringLocalizer<BaseResponseHandler> Localizer = localizer;
 
     public Result<T> Deleted<T>()
     {
@@ -18,7 +13,7 @@ public class BaseResponseHandler
         {
             StatusCode = HttpStatusCode.NoContent,
             Succeeded = true,
-            Message = _localizer["DeletedSuccessfully"]
+            Message = Localizer["DeletedSuccessfully"]
         };
     }
 
@@ -29,7 +24,7 @@ public class BaseResponseHandler
             Data = entity,
             StatusCode = HttpStatusCode.OK,
             Succeeded = true,
-            Message = _localizer["Successfully"],
+            Message = Localizer["Successfully"],
         };
     }
 
@@ -51,7 +46,7 @@ public class BaseResponseHandler
         {
             StatusCode = HttpStatusCode.Unauthorized,
             Succeeded = false,
-            Message = _localizer["UnAuthorized"]
+            Message = Localizer["UnAuthorized"]
         };
     }
 
@@ -66,44 +61,44 @@ public class BaseResponseHandler
     }
 
 
-    public Result<T> BadRequest<T>(string message, List<string> errors = null)
+    public Result<T> BadRequest<T>(string message, List<string>? errors = null)
     {
         return new FailedResult<T>()
         {
             StatusCode = HttpStatusCode.BadRequest,
             Succeeded = false,
-            Message = string.IsNullOrWhiteSpace(message) ? _localizer["BadRequest"] : message,
+            Message = string.IsNullOrWhiteSpace(message) ? Localizer["BadRequest"] : message,
             Errors = errors
         };
     }
 
-    public Result<T> Conflict<T>(string message = null)
+    public Result<T> Conflict<T>(string? message = null)
     {
         return new FailedResult<T>()
         {
             StatusCode = HttpStatusCode.Conflict,
             Succeeded = false,
-            Message = string.IsNullOrWhiteSpace(message) ? _localizer["Conflict"] : message
+            Message = string.IsNullOrWhiteSpace(message) ? Localizer["Conflict"] : message
         };
     }
 
-    public Result<T> UnprocessableEntity<T>(string message = null)
+    public Result<T> UnprocessableEntity<T>(string? message = null)
     {
         return new FailedResult<T>()
         {
             StatusCode = HttpStatusCode.UnprocessableEntity,
             Succeeded = false,
-            Message = string.IsNullOrWhiteSpace(message) ? _localizer["UnprocessableEntity"] : message
+            Message = string.IsNullOrWhiteSpace(message) ? Localizer["UnprocessableEntity"] : message
         };
     }
 
-    public Result<T> NotFound<T>(string message = null)
+    public Result<T> NotFound<T>(string? message = null)
     {
         return new FailedResult<T>()
         {
             StatusCode = HttpStatusCode.NotFound,
             Succeeded = false,
-            Message = string.IsNullOrWhiteSpace(message) ? _localizer["NotFound"] : message
+            Message = string.IsNullOrWhiteSpace(message) ? Localizer["NotFound"] : message
         };
     }
 
@@ -114,7 +109,7 @@ public class BaseResponseHandler
             Data = entity,
             StatusCode = HttpStatusCode.Created,
             Succeeded = true,
-            Message = _localizer["Created"]
+            Message = Localizer["Created"]
         };
     }
 
@@ -125,7 +120,7 @@ public class BaseResponseHandler
             Data = default!,
             StatusCode = HttpStatusCode.Created,
             Succeeded = true,
-            Message = _localizer["Created"]
+            Message = Localizer["Created"]
         };
     }
 }

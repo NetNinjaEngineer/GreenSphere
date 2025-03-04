@@ -1,4 +1,8 @@
-﻿using AutoMapper;
+﻿using System.Net;
+using System.Security.Cryptography;
+using System.Text;
+using System.Text.Json;
+using AutoMapper;
 using FluentValidation;
 using Google.Apis.Auth;
 using GreenSphere.Application.Abstractions;
@@ -30,10 +34,6 @@ using Microsoft.Extensions.Caching.Memory;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Localization;
 using Microsoft.Extensions.Logging;
-using System.Net;
-using System.Security.Cryptography;
-using System.Text;
-using System.Text.Json;
 namespace GreenSphere.Services.Services;
 
 public sealed class AuthService : BaseResponseHandler, IAuthService
@@ -86,35 +86,34 @@ public sealed class AuthService : BaseResponseHandler, IAuthService
             var user = await _userManager.FindByEmailAsync(command.Email);
 
             if (user is null)
-                return NotFound<string>(_localizer["UnkownUser"]);
+                return NotFound<string>(Localizer["UnknownUser"]);
 
             var decodedAuthenticationCode = Encoding.UTF8.GetString(Convert.FromBase64String(user.Code!));
 
-            if (decodedAuthenticationCode == command.Token)
+            if (decodedAuthenticationCode != command.Token)
+                return BadRequest<string>(Localizer["InvalidAuthCode"]);
+
+            if (DateTimeOffset.Now > user.CodeExpiration)
+                return BadRequest<string>(Localizer["AuthCodeExpired"]);
+
+            user.EmailConfirmed = true;
+            var identityResult = await _userManager.UpdateAsync(user);
+
+            if (!identityResult.Succeeded)
             {
-                // check if the token is expired
-                if (DateTimeOffset.Now > user.CodeExpiration)
-                    return BadRequest<string>(_localizer["AuthCodeExpired"]);
+                var errors = identityResult.Errors
+                    .Select(e => e.Description)
+                    .ToList();
 
-                // confirm the email for the user
-                user.EmailConfirmed = true;
-                var identityResult = await _userManager.UpdateAsync(user);
+                return BadRequest<string>(Localizer["UnableToUpdateUser"], errors);
+            }
 
-                if (!identityResult.Succeeded)
-                {
-                    var errors = identityResult.Errors
-                        .Select(e => e.Description)
-                        .ToList();
-
-                    return BadRequest<string>(_localizer["UnableToUpdateUser"], errors);
-                }
-
-                var emailMessage = new MailkitEmail()
-                {
-                    Provider = command.Provider,
-                    To = command.Email,
-                    Subject = "Email Confirmed",
-                    Body = @"
+            var emailMessage = new MailkitEmail()
+            {
+                Provider = command.Provider,
+                To = command.Email,
+                Subject = "Email Confirmed",
+                Body = @"
                     <div style='margin-top: 20px; font-size: 16px; color: #333;'>
                         <p>Hello,</p>
                         <p>Your email address has been successfully confirmed. You can now access all features of your account.</p>
@@ -123,15 +122,13 @@ public sealed class AuthService : BaseResponseHandler, IAuthService
                            <strong>Green Sphere</strong>
                         </p>
                     </div>"
-                };
+            };
 
-                await _mailService.SendEmailAsync(emailMessage);
+            await _mailService.SendEmailAsync(emailMessage);
 
-                await transaction.CommitAsync();
-                return Success<string>(_localizer["EmailConfirmed"]);
-            }
+            await transaction.CommitAsync();
+            return Success<string>(Localizer["EmailConfirmed"]);
 
-            return BadRequest<string>(_localizer["InvalidAuthCode"]);
         }
         catch (Exception ex)
         {
@@ -223,10 +220,10 @@ public sealed class AuthService : BaseResponseHandler, IAuthService
         var loggedInUser = await _userManager.FindByEmailAsync(command.Email);
 
         if (loggedInUser is null)
-            return NotFound<SignInResponseDto>(_localizer["UnknownUser"]);
+            return NotFound<SignInResponseDto>(Localizer["UnknownUser"]);
 
         if (!await _userManager.IsEmailConfirmedAsync(loggedInUser))
-            return BadRequest<SignInResponseDto>(_localizer["EmailNotConfirmed"]);
+            return BadRequest<SignInResponseDto>(Localizer["EmailNotConfirmed"]);
 
         if (await _userManager.GetTwoFactorEnabledAsync(loggedInUser))
         {
@@ -252,13 +249,13 @@ public sealed class AuthService : BaseResponseHandler, IAuthService
                 Body = $"2FA code is required to complete login process, Your 2FA code is {twoFactorCode}"
             });
 
-            return BadRequest<SignInResponseDto>(_localizer["TwoFactorRequired"]);
+            return BadRequest<SignInResponseDto>(Localizer["TwoFactorRequired"]);
         }
 
         // check account is locked
         if (await _userManager.IsLockedOutAsync(loggedInUser))
         {
-            return Unauthorized<SignInResponseDto>(_localizer["AccountLocked", loggedInUser.LockoutEnd!.Value.ToLocalTime()]);
+            return Unauthorized<SignInResponseDto>(Localizer["AccountLocked", loggedInUser.LockoutEnd!.Value.ToLocalTime()]);
         }
 
         var result = await _signInManager.PasswordSignInAsync(
@@ -273,7 +270,7 @@ public sealed class AuthService : BaseResponseHandler, IAuthService
 
             var lockoutEndTime = TimeZoneInfo.ConvertTimeFromUtc(loggedInUser.LockoutEnd!.Value.UtcDateTime, timeZone);
 
-            return Unauthorized<SignInResponseDto>(_localizer["AccountLocked", lockoutEndTime]);
+            return Unauthorized<SignInResponseDto>(Localizer["AccountLocked", lockoutEndTime]);
         }
 
         if (result.Succeeded)
@@ -282,7 +279,7 @@ public sealed class AuthService : BaseResponseHandler, IAuthService
             return Success(response);
         }
 
-        return Unauthorized<SignInResponseDto>(_localizer["InvalidCredentials"]);
+        return Unauthorized<SignInResponseDto>(Localizer["InvalidCredentials"]);
     }
 
     private async Task<SignInResponseDto> CreateLoginResponseAsync(
@@ -387,25 +384,24 @@ public sealed class AuthService : BaseResponseHandler, IAuthService
     private Application.Bases.Result<ApplicationUser> RevokeUserTokenAndReturnsAppUser(RefreshToken userRefreshToken)
     {
         userRefreshToken.RevokedOn = DateTimeOffset.Now;
-        var user = _userManager.Users.SingleOrDefault(x =>
-            x.RefreshTokens != null && x.RefreshTokens.Any(x => x.Token == userRefreshToken.Token));
+
+        var user = _userManager.Users.SingleOrDefault(u =>
+            u.RefreshTokens != null && u.RefreshTokens.Any(r => r.Token == userRefreshToken.Token));
+
         return Application.Bases.Result<ApplicationUser>.Success(user!);
     }
 
     private Application.Bases.Result<RefreshToken> CheckIfTokenIsActive(RefreshToken userRefreshToken)
     {
-        if (!userRefreshToken.IsActive)
-            return Application.Bases.Result<RefreshToken>.Failure(HttpStatusCode.BadRequest, _localizer["InactiveToken"]);
-        return Application.Bases.Result<RefreshToken>.Success(userRefreshToken);
+        return !userRefreshToken.IsActive ? Application.Bases.Result<RefreshToken>.Failure(HttpStatusCode.BadRequest, Localizer["InactiveToken"]) : Application.Bases.Result<RefreshToken>.Success(userRefreshToken);
     }
 
     private Application.Bases.Result<RefreshToken> SelectRefreshTokenAssignedToUser(ApplicationUser user,
         string token)
     {
         var refreshToken = user.RefreshTokens?.Single(x => x.Token == token);
-        if (refreshToken is not null)
-            return Application.Bases.Result<RefreshToken>.Success(refreshToken);
-        return Application.Bases.Result<RefreshToken>.Failure(HttpStatusCode.NotFound, _localizer["TokenNotFound"]);
+
+        return refreshToken is not null ? Application.Bases.Result<RefreshToken>.Success(refreshToken) : Application.Bases.Result<RefreshToken>.Failure(HttpStatusCode.NotFound, Localizer["TokenNotFound"]);
     }
 
     public async Task LogoutAsync() => await _signInManager.SignOutAsync();
@@ -422,7 +418,7 @@ public sealed class AuthService : BaseResponseHandler, IAuthService
         if (!createResult.Succeeded)
         {
             var creationErrors = createResult.Errors.Select(e => e.Description).ToList();
-            return BadRequest<SignUpResponseDto>(_localizer["UnableToCreateAccount"], creationErrors);
+            return BadRequest<SignUpResponseDto>(Localizer["UnableToCreateAccount"], creationErrors);
         }
 
         await _userManager.AddToRoleAsync(user, Constants.Roles.User);
@@ -443,10 +439,10 @@ public sealed class AuthService : BaseResponseHandler, IAuthService
             var user = await _userManager.FindByEmailAsync(command.Email);
 
             if (user is null)
-                return NotFound<SendCodeConfirmEmailResponseDto>(_localizer["UnkownUser"]);
+                return NotFound<SendCodeConfirmEmailResponseDto>(Localizer["UnknownUser"]);
 
             if (await _userManager.IsEmailConfirmedAsync(user))
-                return Conflict<SendCodeConfirmEmailResponseDto>(_localizer["AlreadyEmailConfirmed"]);
+                return Conflict<SendCodeConfirmEmailResponseDto>(Localizer["AlreadyEmailConfirmed"]);
 
             var authenticationCode = await _userManager.GenerateUserTokenAsync(user, "Email", "Confirm User Email");
             var encodedAuthenticationCode = Convert.ToBase64String(Encoding.UTF8.GetBytes(authenticationCode));
@@ -464,7 +460,7 @@ public sealed class AuthService : BaseResponseHandler, IAuthService
                     .Select(e => e.Description)
                     .ToList();
 
-                return BadRequest<SendCodeConfirmEmailResponseDto>(_localizer["UnableToUpdateUser"], errors);
+                return BadRequest<SendCodeConfirmEmailResponseDto>(Localizer["UnableToUpdateUser"], errors);
             }
 
             var emailMessage = new MailkitEmail()
@@ -499,15 +495,15 @@ public sealed class AuthService : BaseResponseHandler, IAuthService
 
             await _mailService.SendEmailAsync(emailMessage);
 
-            transaction.Commit();
+            await transaction.CommitAsync();
             return Success(
                 entity: SendCodeConfirmEmailResponseDto.ToResponse(user.CodeExpiration.Value),
-                message: _localizer["ConfirmEmailCodeSentSuccessfully"]
+                message: Localizer["ConfirmEmailCodeSentSuccessfully"]
             );
         }
         catch (Exception ex)
         {
-            transaction.Rollback();
+            await transaction.RollbackAsync();
             return BadRequest<SendCodeConfirmEmailResponseDto>(ex.Message);
         }
     }
@@ -515,7 +511,7 @@ public sealed class AuthService : BaseResponseHandler, IAuthService
     private static RefreshToken GenerateRefreshToken()
     {
         var randomNumber = new byte[32];
-        using var rng = new RNGCryptoServiceProvider();
+        using var rng = RandomNumberGenerator.Create();
         rng.GetBytes(randomNumber);
         return new RefreshToken()
         {
@@ -529,9 +525,9 @@ public sealed class AuthService : BaseResponseHandler, IAuthService
         string refreshToken)
     {
         var user = await _userManager.Users.SingleOrDefaultAsync(x =>
-            x.RefreshTokens != null && x.RefreshTokens.Any(x => x.Token == refreshToken));
+            x.RefreshTokens != null && x.RefreshTokens.Any(token => token.Token == refreshToken));
         return user is null
-            ? Application.Bases.Result<ApplicationUser>.Failure(HttpStatusCode.NotFound, _localizer["InvalidToken"])
+            ? Application.Bases.Result<ApplicationUser>.Failure(HttpStatusCode.NotFound, Localizer["InvalidToken"])
             : Application.Bases.Result<ApplicationUser>.Success(user);
     }
 
@@ -543,21 +539,18 @@ public sealed class AuthService : BaseResponseHandler, IAuthService
 
         var user = await _userManager.FindByEmailAsync(command.Email);
         if (user == null)
-            return NotFound<string>(_localizer["UnknownUser"]);
+            return NotFound<string>(Localizer["UnknownUser"]);
 
-        //code and Expiration 
         var decoded = await _userManager.GenerateUserTokenAsync(user, "Email", "Generate Code");
         var authCode = Convert.ToBase64String(Encoding.UTF8.GetBytes(decoded));
         user.Code = authCode;
         user.CodeExpiration =
             DateTimeOffset.Now.AddMinutes(Convert.ToDouble(_configuration["AuthCodeExpirationInMinutes"]));
 
-        //Update user
         var updateResult = await _userManager.UpdateAsync(user);
         if (!updateResult.Succeeded)
-            return BadRequest<string>(_localizer["UnableToUpdateUser"]);
+            return BadRequest<string>(Localizer["UnableToUpdateUser"]);
 
-        //Send code to email
         var emailMessage = new MailkitEmail
         {
             Provider = command.Provider,
@@ -576,25 +569,26 @@ public sealed class AuthService : BaseResponseHandler, IAuthService
 
         await _mailService.SendEmailAsync(emailMessage);
 
-        return Success<string>(_localizer["PasswordResetCodeSent"]);
+        return Success<string>(Localizer["PasswordResetCodeSent"]);
     }
 
     public async Task<Result<string>> ConfirmForgotPasswordCodeAsync(ConfirmForgotPasswordCodeCommand command)
     {
 
-        var ConfirmForgotPasswordCodeCommandValidator = new ConfirmForgotPasswordCodeCommandValidator();
-        await ConfirmForgotPasswordCodeCommandValidator.ValidateAndThrowAsync(command);
+        var validator = new ConfirmForgotPasswordCodeCommandValidator();
+
+        await validator.ValidateAndThrowAsync(command);
 
         var user = await _userManager.FindByEmailAsync(command.Email);
         if (user == null)
-            return NotFound<string>(_localizer["UserNotFound", command.Email]);
+            return NotFound<string>(Localizer["UserNotFound", command.Email]);
 
         var decodedAuthCode = Encoding.UTF8.GetString(Convert.FromBase64String(user.Code!));
         if (decodedAuthCode != command.Code)
-            return BadRequest<string>(_localizer["InvalidAuthCode"]);
+            return BadRequest<string>(Localizer["InvalidAuthCode"]);
 
         if (DateTimeOffset.Now > user.CodeExpiration)
-            return BadRequest<string>(_localizer["CodeExpired"]);
+            return BadRequest<string>(Localizer["CodeExpired"]);
 
         await _userManager.RemovePasswordAsync(user);
         var result = await _userManager.AddPasswordAsync(user, command.NewPassword);
@@ -605,7 +599,7 @@ public sealed class AuthService : BaseResponseHandler, IAuthService
             return UnprocessableEntity<string>(errors!);
         }
 
-        return Success<string>(_localizer["PasswordResetSuccessfully"]);
+        return Success<string>(Localizer["PasswordResetSuccessfully"]);
     }
 
     public async Task<Result<string>> Enable2FaAsync(Enable2FaCommand command)
@@ -616,7 +610,7 @@ public sealed class AuthService : BaseResponseHandler, IAuthService
         var user = await _userManager.FindByEmailAsync(command.Email);
 
         if (user == null)
-            return BadRequest<string>(_localizer["UserNotFound", command.Email]);
+            return BadRequest<string>(Localizer["UserNotFound", command.Email]);
 
         var code = await _userManager.GenerateTwoFactorTokenAsync(user, command.TokenProvider.ToString());
 
@@ -637,7 +631,7 @@ public sealed class AuthService : BaseResponseHandler, IAuthService
             // handle send via phone
         }
 
-        return Success<string>(_localizer["TwoFactorCodeSent"]);
+        return Success<string>(Localizer["TwoFactorCodeSent"]);
     }
 
     public async Task<Result<string>> ConfirmEnable2FaAsync(ConfirmEnable2FaCommand command)
@@ -647,7 +641,7 @@ public sealed class AuthService : BaseResponseHandler, IAuthService
 
         var user = await _userManager.FindByEmailAsync(command.Email);
         if (user == null)
-            return NotFound<string>(_localizer["UnkownUser"]);
+            return NotFound<string>(Localizer["UnkownUser"]);
 
         // verify 2fa code
         var providers = await _userManager.GetValidTwoFactorProvidersAsync(user);
@@ -658,7 +652,7 @@ public sealed class AuthService : BaseResponseHandler, IAuthService
                 await _userManager.VerifyTwoFactorTokenAsync(user, TokenProvider.Email.ToString(), command.Code);
 
             if (!verified)
-                return BadRequest<string>(_localizer["Invalid2FaCode"]);
+                return BadRequest<string>(Localizer["Invalid2FaCode"]);
 
             // code is verified update status of 2FA
 
@@ -672,10 +666,10 @@ public sealed class AuthService : BaseResponseHandler, IAuthService
                 Body = "Your 2FA authentication is successfully enabled."
             });
 
-            return Success<string>(_localizer["TwoFactorEnabled"]);
+            return Success<string>(Localizer["TwoFactorEnabled"]);
         }
 
-        return BadRequest<string>(_localizer["InvalidTokenProvider"]);
+        return BadRequest<string>(Localizer["InvalidTokenProvider"]);
     }
 
     public async Task<Result<SignInResponseDto>> Verify2FaCodeAsync(Verify2FaCodeCommand command)
@@ -712,15 +706,15 @@ public sealed class AuthService : BaseResponseHandler, IAuthService
         var user = await _userManager.FindByEmailAsync(command.Email);
 
         if (user == null)
-            return NotFound<string>(_localizer["UserNotFound", command.Email]);
+            return NotFound<string>(Localizer["UserNotFound", command.Email]);
 
         if (!await _userManager.GetTwoFactorEnabledAsync(user))
-            return BadRequest<string>(_localizer["TwoFactorAlreadyDisabled"]);
+            return BadRequest<string>(Localizer["TwoFactorAlreadyDisabled"]);
 
         var result = await _userManager.SetTwoFactorEnabledAsync(user, false);
 
         if (!result.Succeeded)
-            return BadRequest<string>(_localizer["Disable2FaFailed"]);
+            return BadRequest<string>(Localizer["Disable2FaFailed"]);
 
         await _mailService.SendEmailAsync(new MailkitEmail
         {
@@ -730,7 +724,7 @@ public sealed class AuthService : BaseResponseHandler, IAuthService
             Body = "Your two-factor authentication has been successfully disabled."
         });
 
-        return Success<string>(_localizer["Disable2FaSuccess"]);
+        return Success<string>(Localizer["Disable2FaSuccess"]);
     }
 
     public async Task<Application.Bases.Result<ValidateTokenResponseDto>> ValidateTokenAsync(ValidateTokenCommand command)
@@ -741,7 +735,7 @@ public sealed class AuthService : BaseResponseHandler, IAuthService
 
         if (string.IsNullOrWhiteSpace(command.JwtToken))
             return Application.Bases.Result<ValidateTokenResponseDto>.Failure(
-                HttpStatusCode.BadRequest, _localizer["TokenCanNotBeNullOrEmpty"]);
+                HttpStatusCode.BadRequest, Localizer["TokenCanNotBeNullOrEmpty"]);
 
         var claimsPrincipal = await _tokenService.ValidateToken(command.JwtToken);
 
@@ -749,6 +743,6 @@ public sealed class AuthService : BaseResponseHandler, IAuthService
         foreach (var claim in claimsPrincipal.Claims)
             response.Claims.Add(new ClaimsResponse() { ClaimType = claim.Type, ClaimValue = claim.Value });
 
-        return Application.Bases.Result<ValidateTokenResponseDto>.Success(response, _localizer["InvalidToken"]);
+        return Application.Bases.Result<ValidateTokenResponseDto>.Success(response, Localizer["InvalidToken"]);
     }
 }

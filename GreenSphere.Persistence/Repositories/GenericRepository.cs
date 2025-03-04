@@ -7,32 +7,32 @@ namespace GreenSphere.Persistence.Repositories;
 public class GenericRepository<T>(ApplicationDbContext context) : IGenericRepository<T>
     where T : BaseEntity
 {
-    protected readonly ApplicationDbContext context = context;
+    protected readonly ApplicationDbContext Context = context;
 
     public async Task<IEnumerable<T>> GetAllAsync()
-        => await context.Set<T>().ToListAsync();
+        => await Context.Set<T>().ToListAsync();
 
-    public async Task<T?> GetByIdAsync(Guid id) => await context.Set<T>().FindAsync(id);
+    public async Task<T?> GetByIdAsync(Guid id) => await Context.Set<T>().FindAsync(id);
 
     public async Task<T?> GetBySpecificationAsync(IBaseSpecification<T> specification)
-        => await SpecificationQueryEvaluator.BuildQuery(context.Set<T>(), specification).FirstOrDefaultAsync();
+        => await SpecificationQueryEvaluator.BuildQuery(Context.Set<T>(), specification).FirstOrDefaultAsync();
 
     public async Task<T?> GetBySpecificationAndIdAsync(IBaseSpecification<T> specification, Guid id)
-        => await SpecificationQueryEvaluator.BuildQuery(context.Set<T>(), specification).FirstOrDefaultAsync(e => e.Id == id);
+        => await SpecificationQueryEvaluator.BuildQuery(Context.Set<T>(), specification).FirstOrDefaultAsync(e => e.Id == id);
 
-    public void Create(T entity) => context.Set<T>().Add(entity);
+    public void Create(T entity) => Context.Set<T>().Add(entity);
 
-    public void Update(T entity) => context.Set<T>().Update(entity);
+    public void Update(T entity) => Context.Set<T>().Update(entity);
 
-    public void Delete(T entity) => context.Set<T>().Remove(entity);
-    public async Task<int> SaveChangesAsync() => await context.SaveChangesAsync();
+    public void Delete(T entity) => Context.Set<T>().Remove(entity);
+    public async Task<int> SaveChangesAsync() => await Context.SaveChangesAsync();
 
     public async Task<IEnumerable<T>> GetAllWithSpecificationAsync(IBaseSpecification<T> specification)
-        => await SpecificationQueryEvaluator.BuildQuery(context.Set<T>(), specification).ToListAsync();
+        => await SpecificationQueryEvaluator.BuildQuery(Context.Set<T>(), specification).ToListAsync();
 
 
     public async Task<int> GetCountWithSpecificationAsync(IBaseSpecification<T> specification)
-        => await SpecificationQueryEvaluator.BuildQuery(context.Set<T>(), specification).CountAsync();
+        => await SpecificationQueryEvaluator.BuildQuery(Context.Set<T>(), specification).CountAsync();
 
 
 }

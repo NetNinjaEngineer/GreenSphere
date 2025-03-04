@@ -1,4 +1,5 @@
-﻿using AutoMapper;
+﻿using System.Net;
+using AutoMapper;
 using FluentValidation;
 using GreenSphere.Application.Bases;
 using GreenSphere.Application.DTOs.Order;
@@ -12,7 +13,6 @@ using GreenSphere.Domain.Interfaces;
 using GreenSphere.Domain.Specifications;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Localization;
-using System.Net;
 
 namespace GreenSphere.Services.Services;
 

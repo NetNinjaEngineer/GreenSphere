@@ -1,4 +1,6 @@
-﻿using AutoMapper;
+﻿using System.Net;
+using System.Text;
+using AutoMapper;
 using FluentValidation;
 using GreenSphere.Application.Bases;
 using GreenSphere.Application.DTOs.Users;
@@ -13,8 +15,6 @@ using GreenSphere.Domain.Entities.Identity;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Localization;
-using System.Net;
-using System.Text;
 
 namespace GreenSphere.Services.Services;
 public sealed class UserService(
@@ -133,7 +133,7 @@ public sealed class UserService(
         if (user == null)
             return Result<bool>.Failure(HttpStatusCode.NotFound, DomainErrors.User.UserNotFound);
 
-        var storedCode = Encoding.UTF8.GetString(Convert.FromBase64String(user.Code));
+        var storedCode = Encoding.UTF8.GetString(Convert.FromBase64String(user.Code!));
 
         if (storedCode != command.Code || user.CodeExpiration < DateTimeOffset.Now)
             return Result<bool>.Failure(HttpStatusCode.BadRequest, DomainErrors.User.CodeExpired);

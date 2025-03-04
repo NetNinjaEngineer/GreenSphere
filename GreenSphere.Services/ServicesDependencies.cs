@@ -1,4 +1,5 @@
-﻿using GreenSphere.Application.Helpers;
+﻿using System.Text;
+using GreenSphere.Application.Helpers;
 using GreenSphere.Application.Interfaces.Services;
 using GreenSphere.Application.Interfaces.Services.Models;
 using GreenSphere.Services.Services;
@@ -6,7 +7,6 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.IdentityModel.Tokens;
-using System.Text;
 
 namespace GreenSphere.Services;
 public static class ServicesDependencies
@@ -73,7 +73,6 @@ public static class ServicesDependencies
         services.AddScoped<IOrderService, OrderService>();
 
         services.AddScoped<IAddressService, AddressService>();
-
 
         return services;
     }

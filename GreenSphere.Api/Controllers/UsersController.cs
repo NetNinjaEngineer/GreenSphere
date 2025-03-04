@@ -20,7 +20,6 @@ using MediatR;
 using Microsoft.AspNetCore.Mvc;
 
 namespace GreenSphere.Api.Controllers;
-[Guard]
 [ApiVersion(1.0)]
 [Route("api/v{ver:apiVersion}/users")]
 public class UsersController(IMediator mediator) : BaseApiController(mediator)
@@ -133,6 +132,4 @@ public class UsersController(IMediator mediator) : BaseApiController(mediator)
     [ProducesResponseType(typeof(Result<bool>), StatusCodes.Status403Forbidden)]
     public async Task<IActionResult> DeleteAddressAsync([FromRoute] Guid addressId)
         => CustomResult(await Mediator.Send(new DeleteAddressCommand { Id = addressId }));
-
-
 }
