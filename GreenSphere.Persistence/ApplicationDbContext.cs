@@ -2,6 +2,7 @@
 using GreenSphere.Domain.Entities.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
+using Category = GreenSphere.Domain.Entities.Category;
 
 namespace GreenSphere.Persistence;
 public class ApplicationDbContext(
@@ -16,6 +17,8 @@ public class ApplicationDbContext(
     public DbSet<FavouriteItem> FavouriteItems { get; set; }
     public DbSet<CustomerBasket> CustomerBaskets { get; set; }
     public DbSet<Address> Addresses { get; set; }
+    public DbSet<Short> Shorts { get; set; }
+    public DbSet<ShortCategory> ShortCategories { get; set; }
 
     protected override void OnModelCreating(ModelBuilder builder)
     {

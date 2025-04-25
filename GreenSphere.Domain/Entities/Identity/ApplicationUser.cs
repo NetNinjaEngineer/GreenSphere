@@ -15,4 +15,5 @@ public class ApplicationUser : IdentityUser
     public ICollection<Order> Orders { get; set; } = [];
     public List<RefreshToken>? RefreshTokens { get; set; }
     public ICollection<Address> Addresses { get; set; } = [];
+    public ICollection<Short> Shorts { get; set; } = [];
 }
