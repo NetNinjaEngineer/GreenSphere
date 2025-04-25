@@ -10,7 +10,7 @@ public sealed class FileService : IFileService
         if (file == null || file.Length == 0)
             return string.Empty;
 
-        var uniqueFileName = $"{DateTimeOffset.Now:yyyyMMdd_HHmmssfff}_{file.FileName}";
+        var uniqueFileName = $"{DateTimeOffset.Now:yyyyMMdd_HHmmssfff}_{file.FileName.Trim()}";
 
         var directoryPath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "Uploads", locationFolder);
 
@@ -22,7 +22,7 @@ public sealed class FileService : IFileService
         await using var fileStream = new FileStream(filePath, FileMode.CreateNew);
         await file.CopyToAsync(fileStream);
 
-        return uniqueFileName;
+        return Uri.EscapeDataString(uniqueFileName);
     }
 
     public bool DeleteFileFromPath(string filePath, string locationFolder)

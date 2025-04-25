@@ -1,0 +1,62 @@
+﻿[
+    {
+        "Id": "7CE97DA1-A415-42D7-B809-48DD895A8136",
+        "NameEn": "Hydroponic Basics",
+        "NameAr": "أساسيات الزراعة المائية",
+        "Description": "Introduction to hydroponics and basic concepts"
+    },
+    {
+        "Id": "7112D70A-35D6-4F9E-9137-B1C71D776E39",
+        "NameEn": "System Setup",
+        "NameAr": "إعداد النظام",
+        "Description": "How to set up different hydroponic systems"
+    },
+    {
+        "Id": "7075270E-9228-4977-A105-4C29CD1F79D6",
+        "NameEn": "Crop Selection",
+        "NameAr": "اختيار المحاصيل",
+        "Description": "Choosing the right plants for your hydroponic system"
+    },
+    {
+        "Id": "344CCBE3-8A32-4DCA-AE9B-115D5794E756",
+        "NameEn": "Nutrient Solutions",
+        "NameAr": "المحاليل الغذائية",
+        "Description": "Creating and managing nutrient solutions"
+    },
+    {
+        "Id": "F782F726-763A-4C78-9D36-E2481D759BC2",
+        "NameEn": "Water Management",
+        "NameAr": "إدارة المياه",
+        "Description": "Managing water quality and conservation"
+    },
+    {
+        "Id": "662B9FCB-D376-40C0-9B3B-9B113131A624",
+        "NameEn": "Problem Solving",
+        "NameAr": "حل المشكلات",
+        "Description": "Troubleshooting common hydroponic issues"
+    },
+    {
+        "Id": "49061236-C28A-42BF-9B15-8AA74AE14C55",
+        "NameEn": "Advanced Techniques",
+        "NameAr": "تقنيات متقدمة",
+        "Description": "Advanced hydroponic methods and technologies"
+    },
+    {
+        "Id": "F79230BF-3F4A-481E-8E01-22F6168221E0",
+        "NameEn": "Commercial Applications",
+        "NameAr": "التطبيقات التجارية",
+        "Description": "Commercial scale hydroponic farming"
+    },
+    {
+        "Id": "2DDF1032-1836-42DA-ABBC-F23AE9902AE8",
+        "NameEn": "Sustainable Practices",
+        "NameAr": "الممارسات المستدامة",
+        "Description": "Environmentally friendly hydroponic methods"
+    },
+    {
+        "Id": "CDADA04A-D3DE-40EB-951A-3B5BEBF3F31B",
+        "NameEn": "Community & Education",
+        "NameAr": "المجتمع والتعليم",
+        "Description": "Community projects and educational resources"
+    }
+]

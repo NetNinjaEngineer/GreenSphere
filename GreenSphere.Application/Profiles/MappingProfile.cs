@@ -1,18 +1,20 @@
-﻿using AutoMapper;
+﻿using System.Globalization;
+using AutoMapper;
 using GreenSphere.Application.DTOs.Basket;
 using GreenSphere.Application.DTOs.Category;
 using GreenSphere.Application.DTOs.Favourite;
 using GreenSphere.Application.DTOs.Order;
 using GreenSphere.Application.DTOs.Products;
 using GreenSphere.Application.DTOs.Ratings;
+using GreenSphere.Application.DTOs.Shorts;
 using GreenSphere.Application.DTOs.Users;
 using GreenSphere.Application.Features.Auth.Commands.Register;
 using GreenSphere.Application.Features.Categories.Queries.GetCategoryWithProducts;
 using GreenSphere.Application.Features.Products.Commands.CreateProduct;
+using GreenSphere.Application.Features.Shorts.Commands.CreateShort;
 using GreenSphere.Application.Resolvers;
 using GreenSphere.Domain.Entities;
 using GreenSphere.Domain.Entities.Identity;
-using System.Globalization;
 
 namespace GreenSphere.Application.Profiles;
 public sealed class MappingProfile : Profile
@@ -123,5 +125,16 @@ public sealed class MappingProfile : Profile
             .ForMember(dest => dest.FavouriteItems, opt => opt.MapFrom(src => src.Items));
 
 
+        CreateMap<ShortCategory, ShortCategoryDto>()
+            .ForMember(dest => dest.Name,
+                opt => opt.MapFrom(src => CultureInfo.CurrentCulture.Name == "ar-EG" ? src.NameAr : src.NameEn));
+
+        CreateMap<CreateShortCommand, Short>();
+
+        CreateMap<Short, ShortDto>()
+            .ForMember(dest => dest.Creator,
+                opt => opt.MapFrom(src => string.Concat(src.Creator.FirstName, " ", src.Creator.LastName)))
+            .ForMember(dest => dest.VideoUrl, opt => opt.MapFrom<ShortUrlValueResolver>())
+            .ForMember(dest => dest.ThumbnailUrl, opt => opt.MapFrom<ThumbnailUrlValueResolver>());
     }
 }

@@ -74,6 +74,8 @@ public static class ServicesDependencies
 
         services.AddScoped<IAddressService, AddressService>();
 
+        services.AddScoped<IShortsService, ShortsService>();
+
         return services;
     }
 }

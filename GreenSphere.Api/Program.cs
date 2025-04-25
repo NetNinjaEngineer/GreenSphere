@@ -18,7 +18,11 @@ builder.Services.AddInfrastructureDependencies()
 
 var app = builder.Build();
 
-app.UseMiddleware<MigrateDatabaseMiddleware>();
+//app.UseMiddleware<MigrateDatabaseMiddleware>();
+
+app.UseSwaggerDocumentation();
+
+app.UseMiddleware<JwtValidationMiddleware>();
 
 app.UseGlobalExceptionHandler();
 
@@ -32,11 +36,7 @@ app.UseAuthentication();
 
 app.UseAuthorization();
 
-app.UseMiddleware<JwtValidationMiddleware>();
-
 app.UseLocalization();
-
-app.UseSwaggerDocumentation();
 
 app.MapControllers();
 

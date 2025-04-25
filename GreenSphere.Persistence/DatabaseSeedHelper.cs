@@ -1,5 +1,5 @@
-﻿using GreenSphere.Domain.Entities;
-using System.Text.Json;
+﻿using System.Text.Json;
+using GreenSphere.Domain.Entities;
 
 namespace GreenSphere.Persistence;
 public static class DatabaseSeedHelper
@@ -66,5 +66,17 @@ public static class DatabaseSeedHelper
                 await context.SaveChangesAsync();
             }
         }
+
+        if (!context.ShortCategories.Any())
+        {
+            var shortCategoriesJson = await File.ReadAllTextAsync($"..//GreenSphere.Persistence//DataSeed//shortCategories.json");
+            var shortCategories = JsonSerializer.Deserialize<IEnumerable<ShortCategory>>(shortCategoriesJson, Options);
+            if (shortCategories != null)
+            {
+                await context.ShortCategories.AddRangeAsync(shortCategories);
+                await context.SaveChangesAsync();
+            }
+        }
+
     }
 }

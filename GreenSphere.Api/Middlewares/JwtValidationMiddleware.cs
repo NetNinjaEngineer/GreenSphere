@@ -1,7 +1,7 @@
-﻿using GreenSphere.Application.Helpers;
-using System.IdentityModel.Tokens.Jwt;
+﻿using System.IdentityModel.Tokens.Jwt;
 using System.Security.Cryptography;
 using System.Text;
+using GreenSphere.Application.Helpers;
 
 namespace GreenSphere.Api.Middlewares;
 
@@ -10,6 +10,7 @@ public sealed class JwtValidationMiddleware(RequestDelegate next)
     public async Task InvokeAsync(HttpContext context)
     {
         var jwtToken = context.Request.Headers.Authorization.ToString().Replace("Bearer ", string.Empty);
+        var logger = context.RequestServices.GetRequiredService<ILogger<JwtValidationMiddleware>>();
 
         if (!string.IsNullOrEmpty(jwtToken))
         {
@@ -47,9 +48,12 @@ public sealed class JwtValidationMiddleware(RequestDelegate next)
                     return;
                 }
             }
-            catch (Exception)
+            catch (Exception ex)
             {
                 context.Response.StatusCode = StatusCodes.Status400BadRequest;
+
+                logger.LogError("Token validation error: {0}", ex.Message);
+
                 await context.Response.WriteAsJsonAsync(new GlobalErrorResponse
                 {
                     Type = "Bad Request",
