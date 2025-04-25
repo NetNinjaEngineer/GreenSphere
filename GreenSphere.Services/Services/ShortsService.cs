@@ -1,5 +1,6 @@
 ﻿using System.Net;
 using AutoMapper;
+using FluentValidation;
 using GreenSphere.Application.Bases;
 using GreenSphere.Application.DTOs.Shorts;
 using GreenSphere.Application.Features.Shorts.Commands.CreateShort;
@@ -68,13 +69,23 @@ public sealed class ShortsService(
         return Result<IReadOnlyList<ShortDto>>.Success(mappedShorts);
     }
 
-    public Task<Result<ShortDto>> GetShortByIdAsync(Guid id)
+    public async Task<Result<ShortDto>> GetShortByIdAsync(Guid id)
     {
-        throw new NotImplementedException();
+        var existedShort = await shortRepository.GetBySpecificationAsync(
+            new ShortWithDetailsSpecification(id));
+
+        if (existedShort == null)
+            return Result<ShortDto>.Failure(HttpStatusCode.NotFound);
+
+        var mappedShort = mapper.Map<ShortDto>(existedShort);
+
+        return Result<ShortDto>.Success(mappedShort);
     }
 
     public async Task<Result<Guid>> CreateShortAsync(CreateShortCommand command)
     {
+        await new CreateShortCommandValidator().ValidateAndThrowAsync(command, CancellationToken.None);
+
         var existedCategory = await categoryRepository.GetByIdAsync(command.ShortCategoryId);
         if (existedCategory == null)
             return Result<Guid>.Failure(HttpStatusCode.BadRequest);

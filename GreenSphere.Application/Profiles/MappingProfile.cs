@@ -135,6 +135,7 @@ public sealed class MappingProfile : Profile
             .ForMember(dest => dest.Creator,
                 opt => opt.MapFrom(src => string.Concat(src.Creator.FirstName, " ", src.Creator.LastName)))
             .ForMember(dest => dest.VideoUrl, opt => opt.MapFrom<ShortUrlValueResolver>())
-            .ForMember(dest => dest.ThumbnailUrl, opt => opt.MapFrom<ThumbnailUrlValueResolver>());
+            .ForMember(dest => dest.ThumbnailUrl, opt => opt.MapFrom<ThumbnailUrlValueResolver>())
+            .ForMember(dest => dest.Category, opt => opt.MapFrom(src => CultureInfo.CurrentCulture.Name == "ar-EG" ? src.ShortCategory.NameAr : src.ShortCategory.NameEn));
     }
 }
