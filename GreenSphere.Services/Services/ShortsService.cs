@@ -1,5 +1,4 @@
-﻿using System.Net;
-using AutoMapper;
+﻿using AutoMapper;
 using FluentValidation;
 using GreenSphere.Application.Bases;
 using GreenSphere.Application.DTOs.Shorts;
@@ -11,6 +10,7 @@ using GreenSphere.Application.Interfaces.Services;
 using GreenSphere.Domain.Entities;
 using GreenSphere.Domain.Interfaces;
 using GreenSphere.Domain.Specifications;
+using System.Net;
 
 namespace GreenSphere.Services.Services;
 
@@ -111,10 +111,64 @@ public sealed class ShortsService(
         return Result<Guid>.Success(mappedShort.Id);
     }
 
-    public Task<Result<bool>> UpdateShortAsync(UpdateShortCommand command)
+    public async Task<Result<bool>> UpdateShortAsync(UpdateShortCommand command)
     {
-        throw new NotImplementedException();
+        await new UpdateShortCommandValidator().ValidateAndThrowAsync(command, CancellationToken.None);
+
+        var existingShort = await shortRepository.GetByIdAsync(command.Id);
+        if (existingShort == null)
+            return Result<bool>.Failure(HttpStatusCode.NotFound, "Short not found");
+
+        if (existingShort.CreatorId != currentUser.Id)
+            return Result<bool>.Failure(HttpStatusCode.Forbidden, "You don't have permission to update this short");
+
+        if (command.ShortCategoryId.HasValue)
+        {
+            var existedCategory = await categoryRepository.GetByIdAsync(command.ShortCategoryId.Value);
+            if (existedCategory == null)
+                return Result<bool>.Failure(HttpStatusCode.BadRequest, "Invalid category");
+        }
+
+        if (command.Thumbnail is not null)
+        {
+            if (!string.IsNullOrEmpty(existingShort.ThumbnailUrl))
+            {
+                fileService.DeleteFileFromPath(existingShort.ThumbnailUrl, "Images");
+            }
+
+            existingShort.ThumbnailUrl = await fileService.UploadFileAsync(command.Thumbnail, "Images");
+        }
+
+        if (command.Video is not null)
+        {
+            if (!string.IsNullOrEmpty(existingShort.VideoUrl))
+            {
+                fileService.DeleteFileFromPath(existingShort.VideoUrl, "Shorts");
+            }
+
+            existingShort.VideoUrl = await fileService.UploadFileAsync(command.Video, "Shorts");
+        }
+
+        if (!string.IsNullOrEmpty(command.Title))
+            existingShort.Title = command.Title;
+
+        if (command.Description != null)
+            existingShort.Description = command.Description;
+
+        if (command.IsFeatured.HasValue)
+            existingShort.IsFeatured = command.IsFeatured.Value;
+
+        if (command.ShortCategoryId.HasValue)
+            existingShort.ShortCategoryId = command.ShortCategoryId.Value;
+
+        shortRepository.Update(existingShort);
+        var updated = await shortRepository.SaveChangesAsync();
+
+        return Result<bool>.Success(updated > 0, updated > 0 ? "Short updated successfully" : "No changes were made");
     }
+
+
+
 
     public async Task<Result<bool>> DeleteShortAsync(Guid id)
     {

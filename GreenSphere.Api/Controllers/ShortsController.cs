@@ -5,6 +5,7 @@ using GreenSphere.Application.Bases;
 using GreenSphere.Application.DTOs.Shorts;
 using GreenSphere.Application.Features.Shorts.Commands.CreateShort;
 using GreenSphere.Application.Features.Shorts.Commands.DeleteShort;
+using GreenSphere.Application.Features.Shorts.Commands.UpdateShort;
 using GreenSphere.Application.Features.Shorts.Queries.GetAllShorts;
 using GreenSphere.Application.Features.Shorts.Queries.GetShort;
 using GreenSphere.Application.Helpers;
@@ -17,7 +18,7 @@ namespace GreenSphere.Api.Controllers;
 [Route("api/v{apiVersion:apiVersion}/shorts")]
 public class ShortsController(IMediator mediator) : BaseApiController(mediator)
 {
-    [Guard(roles: [Constants.Roles.Admin])]
+    //  [Guard(roles: [Constants.Roles.Admin])]
     [HttpPost]
     [ProducesResponseType<Result<Guid>>(StatusCodes.Status200OK)]
     [ProducesResponseType<Result<Guid>>(StatusCodes.Status400BadRequest)]
@@ -41,4 +42,13 @@ public class ShortsController(IMediator mediator) : BaseApiController(mediator)
     [ProducesResponseType<Result<bool>>(StatusCodes.Status404NotFound)]
     public async Task<IActionResult> DeleteShortAsync([FromRoute] Guid id)
         => CustomResult(await Mediator.Send(new DeleteShortCommand() { Id = id }));
+
+    [Guard(roles: [Constants.Roles.Admin])]
+    [HttpPut("{id:guid}")]
+    [ProducesResponseType<Result<bool>>(StatusCodes.Status200OK)]
+    [ProducesResponseType<Result<bool>>(StatusCodes.Status400BadRequest)]
+    [ProducesResponseType<Result<bool>>(StatusCodes.Status404NotFound)]
+    public async Task<IActionResult> UpdateAsync([FromRoute] UpdateShortCommand command)
+        => CustomResult(await Mediator.Send(command));
+
 }
