@@ -3,7 +3,9 @@ using GreenSphere.Api.Controllers.Base;
 using GreenSphere.Application.Attributes;
 using GreenSphere.Application.Bases;
 using GreenSphere.Application.DTOs.Shorts;
+using GreenSphere.Application.Features.ShortCategories.Commands.CreateShortCategory;
 using GreenSphere.Application.Features.Shorts.Commands.DeleteShortCategory;
+using GreenSphere.Application.Features.Shorts.Commands.UpdateShortCategory;
 using GreenSphere.Application.Features.Shorts.Queries.GetAllShortCategories;
 using GreenSphere.Application.Features.Shorts.Queries.GetShortCategory;
 using GreenSphere.Application.Helpers;
@@ -32,4 +34,27 @@ public class ShortCategoriesController(IMediator mediator) : BaseApiController(m
     [ProducesResponseType<Result<bool>>(StatusCodes.Status404NotFound)]
     public async Task<IActionResult> DeleteCategoryAsync([FromRoute] Guid id)
         => CustomResult(await Mediator.Send(new DeleteShortCategoryCommand { CategoryId = id }));
+
+    [Guard(roles: [Constants.Roles.Admin])]
+    [HttpPost]
+    [ProducesResponseType<Result<ShortCategoryDto>>(StatusCodes.Status200OK)]
+    [ProducesResponseType<Result<ShortCategoryDto>>(StatusCodes.Status400BadRequest)]
+    [ProducesResponseType<Result<ShortCategoryDto>>(StatusCodes.Status409Conflict)]
+    public async Task<IActionResult> CreateCategoryAsync([FromBody] CreateShortCategoryCommand command)
+    => CustomResult(await Mediator.Send(command));
+
+
+    [Guard(roles: [Constants.Roles.Admin])]
+    [HttpPut("{id:guid}")]
+    [ProducesResponseType<Result<bool>>(StatusCodes.Status200OK)]
+    [ProducesResponseType<Result<bool>>(StatusCodes.Status400BadRequest)]
+    [ProducesResponseType<Result<bool>>(StatusCodes.Status404NotFound)]
+    [ProducesResponseType<Result<bool>>(StatusCodes.Status409Conflict)]
+    public async Task<IActionResult> UpdateCategoryAsync(
+    [FromRoute] Guid id,
+    [FromBody] UpdateShortCategoryCommand command)
+    {
+        command.Id = id;
+        return CustomResult(await Mediator.Send(command));
+    }
 }

@@ -18,7 +18,7 @@ namespace GreenSphere.Api.Controllers;
 [Route("api/v{apiVersion:apiVersion}/shorts")]
 public class ShortsController(IMediator mediator) : BaseApiController(mediator)
 {
-    //  [Guard(roles: [Constants.Roles.Admin])]
+    [Guard(roles: [Constants.Roles.Admin])]
     [HttpPost]
     [ProducesResponseType<Result<Guid>>(StatusCodes.Status200OK)]
     [ProducesResponseType<Result<Guid>>(StatusCodes.Status400BadRequest)]

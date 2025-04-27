@@ -2,11 +2,12 @@
 using FluentValidation;
 using GreenSphere.Application.Bases;
 using GreenSphere.Application.DTOs.Shorts;
+using GreenSphere.Application.Features.ShortCategories.Commands.CreateShortCategory;
 using GreenSphere.Application.Features.Shorts.Commands.CreateShort;
-using GreenSphere.Application.Features.Shorts.Commands.CreateShortCategory;
 using GreenSphere.Application.Features.Shorts.Commands.UpdateShort;
 using GreenSphere.Application.Features.Shorts.Commands.UpdateShortCategory;
 using GreenSphere.Application.Interfaces.Services;
+using GreenSphere.Application.Specifications.ShortCategories;
 using GreenSphere.Domain.Entities;
 using GreenSphere.Domain.Interfaces;
 using GreenSphere.Domain.Specifications;
@@ -40,14 +41,72 @@ public sealed class ShortsService(
         return Result<ShortCategoryDto>.Success(mappedCategory);
     }
 
-    public Task<Result<ShortCategoryDto>> CreateCategoryAsync(CreateShortCategoryCommand command)
+    public async Task<Result<ShortCategoryDto>> CreateCategoryAsync(CreateShortCategoryCommand command)
     {
-        throw new NotImplementedException();
+        await new CreateShortCategoryCommandValidator().ValidateAndThrowAsync(command, CancellationToken.None);
+
+        var specification = new CheckDuplicateCategorySpecification(
+            nameEn: command.NameEn,
+            nameAr: command.NameAr);
+
+        var existingCategory = await categoryRepository.GetBySpecificationAsync(specification);
+
+        if (existingCategory != null)
+        {
+            return Result<ShortCategoryDto>.Failure(
+                HttpStatusCode.Conflict,
+                "Category with the same name already exists");
+        }
+
+        var mappedCategory = mapper.Map<ShortCategory>(command);
+        mappedCategory.Id = Guid.NewGuid();
+        mappedCategory.CreatedAt = DateTimeOffset.Now;
+
+        categoryRepository.Create(mappedCategory);
+        await categoryRepository.SaveChangesAsync();
+
+        var categoryDto = mapper.Map<ShortCategoryDto>(mappedCategory);
+
+        return Result<ShortCategoryDto>.Success(categoryDto, "Category created successfully");
     }
 
-    public Task<Result<bool>> UpdateCategoryAsync(UpdateShortCategoryCommand command)
+    public async Task<Result<bool>> UpdateCategoryAsync(UpdateShortCategoryCommand command)
     {
-        throw new NotImplementedException();
+        await new UpdateShortCategoryCommandValidator().ValidateAndThrowAsync(command, CancellationToken.None);
+
+        var existingCategory = await categoryRepository.GetByIdAsync(command.Id);
+        if (existingCategory == null)
+            return Result<bool>.Failure(HttpStatusCode.NotFound, "Category not found");
+
+        if (!string.IsNullOrEmpty(command.NameEn) || !string.IsNullOrEmpty(command.NameAr))
+        {
+            var newNameEn = command.NameEn ?? existingCategory.NameEn;
+            var newNameAr = command.NameAr ?? existingCategory.NameAr;
+
+            var duplicateSpec = new CheckDuplicateCategorySpecification(
+                nameEn: newNameEn,
+                nameAr: newNameAr);
+
+            var duplicateCategory = await categoryRepository.GetBySpecificationAsync(duplicateSpec);
+            if (duplicateCategory != null && duplicateCategory.Id != command.Id)
+                return Result<bool>.Failure(HttpStatusCode.Conflict, "Category with this name already exists");
+        }
+
+        if (!string.IsNullOrEmpty(command.NameEn))
+            existingCategory.NameEn = command.NameEn;
+
+        if (!string.IsNullOrEmpty(command.NameAr))
+            existingCategory.NameAr = command.NameAr;
+
+        if (!string.IsNullOrEmpty(command.Description))
+            existingCategory.Description = command.Description;
+
+        existingCategory.UpdatedAt = DateTimeOffset.Now;
+
+        categoryRepository.Update(existingCategory);
+        var updated = await categoryRepository.SaveChangesAsync();
+
+        return Result<bool>.Success(updated > 0, updated > 0 ? "Category updated successfully" : "No changes were made");
     }
 
     public async Task<Result<bool>> DeleteCategoryAsync(Guid id)
