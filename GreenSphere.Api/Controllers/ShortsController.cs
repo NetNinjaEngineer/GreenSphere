@@ -48,7 +48,8 @@ public class ShortsController(IMediator mediator) : BaseApiController(mediator)
     [ProducesResponseType<Result<bool>>(StatusCodes.Status200OK)]
     [ProducesResponseType<Result<bool>>(StatusCodes.Status400BadRequest)]
     [ProducesResponseType<Result<bool>>(StatusCodes.Status404NotFound)]
-    public async Task<IActionResult> UpdateAsync([FromForm] UpdateShortCommand command)
-        => CustomResult(await Mediator.Send(command));
+    public async Task<IActionResult> UpdateAsync(
+        [FromRoute] Guid id, [FromForm] ShortUpdateDto dto)
+        => CustomResult(await Mediator.Send(new UpdateShortCommand(id, dto.Title, dto.Description, dto.Video, dto.Thumbnail, dto.IsFeatured, dto.ShortCategoryId)));
 
 }

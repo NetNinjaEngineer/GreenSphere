@@ -50,11 +50,6 @@ public class ShortCategoriesController(IMediator mediator) : BaseApiController(m
     [ProducesResponseType<Result<bool>>(StatusCodes.Status400BadRequest)]
     [ProducesResponseType<Result<bool>>(StatusCodes.Status404NotFound)]
     [ProducesResponseType<Result<bool>>(StatusCodes.Status409Conflict)]
-    public async Task<IActionResult> UpdateCategoryAsync(
-    [FromRoute] Guid id,
-    [FromBody] UpdateShortCategoryCommand command)
-    {
-        command.Id = id;
-        return CustomResult(await Mediator.Send(command));
-    }
+    public async Task<IActionResult> UpdateCategoryAsync([FromRoute] Guid id, [FromBody] ShortCategoryUpdateDto dto)
+        => CustomResult(await Mediator.Send(new UpdateShortCategoryCommand { Id = id, NameAr = dto.NameAr, NameEn = dto.NameEn, Description = dto.Description }));
 }
