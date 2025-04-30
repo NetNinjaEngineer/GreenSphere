@@ -1,12 +1,7 @@
 ﻿using GreenSphere.Domain.Entities;
 using GreenSphere.Domain.Utils;
 
-namespace GreenSphere.Application.Specifications.ShortCategories;
+namespace GreenSphere.Domain.Specifications;
 
-public class CheckDuplicateCategorySpecification : BaseSpecification<ShortCategory>
-{
-    public CheckDuplicateCategorySpecification(string nameEn, string nameAr)
-        : base(c => c.NameEn == nameEn || c.NameAr == nameAr)
-    {
-    }
-}
+public class CheckDuplicateCategorySpecification(string nameEn, string nameAr)
+    : BaseSpecification<ShortCategory>(c => c.NameEn == nameEn || c.NameAr == nameAr);

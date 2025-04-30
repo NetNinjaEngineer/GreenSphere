@@ -1,4 +1,5 @@
-﻿using AutoMapper;
+﻿using System.Net;
+using AutoMapper;
 using FluentValidation;
 using GreenSphere.Application.Bases;
 using GreenSphere.Application.DTOs.Shorts;
@@ -7,11 +8,9 @@ using GreenSphere.Application.Features.Shorts.Commands.CreateShort;
 using GreenSphere.Application.Features.Shorts.Commands.UpdateShort;
 using GreenSphere.Application.Features.Shorts.Commands.UpdateShortCategory;
 using GreenSphere.Application.Interfaces.Services;
-using GreenSphere.Application.Specifications.ShortCategories;
 using GreenSphere.Domain.Entities;
 using GreenSphere.Domain.Interfaces;
 using GreenSphere.Domain.Specifications;
-using System.Net;
 
 namespace GreenSphere.Services.Services;
 
