@@ -8,7 +8,8 @@ public class CreateShortCategoryCommandValidator : AbstractValidator<CreateShort
     {
         RuleFor(x => x.NameAr)
             .NotEmpty().WithMessage("Arabic name is required")
-            .MaximumLength(100).WithMessage("Arabic name cannot exceed 100 characters");
+            .MaximumLength(100).WithMessage("Arabic name cannot exceed 100 characters")
+            .Matches(@"^[\u0600-\u06FF\s]+$").WithMessage("Arabic name must contain only Arabic letters.");
 
         RuleFor(x => x.NameEn)
             .NotEmpty().WithMessage("English name is required")
