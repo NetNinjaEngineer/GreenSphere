@@ -2,7 +2,7 @@
 using GreenSphere.Application.DTOs.Shorts;
 using MediatR;
 
-namespace GreenSphere.Application.Features.ShortCategories.Commands.CreateShortCategory;
+namespace GreenSphere.Application.Features.Shorts.Commands.CreateShortCategory;
 
 public sealed class CreateShortCategoryCommand : IRequest<Result<ShortCategoryDto>>
 {

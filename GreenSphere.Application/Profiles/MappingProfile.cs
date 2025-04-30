@@ -1,4 +1,5 @@
-﻿using AutoMapper;
+﻿using System.Globalization;
+using AutoMapper;
 using GreenSphere.Application.DTOs.Basket;
 using GreenSphere.Application.DTOs.Category;
 using GreenSphere.Application.DTOs.Favourite;
@@ -10,12 +11,11 @@ using GreenSphere.Application.DTOs.Users;
 using GreenSphere.Application.Features.Auth.Commands.Register;
 using GreenSphere.Application.Features.Categories.Queries.GetCategoryWithProducts;
 using GreenSphere.Application.Features.Products.Commands.CreateProduct;
-using GreenSphere.Application.Features.ShortCategories.Commands.CreateShortCategory;
 using GreenSphere.Application.Features.Shorts.Commands.CreateShort;
+using GreenSphere.Application.Features.Shorts.Commands.CreateShortCategory;
 using GreenSphere.Application.Resolvers;
 using GreenSphere.Domain.Entities;
 using GreenSphere.Domain.Entities.Identity;
-using System.Globalization;
 
 namespace GreenSphere.Application.Profiles;
 public sealed class MappingProfile : Profile

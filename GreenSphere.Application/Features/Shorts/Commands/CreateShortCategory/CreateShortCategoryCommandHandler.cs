@@ -1,10 +1,9 @@
-﻿// CreateShortCategoryCommandHandler.cs
-using GreenSphere.Application.Bases;
+﻿using GreenSphere.Application.Bases;
 using GreenSphere.Application.DTOs.Shorts;
 using GreenSphere.Application.Interfaces.Services;
 using MediatR;
 
-namespace GreenSphere.Application.Features.ShortCategories.Commands.CreateShortCategory;
+namespace GreenSphere.Application.Features.Shorts.Commands.CreateShortCategory;
 
 public sealed class CreateShortCategoryCommandHandler(IShortsService service)
     : IRequestHandler<CreateShortCategoryCommand, Result<ShortCategoryDto>>

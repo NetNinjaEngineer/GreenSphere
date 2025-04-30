@@ -1,6 +1,6 @@
 ﻿using FluentValidation;
 
-namespace GreenSphere.Application.Features.ShortCategories.Commands.CreateShortCategory;
+namespace GreenSphere.Application.Features.Shorts.Commands.CreateShortCategory;
 
 public class CreateShortCategoryCommandValidator : AbstractValidator<CreateShortCategoryCommand>
 {

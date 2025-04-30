@@ -3,7 +3,7 @@ using GreenSphere.Api.Controllers.Base;
 using GreenSphere.Application.Attributes;
 using GreenSphere.Application.Bases;
 using GreenSphere.Application.DTOs.Shorts;
-using GreenSphere.Application.Features.ShortCategories.Commands.CreateShortCategory;
+using GreenSphere.Application.Features.Shorts.Commands.CreateShortCategory;
 using GreenSphere.Application.Features.Shorts.Commands.DeleteShortCategory;
 using GreenSphere.Application.Features.Shorts.Commands.UpdateShortCategory;
 using GreenSphere.Application.Features.Shorts.Queries.GetAllShortCategories;
