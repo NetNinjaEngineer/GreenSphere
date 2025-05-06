@@ -5,12 +5,12 @@ namespace GreenSphere.Domain.Specifications;
 
 public sealed class RewardsSpecification : BaseSpecification<Product>
 {
-    public RewardsSpecification() : base(p => p.IsReward && p.IsActive && p.StockQuantity > 0)
+    public RewardsSpecification() : base(p => p.PointsCost != null && p.PointsCost > 0 && p.IsActive && p.StockQuantity > 0)
     {
-        AddOrderBy(p => p.PointsCost.HasValue ? p.PointsCost : false);
+        AddOrderBy(p => p.PointsCost!);
     }
 
-    public RewardsSpecification(Guid productId) : base(p => p.IsReward && p.Id == productId)
+    public RewardsSpecification(Guid productId) : base(p => p.PointsCost != null && p.PointsCost > 0 && p.Id == productId)
     {
     }
 }

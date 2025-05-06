@@ -18,7 +18,7 @@ builder.Services.AddInfrastructureDependencies()
 
 var app = builder.Build();
 
-app.UseMiddleware<MigrateDatabaseMiddleware>();
+//app.UseMiddleware<MigrateDatabaseMiddleware>();
 
 app.UseSwaggerDocumentation();
 
