@@ -15,6 +15,7 @@ using GreenSphere.Domain.Entities.Identity;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Localization;
+using Microsoft.Extensions.Logging;
 
 namespace GreenSphere.Services.Services;
 public sealed class UserService(
@@ -23,7 +24,8 @@ public sealed class UserService(
     IConfiguration configuration,
     IMapper mapper,
     IStringLocalizer<UserService> localizer,
-    UserManager<ApplicationUser> userManager) : IUserService
+    UserManager<ApplicationUser> userManager,
+    ILogger<UserService> logger) : IUserService
 {
     public async Task<Result<UserProfileDto>> GetUserProfileAsync()
     {
@@ -166,4 +168,15 @@ public sealed class UserService(
 
     }
 
+    public async Task<Result<bool>> DeleteMyAccountAsync()
+    {
+        var user = await userManager.FindByEmailAsync(currentUser.Email);
+        if (user == null) return Result<bool>.Failure(HttpStatusCode.BadRequest);
+        var result = await userManager.DeleteAsync(user);
+        if (result.Succeeded) return Result<bool>.Success(true);
+        var error = result.Errors.Select(e => e.Description).FirstOrDefault();
+        logger.LogError($"Failed to delete the user account: {error}");
+        return Result<bool>.Failure(HttpStatusCode.BadRequest);
+
+    }
 }

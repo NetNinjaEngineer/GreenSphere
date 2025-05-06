@@ -6,6 +6,7 @@ using GreenSphere.Application.DTOs.Users;
 using GreenSphere.Application.Features.Users.Commands.ChangeUserEmail;
 using GreenSphere.Application.Features.Users.Commands.ChangeUserPassword;
 using GreenSphere.Application.Features.Users.Commands.CreateAddress;
+using GreenSphere.Application.Features.Users.Commands.DeleteAccount;
 using GreenSphere.Application.Features.Users.Commands.DeleteAddress;
 using GreenSphere.Application.Features.Users.Commands.EditUserProfile;
 using GreenSphere.Application.Features.Users.Commands.SetMainAddress;
@@ -132,4 +133,11 @@ public class UsersController(IMediator mediator) : BaseApiController(mediator)
     [ProducesResponseType(typeof(Result<bool>), StatusCodes.Status403Forbidden)]
     public async Task<IActionResult> DeleteAddressAsync([FromRoute] Guid addressId)
         => CustomResult(await Mediator.Send(new DeleteAddressCommand { Id = addressId }));
+
+    [Guard]
+    [HttpDelete("me/delete-account")]
+    [ProducesResponseType(typeof(Result<bool>), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(Result<bool>), StatusCodes.Status400BadRequest)]
+    public async Task<IActionResult> DeleteAccountAsync()
+        => CustomResult(await Mediator.Send(new DeleteAccountCommand()));
 }

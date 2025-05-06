@@ -24,6 +24,7 @@ using GreenSphere.Application.Features.Auth.Commands.Verify2FaCode;
 using GreenSphere.Application.Helpers;
 using GreenSphere.Application.Interfaces.Services;
 using GreenSphere.Application.Interfaces.Services.Models;
+using GreenSphere.Domain.Entities;
 using GreenSphere.Domain.Entities.Identity;
 using GreenSphere.Domain.Enumerations;
 using GreenSphere.Persistence;
@@ -412,6 +413,16 @@ public sealed class AuthService : BaseResponseHandler, IAuthService
         await registerCommandValidator.ValidateAndThrowAsync(command);
 
         var user = _mapper.Map<ApplicationUser>(command);
+        user.PointsHistory.Add(
+            new UserPoints
+            {
+                Id = Guid.NewGuid(),
+                ActivityType = ActivityType.Gift,
+                EarnedDate = DateTimeOffset.Now,
+                Points = 100,
+                IsSpent = false,
+                UserId = user.Id
+            });
 
         var createResult = await _userManager.CreateAsync(user, command.Password);
 
@@ -422,6 +433,8 @@ public sealed class AuthService : BaseResponseHandler, IAuthService
         }
 
         await _userManager.AddToRoleAsync(user, Constants.Roles.User);
+
+
 
         return Success(SignUpResponseDto.ToResponse(Guid.Parse(user.Id)));
     }

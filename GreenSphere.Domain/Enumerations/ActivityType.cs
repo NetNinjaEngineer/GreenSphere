@@ -2,5 +2,6 @@
 
 public enum ActivityType
 {
-    Purchase
+    Purchase = 1,
+    Gift
 }

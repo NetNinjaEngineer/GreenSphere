@@ -13,4 +13,5 @@ public interface IUserService
     Task<Result<bool>> ChangeUserEmailAsync(ChangeUserEmailCommand command);
     Task<Result<bool>> VerifyChangeUserEmailAsync(VerifyChangeUserEmailCommand command);
     Task<Result<bool>> ChangeUserPasswordAsync(ChangeUserPasswordCommand command);
+    Task<Result<bool>> DeleteMyAccountAsync();
 }
