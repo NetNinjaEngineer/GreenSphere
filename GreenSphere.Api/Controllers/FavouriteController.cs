@@ -27,6 +27,7 @@ public class FavouriteController(IMediator mediator) : BaseApiController(mediato
 
     [HttpPost("add")]
     [ProducesResponseType(typeof(Result<FavouriteDto>), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(Result<FavouriteDto>), StatusCodes.Status401Unauthorized)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     public async Task<IActionResult> AddItemToFavourite([FromBody] AddItemToFavouriteCommand command)
         => CustomResult(await Mediator.Send(command));
@@ -34,18 +35,21 @@ public class FavouriteController(IMediator mediator) : BaseApiController(mediato
 
     [HttpDelete("remove_item")]
     [ProducesResponseType(typeof(Result<FavouriteDto>), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(Result<FavouriteDto>), StatusCodes.Status401Unauthorized)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     public async Task<IActionResult> RemoveItemFromFavourite([FromBody] RemoveItemFromFavouriteCommand command)
         => CustomResult(await Mediator.Send(command));
 
     [HttpDelete("clear")]
     [ProducesResponseType(typeof(Result<bool>), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(Result<bool>), StatusCodes.Status401Unauthorized)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     public async Task<IActionResult> ClearFavourateAsync()
         => CustomResult(await Mediator.Send(new ClearFavouriteCommand()));
 
     [HttpDelete("delete-all")]
     [ProducesResponseType(typeof(Result<bool>), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(Result<bool>), StatusCodes.Status401Unauthorized)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     public async Task<IActionResult> RemoveCustomerFavourateAsync()
         => CustomResult(await Mediator.Send(new DeleteAllFavouriteCommand()));

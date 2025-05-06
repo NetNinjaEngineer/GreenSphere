@@ -2,6 +2,8 @@
 using System.Security.Cryptography;
 using System.Text;
 using GreenSphere.Application.Helpers;
+using GreenSphere.Domain.Entities.Identity;
+using Microsoft.AspNetCore.Identity;
 
 namespace GreenSphere.Api.Middlewares;
 
@@ -11,6 +13,7 @@ public sealed class JwtValidationMiddleware(RequestDelegate next)
     {
         var jwtToken = context.Request.Headers.Authorization.ToString().Replace("Bearer ", string.Empty);
         var logger = context.RequestServices.GetRequiredService<ILogger<JwtValidationMiddleware>>();
+        var userManager = context.RequestServices.GetRequiredService<UserManager<ApplicationUser>>();
 
         if (!string.IsNullOrEmpty(jwtToken))
         {
@@ -26,6 +29,29 @@ public sealed class JwtValidationMiddleware(RequestDelegate next)
                 var ipAddressClaim = securityToken.Claims?.FirstOrDefault(c => c.Type == CustomClaimTypes.IP)?.Value;
                 var userAgentClaim = securityToken.Claims?.FirstOrDefault(c => c.Type == CustomClaimTypes.UserAgent)?.Value;
                 var fingerPrintClaim = securityToken.Claims?.FirstOrDefault(c => c.Type == CustomClaimTypes.FingerPrint)?.Value;
+
+                var idClaim = securityToken.Claims?.FirstOrDefault(c => c.Type == CustomClaimTypes.Uid)?.Value;
+
+                if (idClaim != null)
+                {
+                    var existedUser = await userManager.FindByIdAsync(idClaim);
+                    if (existedUser == null)
+                    {
+                        context.Response.StatusCode = StatusCodes.Status401Unauthorized;
+
+                        await context.Response.WriteAsJsonAsync(
+                            new GlobalErrorResponse
+                            {
+                                Type = "Unauthorized",
+                                Status = StatusCodes.Status401Unauthorized,
+                                Message = "Access denied."
+                            });
+
+                        return;
+                    }
+                }
+
+
 
                 var currentIpAddress = context.Connection.RemoteIpAddress?.ToString();
                 var currentUserAgent = context.Request.Headers.UserAgent.ToString();

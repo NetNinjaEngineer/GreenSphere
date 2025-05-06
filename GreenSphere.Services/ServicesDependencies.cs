@@ -77,6 +77,7 @@ public static class ServicesDependencies
         services.AddScoped<IShortsService, ShortsService>();
 
         services.AddScoped<IPointsService, PointsService>();
+        services.AddScoped<IRewardsService, RewardsService>();
 
         return services;
     }

@@ -7,6 +7,7 @@ using GreenSphere.Application.DTOs.Order;
 using GreenSphere.Application.DTOs.Points;
 using GreenSphere.Application.DTOs.Products;
 using GreenSphere.Application.DTOs.Ratings;
+using GreenSphere.Application.DTOs.Rewards;
 using GreenSphere.Application.DTOs.Shorts;
 using GreenSphere.Application.DTOs.Users;
 using GreenSphere.Application.Features.Auth.Commands.Register;
@@ -153,6 +154,17 @@ public sealed class MappingProfile : Profile
             .ForMember(dest => dest.Category, opt => opt.MapFrom(src => CultureInfo.CurrentCulture.Name == "ar-EG" ? src.ShortCategory.NameAr : src.ShortCategory.NameEn));
 
         CreateMap<UserPoints, PointsDto>();
+
+        CreateMap<Product, RewardDto>()
+            .ForMember(dest => dest.ImageUrl, options => options.MapFrom<RewardImageUrlValueResolver>());
+
+        CreateMap<UserReward, UserRewardDto>()
+            .ForMember(dest => dest.ProductName, options => options.MapFrom(src =>
+                src.Product.ProductTranslations.Any(pt => pt.LanguageCode == CultureInfo.CurrentCulture.Name)
+                    ? src.Product.ProductTranslations.FirstOrDefault(pt =>
+                        pt.LanguageCode == CultureInfo.CurrentCulture.Name)!.Name
+                    : src.Product.Name))
+            .ForMember(dest => dest.ProductImageUrl, options => options.MapFrom<UserRewardImageUrlValueResolver>());
 
     }
 }

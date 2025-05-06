@@ -38,8 +38,6 @@ public sealed class BasketService(
 
     public async Task<Result<BasketDto>> GetCustomerBasketAsync()
     {
-        if (!await currentUser.IsExistsAsync(currentUser.Email))
-            return Result<BasketDto>.Failure(HttpStatusCode.Unauthorized);
 
         var acceptLanguage = contextAccessor.HttpContext!.Request.Headers["Accept-Language"].ToString();
 
@@ -75,9 +73,6 @@ public sealed class BasketService(
 
     public async Task<Result<BasketDto>> AddItemToCustomerBasketAsync(AddItemToBasketCommand command)
     {
-        if (!await currentUser.IsExistsAsync(currentUser.Email))
-            return Result<BasketDto>.Failure(HttpStatusCode.Unauthorized);
-
         if (command.Quantity <= 0)
             return Result<BasketDto>.Failure(HttpStatusCode.BadRequest, localizer["QuantityMustBeAtLeastOne"]);
 
@@ -133,17 +128,11 @@ public sealed class BasketService(
 
     public async Task<Result<int>> GetItemsCountInCustomerBasketAsync()
     {
-        if (!await currentUser.IsExistsAsync(currentUser.Email))
-            return Result<int>.Failure(HttpStatusCode.Unauthorized);
-
         return Result<int>.Success((await GetCustomerBasketAsync()).Value.Items.Count());
     }
 
     public async Task<Result<BasketDto>> RemoveItemFromCustomerBasketAsync(RemoveItemFromBasketCommand command)
     {
-        if (!await currentUser.IsExistsAsync(currentUser.Email))
-            return Result<BasketDto>.Failure(HttpStatusCode.Unauthorized);
-
         var customerBasket = await basketRepository.GetBySpecificationAsync(
             specification: new GetCustomerBasketWithItemsSpecification(currentUser.Email));
 
@@ -171,9 +160,6 @@ public sealed class BasketService(
 
     public async Task<Result<BasketDto>> UpdateItemQuantityInCustomerBasketAsync(UpdateItemQuantityCommand command)
     {
-        if (!await currentUser.IsExistsAsync(currentUser.Email))
-            return Result<BasketDto>.Failure(HttpStatusCode.Unauthorized);
-
         if (command.Quantity <= 0)
             return Result<BasketDto>.Failure(HttpStatusCode.BadRequest, localizer["QuantityMustBeAtLeastOne"]);
 
@@ -208,9 +194,6 @@ public sealed class BasketService(
 
     public async Task<Result<bool>> DeleteCustomerBasketAsync()
     {
-        if (!await currentUser.IsExistsAsync(currentUser.Email))
-            return Result<bool>.Failure(HttpStatusCode.Unauthorized);
-
         var customerBasket = await basketRepository.GetBySpecificationAsync(
             specification: new GetCustomerBasketWithItemsSpecification(currentUser.Email));
 
@@ -228,9 +211,6 @@ public sealed class BasketService(
 
     public async Task<Result<BasketDto>> ClearBasketItemsAsync()
     {
-        if (!await currentUser.IsExistsAsync(currentUser.Email))
-            return Result<BasketDto>.Failure(HttpStatusCode.Unauthorized);
-
         var customerBasket = await basketRepository.GetBySpecificationAsync(
             specification: new GetCustomerBasketWithItemsSpecification(currentUser.Email));
 

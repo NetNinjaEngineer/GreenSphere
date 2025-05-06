@@ -28,6 +28,7 @@ public class BasketController(IMediator mediator) : BaseApiController(mediator)
 
     [HttpGet("me/items/count")]
     [ProducesResponseType(typeof(Result<int>), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(Result<int>), StatusCodes.Status401Unauthorized)]
     public async Task<ActionResult<Result<int>>> GetCustomerBasketItemsCountAsync()
         => CustomResult(await Mediator.Send(new GetItemsCountQuery()));
 
