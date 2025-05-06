@@ -7,5 +7,5 @@ public sealed class UpdateProductCommandHandler(IProductsService service)
     : IRequestHandler<UpdateProductCommand, Result<bool>>
 {
     public async Task<Result<bool>> Handle(UpdateProductCommand request, CancellationToken cancellationToken)
-        => await service.UploadProductAsync(request);
+        => await service.UpdateProductAsync(request);
 }

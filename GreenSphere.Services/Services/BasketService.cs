@@ -1,4 +1,5 @@
-﻿using AutoMapper;
+﻿using System.Net;
+using AutoMapper;
 using GreenSphere.Application.Bases;
 using GreenSphere.Application.DTOs.Basket;
 using GreenSphere.Application.Features.Basket.Commands.AddItemToBasket;
@@ -12,7 +13,6 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Caching.Memory;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Localization;
-using System.Net;
 
 namespace GreenSphere.Services.Services;
 
@@ -79,6 +79,9 @@ public sealed class BasketService(
 
         if (existedProduct is null)
             return Result<BasketDto>.Failure(HttpStatusCode.NotFound, localizer["ProductNotExists"]);
+
+        if (existedProduct.StockQuantity < command.Quantity)
+            Result<BasketDto>.Failure(HttpStatusCode.BadRequest, "Insufficient stock for the this product.");
 
         var customerBasket = await GetCustomerBasketAsync();
 
@@ -177,6 +180,9 @@ public sealed class BasketService(
 
         if (existedProduct is null)
             return Result<BasketDto>.Failure(HttpStatusCode.NotFound, localizer["ProductNotExists"]);
+
+        if (existedProduct.StockQuantity < command.Quantity)
+            return Result<BasketDto>.Failure(HttpStatusCode.BadRequest, "Insufficient stock for the this product.");
 
         existedBasketItem.Quantity = command.Quantity;
 

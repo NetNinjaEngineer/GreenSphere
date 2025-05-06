@@ -62,6 +62,7 @@ public class BasketController(IMediator mediator) : BaseApiController(mediator)
     [HttpPut("me/items/{id:guid}/{quantity:int}")]
     [ProducesResponseType(typeof(Result<BasketDto>), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(Result<BasketDto>), StatusCodes.Status404NotFound)]
+    [ProducesResponseType(typeof(Result<BasketDto>), StatusCodes.Status400BadRequest)]
     public async Task<ActionResult<Result<BasketDto>>> UpdateItemQuantityBasketAsync(
         [FromRoute] Guid id, [FromRoute] int quantity)
         => CustomResult(await Mediator.Send(new UpdateItemQuantityCommand { BasketItemId = id, Quantity = quantity }));
