@@ -1,4 +1,5 @@
-﻿using AutoMapper;
+﻿using System.Net;
+using AutoMapper;
 using GreenSphere.Application.Bases;
 using GreenSphere.Application.DTOs.Favourite;
 using GreenSphere.Application.Features.Favourite.Commands.AddItemToFavourite;
@@ -11,7 +12,6 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Caching.Memory;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Localization;
-using System.Net;
 
 namespace GreenSphere.Services.Services;
 
@@ -38,6 +38,9 @@ public sealed class FavouriteService(
 
     public async Task<Result<FavouriteDto>> GetCustomerFavouriteAsync()
     {
+        if (!await currentUser.IsExistsAsync(currentUser.Email))
+            return Result<FavouriteDto>.Failure(HttpStatusCode.Unauthorized);
+
         var acceptLanguage = contextAccessor.HttpContext!.Request.Headers["Accept-Language"].ToString();
 
         if (memoryCache.TryGetValue(_languageCacheKey, out string? lastLanguage) && lastLanguage != acceptLanguage)
@@ -68,6 +71,8 @@ public sealed class FavouriteService(
     }
     public async Task<Result<FavouriteDto>> AddItemToCustomerFavouriteAsync(AddItemToFavouriteCommand command)
     {
+        if (!await currentUser.IsExistsAsync(currentUser.Email))
+            return Result<FavouriteDto>.Failure(HttpStatusCode.Unauthorized);
 
         var customerFavourite = await favouriteRepository.GetBySpecificationAsync(
             specification: new GetCustomerFavouriteWithItemsSpecification(currentUser.Email))
@@ -113,6 +118,9 @@ public sealed class FavouriteService(
     }
     public async Task<Result<FavouriteDto>> RemoveItemFromCustomerFavouriteAsync(RemoveItemFromFavouriteCommand command)
     {
+        if (!await currentUser.IsExistsAsync(currentUser.Email))
+            return Result<FavouriteDto>.Failure(HttpStatusCode.Unauthorized);
+
         var customerFavourite = await favouriteRepository.GetBySpecificationAsync(
             specification: new GetCustomerFavouriteWithItemsSpecification(currentUser.Email));
 
@@ -140,6 +148,9 @@ public sealed class FavouriteService(
     }
     public async Task<Result<bool>> ClearCustomerFavouriteAsync()
     {
+        if (!await currentUser.IsExistsAsync(currentUser.Email))
+            return Result<bool>.Failure(HttpStatusCode.Unauthorized);
+
         var customerFavourite = await favouriteRepository.GetBySpecificationAsync(
             specification: new GetCustomerFavouriteWithItemsSpecification(currentUser.Email));
 
@@ -158,6 +169,9 @@ public sealed class FavouriteService(
     }
     public async Task<Result<bool>> DeleteAllCustomerFavouriteAsync()
     {
+        if (!await currentUser.IsExistsAsync(currentUser.Email))
+            return Result<bool>.Failure(HttpStatusCode.Unauthorized);
+
         var customerFavourite = await favouriteRepository.GetBySpecificationAsync(
             specification: new GetCustomerFavouriteWithItemsSpecification(currentUser.Email));
 

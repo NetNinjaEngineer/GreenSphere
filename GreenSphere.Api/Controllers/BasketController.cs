@@ -22,6 +22,7 @@ public class BasketController(IMediator mediator) : BaseApiController(mediator)
 {
     [HttpGet("me")]
     [ProducesResponseType(typeof(Result<BasketDto>), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(Result<BasketDto>), StatusCodes.Status401Unauthorized)]
     public async Task<ActionResult<Result<BasketDto>>> GetCustomerBasketAsync()
         => CustomResult(await Mediator.Send(new GetBasketQuery()));
 
@@ -34,6 +35,7 @@ public class BasketController(IMediator mediator) : BaseApiController(mediator)
     [ProducesResponseType(typeof(Result<BasketDto>), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(Result<BasketDto>), StatusCodes.Status400BadRequest)]
     [ProducesResponseType(typeof(Result<BasketDto>), StatusCodes.Status404NotFound)]
+    [ProducesResponseType(typeof(Result<BasketDto>), StatusCodes.Status401Unauthorized)]
     public async Task<ActionResult<Result<BasketDto>>> AddItemToBasketAsync(
         [FromBody] AddItemToBasketCommand command)
         => CustomResult(await Mediator.Send(command));
@@ -41,19 +43,22 @@ public class BasketController(IMediator mediator) : BaseApiController(mediator)
     [HttpDelete("me/items/clear")]
     [ProducesResponseType(typeof(Result<BasketDto>), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(Result<BasketDto>), StatusCodes.Status404NotFound)]
+    [ProducesResponseType(typeof(Result<BasketDto>), StatusCodes.Status401Unauthorized)]
     public async Task<ActionResult<Result<BasketDto>>> ClearBasketAsync()
         => CustomResult(await Mediator.Send(new ClearBasketCommand()));
 
     [HttpDelete("me")]
     [ProducesResponseType(typeof(Result<bool>), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(Result<bool>), StatusCodes.Status404NotFound)]
+    [ProducesResponseType(typeof(Result<bool>), StatusCodes.Status401Unauthorized)]
     public async Task<ActionResult<Result<bool>>> DeleteBasketAsync()
         => CustomResult(await Mediator.Send(new DeleteBasketCommand()));
 
 
     [HttpDelete("me/items")]
     [ProducesResponseType(typeof(Result<BasketDto>), StatusCodes.Status200OK)]
-    [ProducesResponseType(typeof(Result<BasketDto>), StatusCodes.Status404NotFound)]
+    [ProducesResponseType(typeof(Result<bool>), StatusCodes.Status404NotFound)]
+    [ProducesResponseType(typeof(Result<BasketDto>), StatusCodes.Status401Unauthorized)]
     public async Task<ActionResult<Result<BasketDto>>> RemoveItemFromBasketAsync(
         [FromBody] RemoveItemFromBasketCommand command)
         => CustomResult(await Mediator.Send(command));
@@ -63,6 +68,7 @@ public class BasketController(IMediator mediator) : BaseApiController(mediator)
     [ProducesResponseType(typeof(Result<BasketDto>), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(Result<BasketDto>), StatusCodes.Status404NotFound)]
     [ProducesResponseType(typeof(Result<BasketDto>), StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(typeof(Result<BasketDto>), StatusCodes.Status401Unauthorized)]
     public async Task<ActionResult<Result<BasketDto>>> UpdateItemQuantityBasketAsync(
         [FromRoute] Guid id, [FromRoute] int quantity)
         => CustomResult(await Mediator.Send(new UpdateItemQuantityCommand { BasketItemId = id, Quantity = quantity }));

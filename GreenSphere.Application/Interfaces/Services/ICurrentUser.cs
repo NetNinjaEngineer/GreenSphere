@@ -6,4 +6,5 @@ public interface ICurrentUser
     string Id { get; }
     string Email { get; }
     ClaimsPrincipal? GetUser();
+    Task<bool> IsExistsAsync(string email);
 }
