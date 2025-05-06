@@ -38,6 +38,10 @@ public sealed class BasketService(
 
     public async Task<Result<BasketDto>> GetCustomerBasketAsync()
     {
+        if (currentUser.GetUser() == null)
+            return Result<BasketDto>.Failure(HttpStatusCode.Unauthorized);
+
+
         var acceptLanguage = contextAccessor.HttpContext!.Request.Headers["Accept-Language"].ToString();
 
         if (memoryCache.TryGetValue(_languageCacheKey, out string? lastLanguage) && lastLanguage != acceptLanguage)
@@ -72,6 +76,9 @@ public sealed class BasketService(
 
     public async Task<Result<BasketDto>> AddItemToCustomerBasketAsync(AddItemToBasketCommand command)
     {
+        if (currentUser.GetUser() == null)
+            return Result<BasketDto>.Failure(HttpStatusCode.Unauthorized);
+
         if (command.Quantity <= 0)
             return Result<BasketDto>.Failure(HttpStatusCode.BadRequest, localizer["QuantityMustBeAtLeastOne"]);
 
@@ -136,6 +143,10 @@ public sealed class BasketService(
 
     public async Task<Result<BasketDto>> RemoveItemFromCustomerBasketAsync(RemoveItemFromBasketCommand command)
     {
+
+        if (currentUser.GetUser() == null)
+            return Result<BasketDto>.Failure(HttpStatusCode.Unauthorized);
+
         var customerBasket = await basketRepository.GetBySpecificationAsync(
             specification: new GetCustomerBasketWithItemsSpecification(currentUser.Email));
 
@@ -163,6 +174,9 @@ public sealed class BasketService(
 
     public async Task<Result<BasketDto>> UpdateItemQuantityInCustomerBasketAsync(UpdateItemQuantityCommand command)
     {
+        if (currentUser.GetUser() == null)
+            return Result<BasketDto>.Failure(HttpStatusCode.Unauthorized);
+
         if (command.Quantity <= 0)
             return Result<BasketDto>.Failure(HttpStatusCode.BadRequest, localizer["QuantityMustBeAtLeastOne"]);
 
@@ -197,6 +211,9 @@ public sealed class BasketService(
 
     public async Task<Result<bool>> DeleteCustomerBasketAsync()
     {
+        if (currentUser.GetUser() == null)
+            return Result<bool>.Failure(HttpStatusCode.Unauthorized);
+
         var customerBasket = await basketRepository.GetBySpecificationAsync(
             specification: new GetCustomerBasketWithItemsSpecification(currentUser.Email));
 
@@ -214,6 +231,9 @@ public sealed class BasketService(
 
     public async Task<Result<BasketDto>> ClearBasketItemsAsync()
     {
+        if (currentUser.GetUser() == null)
+            return Result<BasketDto>.Failure(HttpStatusCode.Unauthorized);
+
         var customerBasket = await basketRepository.GetBySpecificationAsync(
             specification: new GetCustomerBasketWithItemsSpecification(currentUser.Email));
 
