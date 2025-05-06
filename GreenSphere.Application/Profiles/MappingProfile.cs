@@ -4,6 +4,7 @@ using GreenSphere.Application.DTOs.Basket;
 using GreenSphere.Application.DTOs.Category;
 using GreenSphere.Application.DTOs.Favourite;
 using GreenSphere.Application.DTOs.Order;
+using GreenSphere.Application.DTOs.Points;
 using GreenSphere.Application.DTOs.Products;
 using GreenSphere.Application.DTOs.Ratings;
 using GreenSphere.Application.DTOs.Shorts;
@@ -150,5 +151,8 @@ public sealed class MappingProfile : Profile
             .ForMember(dest => dest.VideoUrl, opt => opt.MapFrom<ShortUrlValueResolver>())
             .ForMember(dest => dest.ThumbnailUrl, opt => opt.MapFrom<ThumbnailUrlValueResolver>())
             .ForMember(dest => dest.Category, opt => opt.MapFrom(src => CultureInfo.CurrentCulture.Name == "ar-EG" ? src.ShortCategory.NameAr : src.ShortCategory.NameEn));
+
+        CreateMap<UserPoints, PointsDto>();
+
     }
 }

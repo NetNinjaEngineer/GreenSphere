@@ -1,5 +1,5 @@
-﻿using GreenSphere.Domain.Entities.Identity;
-using System.Security.Claims;
+﻿using System.Security.Claims;
+using GreenSphere.Domain.Entities.Identity;
 
 namespace GreenSphere.Application.Interfaces.Services;
 public interface ITokenService

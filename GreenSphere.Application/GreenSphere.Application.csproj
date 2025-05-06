@@ -21,4 +21,8 @@
 	  <ProjectReference Include="..\GreenSphere.Domain\GreenSphere.Domain.csproj" />
 	</ItemGroup>
 
+	<ItemGroup>
+	  <Folder Include="Features\Rewards\" />
+	</ItemGroup>
+
 </Project>
