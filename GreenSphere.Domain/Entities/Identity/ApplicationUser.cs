@@ -16,4 +16,6 @@ public class ApplicationUser : IdentityUser
     public List<RefreshToken>? RefreshTokens { get; set; }
     public ICollection<Address> Addresses { get; set; } = [];
     public ICollection<Short> Shorts { get; set; } = [];
+    public ICollection<UserPoints> PointsHistory { get; set; } = [];
+    public ICollection<UserReward> RedeemedRewards { get; set; } = [];
 }

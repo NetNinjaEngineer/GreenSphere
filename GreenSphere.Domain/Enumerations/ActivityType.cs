@@ -1,7 +1,6 @@
 ﻿namespace GreenSphere.Domain.Enumerations;
 
-public enum Gender
+public enum ActivityType
 {
-    Male,
-    Female
+    Purchase
 }
