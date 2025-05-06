@@ -1,4 +1,5 @@
-﻿using AutoMapper;
+﻿using System.Net;
+using AutoMapper;
 using FluentValidation;
 using GreenSphere.Application.Bases;
 using GreenSphere.Application.DTOs.Category;
@@ -17,7 +18,6 @@ using GreenSphere.Domain.Interfaces;
 using GreenSphere.Domain.Specifications;
 using GreenSphere.Domain.Utils;
 using Microsoft.Extensions.Localization;
-using System.Net;
 
 namespace GreenSphere.Services.Services;
 public sealed class ProductsService(
@@ -72,7 +72,9 @@ public sealed class ProductsService(
             DiscountPercentage = command.DiscountPercentage,
             CategoryId = command.CategoryId,
             Img = uploadedImageName,
-            OriginalPrice = command.Price
+            OriginalPrice = command.Price,
+            StockQuantity = command.StockQuantity,
+            PointsCost = command.PointsCost
         };
 
         productsRepository.Create(product);
@@ -96,7 +98,7 @@ public sealed class ProductsService(
         return Result<bool>.Success(true);
     }
 
-    public async Task<Result<bool>> UploadProductAsync(UpdateProductCommand command)
+    public async Task<Result<bool>> UpdateProductAsync(UpdateProductCommand command)
     {
         await new UpdateProductCommandValidator().ValidateAndThrowAsync(command);
 
@@ -108,6 +110,11 @@ public sealed class ProductsService(
         existedProduct.Name = command.Name;
         existedProduct.Description = command.Description;
         existedProduct.DiscountPercentage = command.DiscountPercentage;
+        existedProduct.PointsCost = command.PointsCost;
+
+        if (command.StockQuantity.HasValue)
+            existedProduct.StockQuantity = command.StockQuantity.Value;
+
 
         if (command.Image is not null)
         {

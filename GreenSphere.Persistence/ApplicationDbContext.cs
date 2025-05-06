@@ -2,6 +2,7 @@
 using GreenSphere.Domain.Entities.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Diagnostics;
 
 namespace GreenSphere.Persistence;
 public class ApplicationDbContext(
@@ -26,5 +27,12 @@ public class ApplicationDbContext(
         base.OnModelCreating(builder);
 
         builder.ApplyConfigurationsFromAssembly(typeof(ApplicationDbContext).Assembly);
+    }
+
+    protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+    {
+        base.OnConfiguring(optionsBuilder);
+        optionsBuilder.ConfigureWarnings(options =>
+            options.Ignore(RelationalEventId.PendingModelChangesWarning));
     }
 }

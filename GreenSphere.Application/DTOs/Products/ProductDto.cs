@@ -16,4 +16,9 @@ public sealed class ProductDto : BaseDto
     public List<RatingDto> Ratings { get; set; } = [];
     public RatingStatisticsDto RatingStatistics { get; set; } = null!;
     public List<RatingDto> RecentRatings { get; set; } = [];
+    public long StockQuantity { get; set; }
+    public long? PointsCost { get; set; }
+    public bool IsActive { get; set; } = true;
+    public bool IsAvailable { get; set; }
+    public bool IsReward { get; set; }
 }

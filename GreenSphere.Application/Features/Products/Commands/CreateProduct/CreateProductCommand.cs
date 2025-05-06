@@ -12,4 +12,6 @@ public sealed class CreateProductCommand : IRequest<Result<Guid>>
     public string Description { get; set; } = null!;
     public decimal? DiscountPercentage { get; set; }
     public Guid CategoryId { get; set; }
+    public long StockQuantity { get; set; }
+    public long? PointsCost { get; set; }
 }

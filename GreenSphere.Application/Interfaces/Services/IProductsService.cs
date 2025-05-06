@@ -19,10 +19,7 @@ public interface IProductsService
     Task<Result<ProductDto>> GetProductAsync(GetProductQuery query);
     Task<Result<Guid>> CreateProductAsync(CreateProductCommand command);
     Task<Result<bool>> DeleteProductAsync(DeleteProductCommand command);
-    Task<Result<bool>> UploadProductAsync(UpdateProductCommand command);
-
-
-
+    Task<Result<bool>> UpdateProductAsync(UpdateProductCommand command);
     Task<Result<Guid>> CreatCategoryAsync(CreateCategoryCommand command);
     Task<Result<Guid>> UpdateCategoryAsync(UpdateCategoryCommand command);
     Task<Result<bool>> DeleteCategoryAsync(DeleteCategoryCommand command);
